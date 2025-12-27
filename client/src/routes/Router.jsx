@@ -13,6 +13,7 @@ import { Order } from "../pages/orders/Order";
 import { Products } from "../pages/products/Products";
 import { Private } from "./Private";
 import { Public } from "./Public";
+import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
 
 /* 🔐 ADMIN */
 import { AdminProducts } from "../pages/admin/AdminProducts";
@@ -34,6 +35,9 @@ export const Router = () => {
         <Route path="/women" element={<Products />} />
         <Route path="/kids" element={<Products />} />
         <Route path="/description" element={<Description />} />
+
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        
 
         <Route
           path="/auth"
