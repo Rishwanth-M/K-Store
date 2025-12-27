@@ -5,7 +5,7 @@ import {
   Divider,
   Flex,
   Grid,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { OrderAddress } from "../../components/orders/OrderAddress";
 import { Loading } from "../../components/loading/Loading";
@@ -20,26 +20,27 @@ import { dateFormator } from "../../utils/dateFormator";
 
 export const Order = () => {
   const token = useSelector((state) => state.authReducer.token);
+
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [data, setData] = useState([]);
 
   const handleOrdersGetRequest = async () => {
-    if (!token) return; // ✅ prevent invalid API call
+    if (!token) return;
 
     try {
       setIsLoading(true);
-      let res = await axios.get("/order", {
+
+      const res = await axios.get("/order", {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      const orders = res.data.reverse();
-      setData(orders);
+      setData(res.data.reverse());
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
       setIsError(true);
     }
@@ -51,81 +52,84 @@ export const Order = () => {
 
   if (!isLoading && data.length === 0) {
     return (
-      <Box>
-        <Center h="40vh">
-          <Text fontSize="20px">
-            Your orders will be displayed here.
-          </Text>
-        </Center>
-      </Box>
+      <Center h="40vh">
+        <Text fontSize="20px">
+          Your orders will be displayed here.
+        </Text>
+      </Center>
     );
   }
 
-  return isLoading ? (
-    <Loading />
-  ) : isError ? (
-    <Error />
-  ) : (
-    <Box
-      px="20px"
-      mb={["250px", "150px", "150px", "150px", "150px"]}
-    >
+  if (isLoading) return <Loading />;
+  if (isError) return <Error />;
+
+  return (
+    <Box px="20px" mb="150px">
       <Flex justify="space-between" maxW={1200} m="20px auto">
-        <Center>
-          <Text fontWeight={600} fontSize={["20px", "25px"]}>
-            Orders&nbsp;
-          </Text>
-          <Text fontSize={["16px", "20px"]}>
-            ({data.length})
-          </Text>
-        </Center>
+        <Text fontWeight={600} fontSize="24px">
+          Orders ({data.length})
+        </Text>
       </Flex>
 
-      <Accordion defaultIndex={[0]} allowMultiple>
+      <Accordion allowMultiple>
         <Box maxW={1200} m="40px auto">
           {data.map((item) => {
-            const { date, time } = dateFormator(item.createdAt);
+            const { date, time } = item.createdAt
+              ? dateFormator(item.createdAt)
+              : { date: "-", time: "-" };
 
             return (
               <OrderSection
-                key={item._id}   // ✅ FIXED: key added here
+                key={item._id}
                 date={date}
                 time={time}
               >
-                <Box>
-                  <Grid
-                    templateColumns={[
-                      "100%",
-                      "100%",
-                      "48% 48%",
-                      "32% 31% 33%",
-                      "31% 30% 31%"
-                    ]}
-                    gap={["20px", "20px", "4%", "2%", "4%"]}
-                  >
-                    <Box py="15px" px="25px">
-                      <Text fontSize="20px" fontWeight={600}>
-                        Ordered Items
-                      </Text>
-                      <Divider mb="20px" />
+                <Grid
+                  templateColumns={[
+                    "100%",
+                    "100%",
+                    "48% 48%",
+                    "32% 31% 33%",
+                  ]}
+                  gap="20px"
+                >
+                  {/* ===== ORDER ITEMS ===== */}
+                  <Box py="15px" px="25px">
+                    <Text fontSize="20px" fontWeight={600}>
+                      Ordered Items
+                    </Text>
 
-                      {item.cartProducts.map((product) => (
-                        <OrderBox
-                          key={product._id}
-                          {...product}
-                        />
-                      ))}
-                    </Box>
+                    <Divider mb="20px" />
 
-                    <OrderAddress {...item.shippingDetails} />
+                    {item.cartProducts?.map((product, idx) => (
+                      <OrderBox
+                        key={idx}
+                        {...product}
+                      />
+                    ))}
+                  </Box>
 
-                    <Summary
-                      createdAt={item.createdAt}
-                      {...item.paymentDetails}
-                      {...item.orderSummary}
-                    />
-                  </Grid>
-                </Box>
+                  {/* ===== ADDRESS ===== */}
+                  <OrderAddress {...item.shippingDetails} />
+
+                  {/* ===== SUMMARY ===== */}
+                  <Summary
+                    createdAt={item.createdAt}
+
+                    /* old orders */
+                    {...item.orderSummary}
+
+                    /* new orders */
+                    amount={item.amount}
+                    paymentStatus={item.paymentDetails?.paymentStatus}
+                    merchantTransactionId={
+                      item.paymentDetails?.merchantTransactionId
+                    }
+                    razorpayPaymentId={
+                      item.paymentDetails?.razorpayPaymentId
+                    }
+                  />
+                </Grid>
               </OrderSection>
             );
           })}

@@ -3,52 +3,109 @@ import { dateFormator } from "../../utils/dateFormator";
 import { numberWithCommas } from "../../utils/extraFunctions";
 import { OrderPageText } from "./OrderPageText";
 
+export const Summary = ({
+  createdAt,
 
-export const Summary = ({ subTotal, discount, quantity, total, shipping, createdAt, orderId, razorpayPaymentId }) => {
+  /* ===== OLD ORDER FIELDS ===== */
+  subTotal,
+  discount,
+  quantity,
+  total,
+  shipping,
 
-    const { date, time } = dateFormator(createdAt);
+  /* ===== NEW PHONEPE FIELDS ===== */
+  amount,
+  paymentStatus,
+  merchantTransactionId,
+  razorpayPaymentId,
+}) => {
+  const { date, time } = createdAt
+    ? dateFormator(createdAt)
+    : { date: "-", time: "-" };
 
-    return (
-        <>
-            <Box py={'15px'} px={'25px'}>
+  // ✅ Final amount resolution (old + new compatible)
+  const finalTotal =
+    total ??
+    amount ??
+    0;
 
-                <Text fontSize={'20px'} fontWeight={600}>Summary</Text>
-                
-                <Divider />
+  return (
+    <Box py="15px" px="25px">
+      <Text fontSize="20px" fontWeight={600}>
+        Summary
+      </Text>
 
-                <Flex flexDirection={'column'} gap={'5px'} my={'20px'} fontSize={'18px'}>
+      <Divider />
 
-                    <OrderPageText name={'Order Date'} value={date} />
+      <Flex flexDirection="column" gap="8px" my="20px" fontSize="16px">
+        <OrderPageText name="Order Date" value={date} />
+        <OrderPageText name="Order Time" value={time} />
 
-                    <OrderPageText name={'Order Time'} value={time} />
+        <Divider my="10px" />
 
-                    <Divider my={'10px'} />
+        {/* ✅ Payment / Transaction IDs */}
+        {merchantTransactionId && (
+          <OrderPageText
+            name="Transaction ID"
+            value={merchantTransactionId}
+          />
+        )}
 
-                    <OrderPageText name={'Order ID'} value={orderId} />
+        {razorpayPaymentId && (
+          <OrderPageText
+            name="Payment ID"
+            value={razorpayPaymentId}
+          />
+        )}
 
-                    <OrderPageText name={'Payment ID'} value={razorpayPaymentId} />
+        {paymentStatus && (
+          <OrderPageText
+            name="Payment Status"
+            value={paymentStatus}
+          />
+        )}
 
-                    <Divider my={'10px'} />
+        <Divider my="10px" />
 
-                    <OrderPageText name={'Subtotal'} value={`₹${numberWithCommas(subTotal)}.00`} />
+        {/* ===== OLD ORDERS ONLY ===== */}
+        {subTotal !== undefined && (
+          <OrderPageText
+            name="Subtotal"
+            value={`₹${numberWithCommas(subTotal)}`}
+          />
+        )}
 
-                    <OrderPageText name={'Quantity'} value={quantity} />
+        {quantity !== undefined && (
+          <OrderPageText
+            name="Quantity"
+            value={quantity}
+          />
+        )}
 
-                    <Flex justifyContent={'space-between'}>
-                        <Text >Estimated Delivery</Text>
-                        <Text title={'Free delivery applies to orders of ₹14,000 or more'} cursor={'pointer'}>
-                            ₹{numberWithCommas(shipping)}.00
-                        </Text>
-                    </Flex>
+        {shipping !== undefined && (
+          <Flex justifyContent="space-between">
+            <Text>Shipping</Text>
+            <Text>
+              ₹{numberWithCommas(shipping)}
+            </Text>
+          </Flex>
+        )}
 
-                    <OrderPageText name={'Discount'} value={`₹${numberWithCommas(discount)}.00`} />
+        {discount !== undefined && (
+          <OrderPageText
+            name="Discount"
+            value={`₹${numberWithCommas(discount)}`}
+          />
+        )}
 
-                    <Divider my={'10px'} />
+        <Divider my="10px" />
 
-                    <OrderPageText name={'Total'} value={`₹${numberWithCommas(total)}.00`} />
-
-                </Flex>
-            </Box>
-        </>
-    );
+        {/* ✅ FINAL TOTAL (OLD + NEW) */}
+        <OrderPageText
+          name="Total"
+          value={`₹${numberWithCommas(finalTotal)}`}
+        />
+      </Flex>
+    </Box>
+  );
 };
