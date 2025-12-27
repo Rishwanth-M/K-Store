@@ -23,17 +23,19 @@ export const ItemBox = ({ data, index }) => {
   const navigate = useNavigate();
   const token = useSelector((state) => state.authReducer.token);
 
+  /* ================= DESTRUCTURE DATA ================= */
   const {
     name,
     description,
     price,
     quantity,
+    size,            // ✅ SIZE ADDED
     images = []
   } = data;
 
-  const imageUrl =
-    images.length > 0 ? images[0] : noImage;
+  const imageUrl = images.length > 0 ? images[0] : noImage;
 
+  /* ================= HANDLERS ================= */
   const handleRemoveItem = () => {
     dispatch(removeFromCartRequest(index, toast));
   };
@@ -54,6 +56,7 @@ export const ItemBox = ({ data, index }) => {
     return dispatch(addToCartRequest(data, toast, name));
   };
 
+  /* ================= UI ================= */
   return (
     <>
       <Box
@@ -62,28 +65,35 @@ export const ItemBox = ({ data, index }) => {
         display="flex"
         gap={["5px", "20px"]}
       >
+        {/* IMAGE */}
         <Box w="150px" h="150px">
           <Image
             h="100%"
             w="100%"
             objectFit="cover"
             src={imageUrl}
+            alt={name}
           />
         </Box>
 
+        {/* DETAILS */}
         <Box
           w="100%"
           display="grid"
           gap="2%"
-          gridTemplateColumns={[
-            "67% 30%",
-            "80% 18%"
-          ]}
+          gridTemplateColumns={["67% 30%", "80% 18%"]}
         >
           <Box>
-            <Text fontWeight={500}>{name}</Text>
+            <Text fontWeight={600}>{name}</Text>
+
+            {/* ✅ SIZE DISPLAY */}
+            <Text fontSize="14px" color="gray.600">
+              Size: <strong>{size}</strong>
+            </Text>
+
             <Text color="gray">{description}</Text>
 
+            {/* QUANTITY */}
             <Flex alignItems="center" gap="10px" my="8px">
               <Text>Quantity:</Text>
 
@@ -102,6 +112,7 @@ export const ItemBox = ({ data, index }) => {
               />
             </Flex>
 
+            {/* ACTION BUTTONS */}
             <Box display="flex" gap="10px">
               <BagItemBtn
                 title="Favourites"
@@ -115,8 +126,9 @@ export const ItemBox = ({ data, index }) => {
             </Box>
           </Box>
 
+          {/* PRICE */}
           <Box>
-            <Text fontSize="18px" textAlign="end">
+            <Text fontSize="18px" fontWeight={600} textAlign="end">
               ₹{numberWithCommas(price)}
             </Text>
           </Box>

@@ -20,22 +20,35 @@ router.post("/", authorization, async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    // 🔧 Normalize shipping details
+    /* ================= NORMALIZE SHIPPING ================= */
     const normalizedShipping = {
-      ...shippingDetails,
+      firstName: shippingDetails.firstName,
+      lastName: shippingDetails.lastName,
+      addressLine1: shippingDetails.addressLine1,
+      addressLine2: shippingDetails.addressLine2 || "",
+      locality: shippingDetails.locality,
       pinCode: Number(shippingDetails.pinCode),
+      state: shippingDetails.state,
+      country: shippingDetails.country,
+      email: shippingDetails.email,
       mobile: Number(shippingDetails.mobile),
     };
 
-    // 🔧 Normalize cart products
+    /* ================= NORMALIZE CART PRODUCTS ================= */
     const normalizedProducts = cartProducts.map((item) => ({
-      ...item,
+      title: item.name,                     // ✅ FIX
+      gender: item.gender || "Unisex",      // ✅ DEFAULT
+      description: item.description || "",
+      category: item.category || "General",
       price: Number(item.price),
-      rating: Number(item.rating),
+      size: item.size,                      // ✅ FROM CART
+      color: item.color || "Default",
+      rating: Number(item.rating || 0),     // ✅ DEFAULT
+      img: Array.isArray(item.images) ? item.images : [],
       quantity: Number(item.quantity),
     }));
 
-    // 🔧 Normalize order summary
+    /* ================= NORMALIZE ORDER SUMMARY ================= */
     const normalizedSummary = {
       subTotal: Number(orderSummary.subTotal),
       quantity: Number(orderSummary.quantity),
@@ -44,6 +57,7 @@ router.post("/", authorization, async (req, res) => {
       total: Number(orderSummary.total),
     };
 
+    /* ================= CREATE ORDER ================= */
     const order = await Order.create({
       cartProducts: normalizedProducts,
       orderSummary: normalizedSummary,
@@ -54,7 +68,7 @@ router.post("/", authorization, async (req, res) => {
 
     return res.status(201).json(order);
   } catch (error) {
-    console.error("❌ ORDER ERROR:", error);
+    console.error("❌ ORDER ERROR:", error.message);
 
     return res.status(500).json({
       message: "Order creation failed",

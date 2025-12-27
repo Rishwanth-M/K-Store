@@ -40,15 +40,16 @@ export const Description = () => {
     }
 
     dispatch(
-      addToCartRequest(
-        {
-          ...product,
-          selectedSize,
-          quantity: 1,
-        },
-        toast
-      )
-    );
+  addToCartRequest(
+    {
+      ...product,
+      size: selectedSize,   // ✅ BACKEND-COMPATIBLE
+      quantity: 1,
+    },
+    toast
+  )
+);
+
   };
 
   /* ---------- ADD TO FAVOURITE ---------- */

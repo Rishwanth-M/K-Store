@@ -1,9 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-const reqString = { type: String, required: true };
-const reqNumber = { type: Number, required: true };
-const reqArray = { type: Array, required: true };
-
 const orderSchema = new Schema(
   {
     /* ================= ORDER AMOUNT (IMMUTABLE) ================= */
@@ -19,19 +15,59 @@ const orderSchema = new Schema(
       default: "CREATED",
     },
 
-    /* ================= CART ================= */
+    /* ================= CART PRODUCTS ================= */
     cartProducts: [
       {
-        title: reqString,
-        gender: reqString,
-        description: reqString,
-        category: reqString,
-        price: reqNumber,
-        size: reqString,
-        color: reqString,
-        rating: reqNumber,
-        img: reqArray,
-        quantity: reqNumber,
+        title: {
+          type: String,
+          required: true, // product name at time of purchase
+        },
+
+        price: {
+          type: Number,
+          required: true,
+        },
+
+        size: {
+          type: String,
+          required: true,
+        },
+
+        quantity: {
+          type: Number,
+          required: true,
+        },
+
+        /* ===== OPTIONAL METADATA (NON-CRITICAL) ===== */
+        gender: {
+          type: String,
+          default: "Unisex",
+        },
+
+        description: {
+          type: String,
+          default: "",
+        },
+
+        category: {
+          type: String,
+          default: "General",
+        },
+
+        color: {
+          type: String,
+          default: "Default",
+        },
+
+        rating: {
+          type: Number,
+          default: 0,
+        },
+
+        img: {
+          type: [String],
+          default: [],
+        },
       },
     ],
 
@@ -49,7 +85,7 @@ const orderSchema = new Schema(
       },
 
       phonepeTransactionId: {
-        type: String, // comes from PhonePe callback
+        type: String,
       },
 
       paymentStatus: {
@@ -64,18 +100,18 @@ const orderSchema = new Schema(
       },
     },
 
-    /* ================= SHIPPING ================= */
+    /* ================= SHIPPING DETAILS ================= */
     shippingDetails: {
-      firstName: reqString,
-      lastName: reqString,
-      addressLine1: reqString,
-      addressLine2: { type: String },
-      locality: reqString,
-      pinCode: reqNumber,
-      state: reqString,
-      country: reqString,
-      email: reqString,
-      mobile: reqNumber,
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      addressLine1: { type: String, required: true },
+      addressLine2: { type: String, default: "" },
+      locality: { type: String, required: true },
+      pinCode: { type: Number, required: true },
+      state: { type: String, required: true },
+      country: { type: String, required: true },
+      email: { type: String, required: true },
+      mobile: { type: Number, required: true },
     },
 
     /* ================= USER ================= */
