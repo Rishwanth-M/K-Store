@@ -1,0 +1,340 @@
+[
+  {
+    "name": "Girls Combo – Navy Blue / White (White Socks)",
+    "category": "girls",
+    "productType": "Combo",
+    "color": "Navy Blue / White",
+    "price": 3500,
+    "status": "active",
+    "description": "High performance girls combo set suitable for matches and training.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Navy+Combo+1",
+      "https://via.placeholder.com/600x600.png?text=Girls+Navy+Combo+2"
+    ],
+    "variants": [
+      { "size": "S", "stock": 8 },
+      { "size": "M", "stock": 12 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Navy Blue One-piece, Navy Blue Jacket, White Visor and White Socks.",
+    "material": "Jacket: Wind Cheater. One-piece: 4 Way Lycra. Socks: Polyester Cotton. Visor: 100% Polyester.",
+    "sizeGuide": "Regular fit. Choose standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Girls Combo – Navy Blue / White (Black Socks)",
+    "category": "girls",
+    "productType": "Combo",
+    "color": "Navy Blue / White",
+    "price": 3500,
+    "status": "active",
+    "description": "High performance girls combo set suitable for matches and training.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Navy+Combo+Black+Sock"
+    ],
+    "variants": [
+      { "size": "S", "stock": 8 },
+      { "size": "M", "stock": 12 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Navy Blue One-piece, Navy Blue Jacket, White Visor and Black Socks.",
+    "material": "Jacket: Wind Cheater. One-piece: 4 Way Lycra. Socks: Polyester Cotton. Visor: 100% Polyester.",
+    "sizeGuide": "Regular fit. Choose standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Girls Combo – Red / Black (White Socks)",
+    "category": "girls",
+    "productType": "Combo",
+    "color": "Red / Black",
+    "price": 3500,
+    "status": "active",
+    "description": "Professional girls combo set designed for performance.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Red+Combo+1",
+      "https://via.placeholder.com/600x600.png?text=Girls+Red+Combo+2"
+    ],
+    "variants": [
+      { "size": "S", "stock": 7 },
+      { "size": "M", "stock": 10 },
+      { "size": "L", "stock": 8 }
+    ],
+    "stock": 25,
+    "details": "Includes Red Shirt, Black Skirt, Black Jacket, Black Visor and White Socks.",
+    "material": "Jacket: Wind Cheater. Shirt & Skirt: 4 Way Lycra. Socks: Polyester Cotton. Visor: 100% Polyester.",
+    "sizeGuide": "Athletic fit. Choose standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Girls Combo – Red / Black (Black Socks)",
+    "category": "girls",
+    "productType": "Combo",
+    "color": "Red / Black",
+    "price": 3500,
+    "status": "active",
+    "description": "Professional girls combo set designed for performance.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Red+Combo+Black+Sock"
+    ],
+    "variants": [
+      { "size": "S", "stock": 7 },
+      { "size": "M", "stock": 10 },
+      { "size": "L", "stock": 8 }
+    ],
+    "stock": 25,
+    "details": "Includes Red Shirt, Black Skirt, Black Jacket, Black Visor and Black Socks.",
+    "material": "Jacket: Wind Cheater. Shirt & Skirt: 4 Way Lycra. Socks: Polyester Cotton. Visor: 100% Polyester.",
+    "sizeGuide": "Athletic fit. Choose standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Girls Combo – Yellow / Grey (White Socks)",
+    "category": "girls",
+    "productType": "Combo",
+    "color": "Yellow / Grey",
+    "price": 1800,
+    "status": "active",
+    "description": "Lightweight girls combo set ideal for training and casual sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Yellow+Combo+1"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Yellow Shirt, Yellow Skirt, Grey Visor and White Socks. Jacket not included.",
+    "material": "Shirt & Skirt: 4 Way Lycra. Socks: Polyester Cotton. Visor: 100% Polyester.",
+    "sizeGuide": "Regular fit with stretchable fabric.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Girls Combo – Yellow / Grey (Black Socks)",
+    "category": "girls",
+    "productType": "Combo",
+    "color": "Yellow / Grey",
+    "price": 1800,
+    "status": "active",
+    "description": "Lightweight girls combo set ideal for training and casual sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Yellow+Combo+Black+Sock"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Yellow Shirt, Yellow Skirt, Grey Visor and Black Socks. Jacket not included.",
+    "material": "Shirt & Skirt: 4 Way Lycra. Socks: Polyester Cotton. Visor: 100% Polyester.",
+    "sizeGuide": "Regular fit with stretchable fabric.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Girls One-piece / Shirt & Skirt – Navy Blue",
+    "category": "girls",
+    "productType": "Inner",
+    "color": "Navy Blue",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable navy blue one-piece for sports activities.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Navy+Onepiece"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Single navy blue sports one-piece.",
+    "material": "4 Way Lycra, stretchable and breathable fabric.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Shirt & Skirt – Red",
+    "category": "girls",
+    "productType": "Inner",
+    "color": "Red",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable red shirt and skirt set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Red+Shirt+Skirt"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 12 }
+    ],
+    "stock": 42,
+    "details": "Includes Red Shirt and Red Skirt.",
+    "material": "4 Way Lycra, breathable fabric.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Shirt & Skirt – Yellow",
+    "category": "girls",
+    "productType": "Inner",
+    "color": "Yellow",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable yellow shirt and skirt set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Yellow+Shirt+Skirt"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Includes Yellow Shirt and Yellow Skirt.",
+    "material": "4 Way Lycra, stretchable fabric.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Jacket – Navy Blue",
+    "category": "girls",
+    "productType": "Jacket",
+    "color": "Navy Blue",
+    "price": 1500,
+    "status": "active",
+    "description": "Wind cheater jacket for girls sportswear.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Navy+Jacket"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Lightweight wind cheater jacket.",
+    "material": "Wind Cheater, 100% Polyester.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Jacket – Red / Black",
+    "category": "girls",
+    "productType": "Jacket",
+    "color": "Red / Black",
+    "price": 1500,
+    "status": "active",
+    "description": "Wind cheater jacket for girls sportswear.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Red+Black+Jacket"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Lightweight wind cheater jacket.",
+    "material": "Wind Cheater, 100% Polyester.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Visor – White",
+    "category": "girls",
+    "productType": "Visor",
+    "color": "White",
+    "price": 800,
+    "status": "active",
+    "description": "Lightweight breathable sports visor.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+White+Visor"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 30 }
+    ],
+    "stock": 30,
+    "details": "Adjustable sports visor.",
+    "material": "100% Polyester.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Visor – Black",
+    "category": "girls",
+    "productType": "Visor",
+    "color": "Black",
+    "price": 800,
+    "status": "active",
+    "description": "Lightweight breathable sports visor.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Black+Visor"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 30 }
+    ],
+    "stock": 30,
+    "details": "Adjustable sports visor.",
+    "material": "100% Polyester.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Socks – White",
+    "category": "girls",
+    "productType": "Socks",
+    "color": "White",
+    "price": 150,
+    "status": "active",
+    "description": "Comfortable moisture wicking sports socks.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+White+Socks"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 40 }
+    ],
+    "stock": 40,
+    "details": "Ankle length sports socks.",
+    "material": "Polyester cotton blend.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Girls Socks – Black",
+    "category": "girls",
+    "productType": "Socks",
+    "color": "Black",
+    "price": 150,
+    "status": "active",
+    "description": "Comfortable moisture wicking sports socks.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Girls+Black+Socks"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 40 }
+    ],
+    "stock": 40,
+    "details": "Ankle length sports socks.",
+    "material": "Polyester cotton blend.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  }
+]

@@ -1,0 +1,410 @@
+[
+  {
+    "name": "Boys Combo – Navy Blue / White (White Socks)",
+    "category": "boys",
+    "productType": "Combo",
+    "color": "Navy Blue / White",
+    "price": 3500,
+    "status": "active",
+    "description": "High performance boys combo set for match and training.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Combo+1",
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Combo+2",
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Combo+3"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Navy Blue T-Shirt, Navy Blue Shorts, Navy Blue Jacket, White Cap and White Socks.",
+    "material": "Jacket: Wind Cheater. Shirt & Shorts: 100% Polyester. Socks: Polyester Cotton. Cap: 100% Polyester.",
+    "sizeGuide": "Regular fit. Choose your standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Boys Combo – Navy Blue / White (Black Socks)",
+    "category": "boys",
+    "productType": "Combo",
+    "color": "Navy Blue / White",
+    "price": 3500,
+    "status": "active",
+    "description": "High performance boys combo set for match and training.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Combo+Black+Sock+1",
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Combo+Black+Sock+2"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 10 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Navy Blue T-Shirt, Navy Blue Shorts, Navy Blue Jacket, White Cap and Black Socks.",
+    "material": "Jacket: Wind Cheater. Shirt & Shorts: 100% Polyester. Socks: Polyester Cotton. Cap: 100% Polyester.",
+    "sizeGuide": "Regular fit. Choose your standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Boys Combo – Red / Black (White Socks)",
+    "category": "boys",
+    "productType": "Combo",
+    "color": "Red / Black",
+    "price": 3500,
+    "status": "active",
+    "description": "Professional boys combo set designed for performance.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Red+Combo+1",
+      "https://via.placeholder.com/600x600.png?text=Boys+Red+Combo+2"
+    ],
+    "variants": [
+      { "size": "S", "stock": 8 },
+      { "size": "M", "stock": 12 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Red Shirt, Black Shorts, Black Jacket, Black Cap and White Socks.",
+    "material": "Jacket: Wind Cheater. Shirt & Shorts: 100% Polyester. Socks: Polyester Cotton. Cap: 100% Polyester.",
+    "sizeGuide": "Athletic fit. Choose one size up if between sizes.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Boys Combo – Red / Black (Black Socks)",
+    "category": "boys",
+    "productType": "Combo",
+    "color": "Red / Black",
+    "price": 3500,
+    "status": "active",
+    "description": "Professional boys combo set designed for performance.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Red+Combo+Black+Sock+1"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 10 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Red Shirt, Black Shorts, Black Jacket, Black Cap and Black Socks.",
+    "material": "Jacket: Wind Cheater. Shirt & Shorts: 100% Polyester. Socks: Polyester Cotton. Cap: 100% Polyester.",
+    "sizeGuide": "Athletic fit. Choose your standard size.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Boys Combo – Neon Yellow / Grey (White Socks)",
+    "category": "boys",
+    "productType": "Combo",
+    "color": "Neon Yellow / Grey",
+    "price": 3500,
+    "status": "active",
+    "description": "High visibility boys combo set for competitive play.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Neon+Combo+1",
+      "https://via.placeholder.com/600x600.png?text=Boys+Neon+Combo+2"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 10 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Neon Yellow Shirt, Neon Yellow Shorts, Neon Yellow Jacket, Grey Cap and White Socks.",
+    "material": "Jacket: Parachute Material. Shirt & Shorts: 100% Polyester. Socks: Polyester Cotton. Cap: 100% Polyester.",
+    "sizeGuide": "Regular fit with stretchable fabric.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Boys Combo – Neon Yellow / Grey (Black Socks)",
+    "category": "boys",
+    "productType": "Combo",
+    "color": "Neon Yellow / Grey",
+    "price": 3500,
+    "status": "active",
+    "description": "High visibility boys combo set for competitive play.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Neon+Combo+Black+Sock+1"
+    ],
+    "variants": [
+      { "size": "S", "stock": 8 },
+      { "size": "M", "stock": 12 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "Includes Neon Yellow Shirt, Neon Yellow Shorts, Neon Yellow Jacket, Grey Cap and Black Socks.",
+    "material": "Jacket: Parachute Material. Shirt & Shorts: 100% Polyester. Socks: Polyester Cotton. Cap: 100% Polyester.",
+    "sizeGuide": "Regular fit with stretchable fabric.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Boys Shirt & Shorts – Navy Blue",
+    "category": "boys",
+    "productType": "T-Shirt & Shorts",
+    "color": "Navy Blue",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable shirt and shorts set for daily training.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Includes Navy Blue Shirt and Navy Blue Shorts.",
+    "material": "100% Polyester, moisture-wicking fabric.",
+    "sizeGuide": "Regular athletic fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Shirt & Shorts – Red / Black",
+    "category": "boys",
+    "productType": "T-Shirt & Shorts",
+    "color": "Red / Black",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable shirt and shorts set for daily training.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Red+Black+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Includes Red Shirt and Black Shorts.",
+    "material": "100% Polyester, moisture-wicking fabric.",
+    "sizeGuide": "Regular athletic fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Shirt & Shorts – Neon Yellow",
+    "category": "boys",
+    "productType": "T-Shirt & Shorts",
+    "color": "Neon Yellow",
+    "price": 1200,
+    "status": "active",
+    "description": "High visibility shirt and shorts set for sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Neon+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 40,
+    "details": "Includes Neon Yellow Shirt and Shorts.",
+    "material": "100% Polyester, breathable fabric.",
+    "sizeGuide": "Regular athletic fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Shirt & Shorts – Red / Red",
+    "category": "boys",
+    "productType": "T-Shirt & Shorts",
+    "color": "Red",
+    "price": 1200,
+    "status": "active",
+    "description": "Classic red shirt and shorts sports set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Red+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Red Shirt and Red Shorts.",
+    "material": "100% Polyester, stretchable fabric.",
+    "sizeGuide": "Regular athletic fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Jacket – Navy Blue",
+    "category": "boys",
+    "productType": "Jacket",
+    "color": "Navy Blue",
+    "price": 1500,
+    "status": "active",
+    "description": "Wind cheater jacket for outdoor sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Navy+Jacket"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Lightweight wind cheater jacket.",
+    "material": "Wind Cheater, 100% Polyester.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Jacket – Red / Black",
+    "category": "boys",
+    "productType": "Jacket",
+    "color": "Red / Black",
+    "price": 1500,
+    "status": "active",
+    "description": "Wind cheater jacket for outdoor sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Red+Black+Jacket"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Lightweight wind cheater jacket.",
+    "material": "Wind Cheater, 100% Polyester.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Jacket – Neon Yellow",
+    "category": "boys",
+    "productType": "Jacket",
+    "color": "Neon Yellow",
+    "price": 1500,
+    "status": "active",
+    "description": "High visibility parachute material jacket.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Neon+Jacket"
+    ],
+    "variants": [
+      { "size": "S", "stock": 8 },
+      { "size": "M", "stock": 12 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 30,
+    "details": "High visibility sports jacket.",
+    "material": "Parachute material, 100% Polyester.",
+    "sizeGuide": "Regular fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Cap – White",
+    "category": "boys",
+    "productType": "Cap",
+    "color": "White",
+    "price": 800,
+    "status": "active",
+    "description": "Breathable sports cap.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+White+Cap"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 30 }
+    ],
+    "stock": 30,
+    "details": "Adjustable sports cap.",
+    "material": "100% Polyester with mesh panel.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Cap – Black",
+    "category": "boys",
+    "productType": "Cap",
+    "color": "Black",
+    "price": 800,
+    "status": "active",
+    "description": "Breathable sports cap.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Black+Cap"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 30 }
+    ],
+    "stock": 30,
+    "details": "Adjustable sports cap.",
+    "material": "100% Polyester with mesh panel.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Cap – Grey",
+    "category": "boys",
+    "productType": "Cap",
+    "color": "Grey",
+    "price": 800,
+    "status": "active",
+    "description": "Breathable sports cap.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Grey+Cap"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 25 }
+    ],
+    "stock": 25,
+    "details": "Adjustable sports cap.",
+    "material": "100% Polyester with mesh panel.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Socks – White",
+    "category": "boys",
+    "productType": "Socks",
+    "color": "White",
+    "price": 150,
+    "status": "active",
+    "description": "Comfortable moisture wicking sports socks.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+White+Socks"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 50 }
+    ],
+    "stock": 50,
+    "details": "Ankle length sports socks.",
+    "material": "Polyester cotton blend.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Boys Socks – Black",
+    "category": "boys",
+    "productType": "Socks",
+    "color": "Black",
+    "price": 150,
+    "status": "active",
+    "description": "Comfortable moisture wicking sports socks.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Boys+Black+Socks"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 50 }
+    ],
+    "stock": 50,
+    "details": "Ankle length sports socks.",
+    "material": "Polyester cotton blend.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  }
+]

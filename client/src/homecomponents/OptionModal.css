@@ -1,0 +1,44 @@
+.option-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.option-modal {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+}
+
+.option-list {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.option-list button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.option-list button.active {
+  background: #000;
+  color: #fff;
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 14px;
+  background: #000;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+}

@@ -1,0 +1,157 @@
+.season-section {
+  width: 100%;
+  overflow: hidden;
+  padding: 50px 0;
+  background: #fff;
+}
+
+.dark .season-section {
+  background: #111; /* Dark mode base */
+}
+
+.season-header {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  margin-bottom: 18px;
+}
+
+.season-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+}
+
+.dark .season-title {
+  color: #fff;
+}
+
+/* Controls (arrow buttons) */
+.season-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.season-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dark .season-btn {
+  background: #222; /* visible in dark */
+  border: 1px solid #555;
+}
+
+.dark .season-btn span {
+  color: #fff; /* arrow visible */
+}
+
+.season-scroll {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 0 24px;
+  cursor: grab;
+}
+
+.season-scroll:active {
+  cursor: grabbing;
+}
+
+.season-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.season-card {
+  background: #fff;
+  border-radius: 14px;
+  scroll-snap-align: start;
+  flex: 0 0 calc((100% - 72px) / 3);
+  padding-bottom: 22px;
+}
+
+.dark .season-card {
+  background: #222; /* make cards visible */
+  border: 1px solid #333;
+}
+
+@media (max-width: 1024px) {
+  .season-card {
+    flex: 0 0 calc((100% - 36px) / 2);
+  }
+}
+
+@media (max-width: 600px) {
+
+  .season-scroll {
+    padding: 0; /* remove horizontal padding */
+    gap: 0; /* remove extra spacing */
+  }
+
+  .season-card {
+    flex: 0 0 100%; /* full width card */
+    scroll-snap-align: center;
+  }
+
+  .season-card img {
+    height: 50vh; /* better fit for mobile */
+  }
+}
+
+
+.season-card img {
+  width: 100%;
+  height: 60vh;
+  object-fit: cover;
+  border-radius: 12px;
+  background: transparent;
+}
+
+.shoe-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 10px 0 2px 4px;
+  color: #111;
+}
+
+.dark .shoe-name {
+  color: #fff;
+}
+
+.shoe-cat {
+  font-size: 13px;
+  opacity: 0.6;
+  margin-left: 4px;
+  color: #111;
+}
+
+.dark .shoe-cat {
+  color: #ccc;
+  opacity: 0.8;
+}
+
+.shoe-price {
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: 4px;
+  margin-top: 6px;
+  color: #111;
+}
+
+.dark .shoe-price {
+  color: #fff;
+}

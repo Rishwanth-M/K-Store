@@ -1,0 +1,113 @@
+/* ================================
+   MARQUEE SECTION (CHAKRA AWARE)
+   ================================ */
+
+/* LIGHT MODE */
+.chakra-ui-light .marquee-section {
+  width: 100%;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  overflow: hidden;
+}
+
+/* DARK MODE */
+.chakra-ui-dark .marquee-section {
+  width: 100%;
+  height: 100vh;
+  background: #8be066;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  overflow: hidden;
+}
+
+/* ================================
+   EACH ROW
+   ================================ */
+.marquee-row {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ================================
+   TRACK
+   ================================ */
+.marquee-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+}
+
+/* ================================
+   CARD
+   ================================ */
+
+/* LIGHT MODE CARD */
+.chakra-ui-light .marquee-card {
+  width: 28vw;
+  height: 32vh;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #f1f1f1;
+  flex-shrink: 0;
+}
+
+/* DARK MODE CARD */
+.chakra-ui-dark .marquee-card {
+  width: 28vw;
+  height: 32vh;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.marquee-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+.marquee-row.left .marquee-track {
+  animation: scrollLeft 40s linear infinite;
+}
+
+.marquee-row.right .marquee-track {
+  animation: scrollRight 40s linear infinite;
+}
+
+@keyframes scrollLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollRight {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ================================
+   MOBILE
+   ================================ */
+@media (max-width: 768px) {
+  .marquee-card {
+    width: 70vw;
+    height: 28vh;
+  }
+}

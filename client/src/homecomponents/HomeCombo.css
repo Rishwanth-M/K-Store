@@ -1,0 +1,87 @@
+/* ===== SECTION ===== */
+.combo-section {
+  width: 100%;
+  padding: 0 32px;
+  margin: 80px auto;
+}
+
+/* ===== HEADER ===== */
+.combo-header {
+  max-width: 1440px;
+  margin: 0 auto 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.combo-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* ===== GRID ===== */
+.combo-grid {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .combo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+  .combo-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ===== CARD ===== */
+.combo-card {
+  width: 100%;           /* 🔥 KEY FIX */
+  cursor: pointer;
+}
+
+/* ===== INFO ===== */
+.combo-info {
+  padding-top: 12px;
+}
+
+.combo-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.combo-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.combo-price .price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.combo-price .mrp {
+  font-size: 14px;
+  color: #888;
+  text-decoration: line-through;
+}
+
+.combo-includes {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.45;
+}

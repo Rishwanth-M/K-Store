@@ -1,0 +1,116 @@
+/* ================== PAGE LAYOUT ================== */
+
+.product-form-page {
+  background: #f6f7f9;
+  min-height: 100vh;
+  padding: 40px 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.product-form-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+/* ================== HEADINGS ================== */
+
+.product-form-card h2,
+.product-form-card h3 {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* ================== FORM CONTROLS ================== */
+
+.product-form-card label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.product-form-card input,
+.product-form-card textarea,
+.product-form-card select {
+  border-radius: 10px;
+  border-color: #e5e7eb;
+}
+
+.product-form-card input:focus,
+.product-form-card textarea:focus,
+.product-form-card select:focus {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 1px rgba(49, 130, 206, 0.4);
+}
+
+/* ================== SECTIONS ================== */
+
+.product-form-card > .chakra-stack {
+  margin-bottom: 24px;
+}
+
+/* ================== IMAGE GRID ================== */
+
+.product-form-card img {
+  object-fit: cover;
+  height: 120px;
+}
+
+/* ================== VARIANTS ================== */
+
+.product-form-card .chakra-simplegrid {
+  align-items: center;
+}
+
+.product-form-card button[aria-label="Delete"] {
+  border-radius: 50%;
+}
+
+/* ================== ACCORDION ================== */
+
+.chakra-accordion__button {
+  background: #f9fafb;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.chakra-accordion__button:hover {
+  background: #eef2ff;
+}
+
+.chakra-accordion__panel {
+  background: #ffffff;
+  padding: 16px 4px 24px;
+}
+
+/* ================== STATUS SWITCH ================== */
+
+.product-form-card .chakra-switch__track {
+  background: #d1d5db;
+}
+
+.product-form-card .chakra-switch__track[data-checked] {
+  background: #3182ce;
+}
+
+/* ================== PRIMARY ACTION ================== */
+
+.product-form-card button.chakra-button {
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* ================== RESPONSIVE ================== */
+
+@media (max-width: 768px) {
+  .product-form-card {
+    padding: 24px 18px;
+  }
+
+  .product-form-card img {
+    height: 100px;
+  }
+}

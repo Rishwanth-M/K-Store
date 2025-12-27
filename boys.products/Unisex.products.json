@@ -1,0 +1,317 @@
+[
+  {
+    "name": "Unisex Combo – Melange Blue (Black Cap)",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Melange Blue / Black",
+    "price": 1800,
+    "status": "active",
+    "description": "High performance unisex combo set for training and matches.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Melange+Blue+Combo+Black+Cap"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 40,
+    "details": "Includes Melange Blue Shirt, Black Shorts, Black Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Combo – Melange Blue (White Cap)",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Melange Blue / White",
+    "price": 1800,
+    "status": "active",
+    "description": "High performance unisex combo set for training and matches.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Melange+Blue+Combo+White+Cap"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 40,
+    "details": "Includes Melange Blue Shirt, Black Shorts, White Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Combo – Red / Black",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Red / Black",
+    "price": 1800,
+    "status": "active",
+    "description": "High performance unisex combo set for training and matches.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Red+Black+Combo"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Red Shirt, Black Shorts, Red Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Combo – Black / Grey (Black Shirt)",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Black / Grey",
+    "price": 1800,
+    "status": "active",
+    "description": "Minimal black and grey unisex sports combo.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Black+Grey+Combo+Black+Shirt"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Black Shirt, Black Shorts, Black Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Combo – Black / Grey (Grey Shirt)",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Grey / Black",
+    "price": 1800,
+    "status": "active",
+    "description": "Minimal grey and black unisex sports combo.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Black+Grey+Combo+Grey+Shirt"
+    ],
+    "variants": [
+      { "size": "S", "stock": 10 },
+      { "size": "M", "stock": 15 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 35,
+    "details": "Includes Grey Shirt, Black Shorts, Black Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Combo – Melange Orange (Black Cap)",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Melange Orange / Black",
+    "price": 1800,
+    "status": "active",
+    "description": "Bright melange orange unisex combo for active sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Melange+Orange+Combo+Black+Cap"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 40,
+    "details": "Includes Melange Orange Shirt, Black Shorts, Black Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Combo – Melange Orange (White Cap)",
+    "category": "unisex",
+    "productType": "Combo",
+    "color": "Melange Orange / White",
+    "price": 1800,
+    "status": "active",
+    "description": "Bright melange orange unisex combo for active sports.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Melange+Orange+Combo+White+Cap"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 40,
+    "details": "Includes Melange Orange Shirt, Black Shorts, White Cap and Black Socks.",
+    "material": "Shirt & Shorts: 100% Polyester. Socks: Polyester. Cap: 100% Polyester.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 4–6 working days. Easy 7-day return."
+  },
+
+  {
+    "name": "Unisex Shirt & Shorts – Melange Blue",
+    "category": "unisex",
+    "productType": "T-Shirt & Shorts",
+    "color": "Melange Blue",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable melange blue unisex shirt and shorts set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Melange+Blue+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Includes Melange Blue Shirt and Black Shorts.",
+    "material": "100% Polyester, moisture-wicking fabric.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Unisex Shirt & Shorts – Red",
+    "category": "unisex",
+    "productType": "T-Shirt & Shorts",
+    "color": "Red",
+    "price": 1200,
+    "status": "active",
+    "description": "Comfortable red unisex shirt and shorts set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Red+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Includes Red Shirt and Black Shorts.",
+    "material": "100% Polyester, moisture-wicking fabric.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Unisex Shirt & Shorts – Black / Grey",
+    "category": "unisex",
+    "productType": "T-Shirt & Shorts",
+    "color": "Black / Grey",
+    "price": 1200,
+    "status": "active",
+    "description": "Minimal black and grey unisex shirt and shorts set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Black+Grey+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 12 },
+      { "size": "M", "stock": 18 },
+      { "size": "L", "stock": 10 }
+    ],
+    "stock": 40,
+    "details": "Includes Black/Grey Shirt and Black Shorts.",
+    "material": "100% Polyester, breathable fabric.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Unisex Shirt & Shorts – Melange Orange",
+    "category": "unisex",
+    "productType": "T-Shirt & Shorts",
+    "color": "Melange Orange",
+    "price": 1200,
+    "status": "active",
+    "description": "Bright melange orange unisex shirt and shorts set.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Melange+Orange+Shirt+Shorts"
+    ],
+    "variants": [
+      { "size": "S", "stock": 15 },
+      { "size": "M", "stock": 20 },
+      { "size": "L", "stock": 15 }
+    ],
+    "stock": 50,
+    "details": "Includes Melange Orange Shirt and Black Shorts.",
+    "material": "100% Polyester, moisture-wicking fabric.",
+    "sizeGuide": "Regular unisex fit.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Unisex Cap – Black",
+    "category": "unisex",
+    "productType": "Cap",
+    "color": "Black",
+    "price": 800,
+    "status": "active",
+    "description": "Breathable unisex sports cap.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Black+Cap"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 40 }
+    ],
+    "stock": 40,
+    "details": "Adjustable unisex sports cap.",
+    "material": "100% Polyester with mesh panels.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Unisex Cap – White",
+    "category": "unisex",
+    "productType": "Cap",
+    "color": "White",
+    "price": 800,
+    "status": "active",
+    "description": "Breathable unisex sports cap.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+White+Cap"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 40 }
+    ],
+    "stock": 40,
+    "details": "Adjustable unisex sports cap.",
+    "material": "100% Polyester with mesh panels.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  },
+
+  {
+    "name": "Unisex Socks – Black",
+    "category": "unisex",
+    "productType": "Socks",
+    "color": "Black",
+    "price": 150,
+    "status": "active",
+    "description": "Comfortable moisture wicking unisex sports socks.",
+    "images": [
+      "https://via.placeholder.com/600x600.png?text=Unisex+Black+Socks"
+    ],
+    "variants": [
+      { "size": "Free", "stock": 60 }
+    ],
+    "stock": 60,
+    "details": "Ankle length sports socks.",
+    "material": "Polyester blend.",
+    "sizeGuide": "Free size.",
+    "delivery": "Delivered within 3–5 working days."
+  }
+]

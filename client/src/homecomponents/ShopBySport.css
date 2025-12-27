@@ -1,0 +1,184 @@
+/* TEMP ALIAS – ShopByIcons */
+.icons-section { @apply bysport-section; }
+.icons-header { @apply bysport-header; }
+.icons-title { @apply bysport-title; }
+.icons-controls { @apply bysport-controls; }
+.icons-btn { @apply bysport-btn; }
+.icons-scroll { @apply bysport-scroll; }
+.icons-card { @apply bysport-card; }
+.icons-text { @apply bysport-text; }
+
+.icons-card img {
+  height: 200px;
+}
+
+.bysport-section {
+  width: 100%;
+  overflow: hidden;
+  padding: 55px 0;
+}
+
+/* Header row */
+.bysport-header {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  margin-bottom: 18px;
+}
+
+.bysport-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Arrows */
+.bysport-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.bysport-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Scroll container */
+.bysport-scroll {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 0 24px;
+  cursor: grab;
+}
+
+.bysport-scroll:active {
+  cursor: grabbing;
+}
+
+.bysport-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cards */
+.bysport-card {
+  flex: 0 0 calc((100% - 48px) / 2.4);
+  scroll-snap-align: start;
+}
+
+@media (max-width: 1024px) {
+  .bysport-card {
+    flex: 0 0 calc((100% - 36px) / 2);
+  }
+}
+
+@media(max-width: 600px) {
+
+  /* -------------- COMMON SCROLL FIX -------------- */
+  .season-scroll,
+  .bysport-scroll {
+    padding: 0;
+    gap: 0;
+  }
+
+  /* -------------- FULL WIDTH + SIDE MARGINS -------------- */
+  .season-card,
+  .bysport-card {
+    flex: 0 0 88%; /* Card is slightly smaller */
+    margin: 0 6%; /* Creates equal gap left & right */
+    scroll-snap-align: center;
+  }
+
+  /* -------------- HEIGHT TUNING FOR MOBILE -------------- */
+  .season-card img {
+    height: 50vh;
+  }
+
+  .bysport-card img {
+    height: 55vh;
+  }
+
+  /* -------------- TEXT SIZING MOBILE OPTIMIZE -------------- */
+  .bysport-text,
+  .shoe-name,
+  .shoe-cat,
+  .shoe-price {
+    margin-left: 8px;
+  }
+
+  /* -------------- MOBILE HIDES ARROWS -------------- */
+  .season-controls,
+  .bysport-controls {
+    display: none !important;
+  }
+
+  /* HEADER SIZE TUNING */
+  .season-title,
+  .bysport-title {
+    font-size: 22px;
+    padding-left: 10px;
+  }
+}
+
+
+.bysport-card img {
+  width: 100%;
+  height: 75vh; /* 🔥 Taller images than ShopGiftsBySport */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.bysport-text {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 12px;
+  margin-left: 4px;
+}
+
+/* Dark mode background */
+.dark .bysport-section {
+  background: #111;
+}
+
+/* Dark mode heading text */
+.dark .bysport-title {
+  color: #fff;
+}
+
+/* Dark mode buttons */
+.dark .bysport-btn {
+  background: #222;
+  border-color: #555;
+}
+
+/* Arrow icons visible in dark */
+.bysport-btn .material-symbols-outlined {
+  color: #333;
+}
+
+.dark .bysport-btn .material-symbols-outlined {
+  color: #fff;
+}
+
+/* Card title dark mode */
+.dark .bysport-text {
+  color: #fff;
+}
+
+/* Optional: improve readability on images */
+.dark .bysport-card img {
+  filter: brightness(0.95);
+}
