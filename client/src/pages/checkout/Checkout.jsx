@@ -17,7 +17,6 @@ import {
 } from "@chakra-ui/react";
 import { setToast } from "../../utils/extraFunctions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { initPayment } from "../payment/razorpay";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { updateCartDetails } from "../../redux/features/cart/actions";
@@ -57,9 +56,7 @@ export const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  /* =====================================================
-     STEP 2: AUTO-FILL EMAIL FROM LOGGED-IN USER
-  ===================================================== */
+  /* ================= AUTO-FILL EMAIL ================= */
   useEffect(() => {
     if (user?.email) {
       setForm((prev) => ({
@@ -69,9 +66,7 @@ export const Checkout = () => {
     }
   }, [user?.email]);
 
-  /* =====================================================
-     FETCH SAVED ADDRESSES
-  ===================================================== */
+  /* ================= FETCH SAVED ADDRESSES ================= */
   useEffect(() => {
     if (!token) return;
 
@@ -83,9 +78,7 @@ export const Checkout = () => {
       .catch(() => setSavedAddresses([]));
   }, [token]);
 
-  /* =====================================================
-     INPUT CHANGE
-  ===================================================== */
+  /* ================= INPUT CHANGE ================= */
   const handleInputChange = ({ target: { name, value } }) => {
     const updatedForm = { ...form, [name]: value };
     setForm(updatedForm);
@@ -102,9 +95,7 @@ export const Checkout = () => {
     }
   };
 
-  /* =====================================================
-     USE SAVED ADDRESS
-  ===================================================== */
+  /* ================= USE SAVED ADDRESS ================= */
   const handleUseAddress = (address) => {
     const filledAddress = {
       firstName: address.firstName || "",
@@ -125,36 +116,16 @@ export const Checkout = () => {
     setSaveAddress(false);
   };
 
-  /* =====================================================
-     STEP 4: SAVE ADDRESS (EMAIL INCLUDED)
-  ===================================================== */
+  /* ================= SAVE ADDRESS ================= */
   const saveAddressIfNeeded = async () => {
     if (!saveAddress) return;
 
-    try {
-      await axios.post("/users/addresses", form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      toast({
-        title: "Address saved successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch {
-      toast({
-        title: "Failed to save address",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
+    await axios.post("/users/addresses", form, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
   };
 
-  /* =====================================================
-     VALIDATION
-  ===================================================== */
+  /* ================= VALIDATION ================= */
   const handleFormValidation = (form) => {
     const isEmpty = isCheckoutFormEmpty(form);
     if (!isEmpty.status) return setToast(toast, isEmpty.message, "error");
@@ -171,9 +142,7 @@ export const Checkout = () => {
     return true;
   };
 
-  /* =====================================================
-     SUBMIT
-  ===================================================== */
+  /* ================= SUBMIT (PHONEPE READY) ================= */
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!handleFormValidation(form)) return;
@@ -181,49 +150,30 @@ export const Checkout = () => {
     await saveAddressIfNeeded();
 
     try {
-      const { data } = await axios.post("/api/payment/order", {
-        amount: orderSummary.total,
-      });
+      const { data } = await axios.post(
+        "/api/payment/order",
+        {
+          cartProducts,
+          shippingDetails: form,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      if (data.demo) {
-        await axios.post(
-          "/order",
-          {
-            cartProducts,
-            shippingDetails: form,
-            paymentDetails: {
-              paymentMode: "DEMO",
-              paymentStatus: "SUCCESS",
-            },
-            orderSummary,
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        dispatch(updateCartDetails());
-        setToast(toast, "Order placed successfully", "success");
-        navigate("/orders");
-        return;
+      if (!data?.redirectUrl) {
+        throw new Error("Payment redirect URL missing");
       }
 
-      initPayment(
-        form,
-        data,
-        orderSummary,
-        cartProducts,
-        token,
-        toast,
-        dispatch,
-        navigate
-      );
-    } catch {
-      setToast(toast, "Checkout failed", "error");
+      // 🔥 PHONEPE-COMPLIANT REDIRECT
+      window.location.href = data.redirectUrl;
+
+    } catch (error) {
+      setToast(toast, "Payment initiation failed", "error");
     }
   };
 
-  /* =====================================================
-     UI
-  ===================================================== */
+  /* ================= UI ================= */
   return (
     <Box
       p="20px"
@@ -258,7 +208,6 @@ export const Checkout = () => {
                 <Text fontSize="14px">
                   {addr.state}, {addr.country} - {addr.pinCode}
                 </Text>
-                <Text fontSize="14px">{addr.email}</Text>
 
                 <Button size="sm" mt="2" onClick={() => handleUseAddress(addr)}>
                   Use this address
