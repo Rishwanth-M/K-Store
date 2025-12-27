@@ -32,17 +32,18 @@ router.post("/order", authorization, async (req, res) => {
       totalAmount += product.price * quantity;
 
       normalizedProducts.push({
-        title: product.title,
-        gender: product.gender,
-        description: product.description,
-        category: product.category,
-        price: product.price,
-        size: item.size,
-        color: item.color,
-        rating: product.rating,
-        img: product.img,
-        quantity,
-      });
+  title: item.name || product.name,   // ✅ FIX (CRITICAL)
+  gender: product.gender || "Unisex",
+  description: product.description || "",
+  category: product.category || "General",
+  price: Number(product.price),
+  size: item.size,
+  color: item.color || "Default",
+  rating: Number(product.rating || 0),
+  img: Array.isArray(product.images) ? product.images : [],
+  quantity,
+});
+
     }
 
     /* ================= TRANSACTION ID ================= */
