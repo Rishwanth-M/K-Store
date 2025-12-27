@@ -6,14 +6,20 @@ const reqArray = { type: Array, required: true };
 
 const orderSchema = new Schema(
   {
-    orderSummary: {
-      subTotal: reqNumber,
-      quantity: reqNumber,
-      shipping: reqNumber,
-      discount: reqNumber,
-      total: reqNumber,
+    /* ================= ORDER AMOUNT (IMMUTABLE) ================= */
+    amount: {
+      type: Number,
+      required: true, // calculated ONLY on backend
     },
 
+    /* ================= ORDER STATUS ================= */
+    orderStatus: {
+      type: String,
+      enum: ["CREATED", "PAYMENT_PENDING", "PAID", "FAILED"],
+      default: "CREATED",
+    },
+
+    /* ================= CART ================= */
     cartProducts: [
       {
         title: reqString,
@@ -29,15 +35,36 @@ const orderSchema = new Schema(
       },
     ],
 
-    // ✅ UPDATED: supports DEMO + real payments
+    /* ================= PAYMENT DETAILS (PHONEPE READY) ================= */
     paymentDetails: {
-      orderId: { type: String },
-      razorpayOrderId: { type: String },
-      razorpayPaymentId: { type: String },
-      paymentMode: { type: String },     // DEMO / RAZORPAY
-      paymentStatus: { type: String },   // SUCCESS / FAILED
+      provider: {
+        type: String,
+        enum: ["DEMO", "PHONEPE"],
+        default: "DEMO",
+      },
+
+      merchantTransactionId: {
+        type: String,
+        required: true,
+      },
+
+      phonepeTransactionId: {
+        type: String, // comes from PhonePe callback
+      },
+
+      paymentStatus: {
+        type: String,
+        enum: ["INITIATED", "SUCCESS", "FAILED"],
+        default: "INITIATED",
+      },
+
+      checksumVerified: {
+        type: Boolean,
+        default: false,
+      },
     },
 
+    /* ================= SHIPPING ================= */
     shippingDetails: {
       firstName: reqString,
       lastName: reqString,
@@ -51,6 +78,7 @@ const orderSchema = new Schema(
       mobile: reqNumber,
     },
 
+    /* ================= USER ================= */
     user: {
       type: Schema.Types.ObjectId,
       ref: "user",

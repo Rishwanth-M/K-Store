@@ -1,11 +1,24 @@
+const express = require("express");
+const router = express.Router();
+
+const authorization = require("../middlewares/authorization");
+const Order = require("../models/order.model");
+
+/* =====================================================
+   CREATE ORDER
+===================================================== */
 router.post("/", authorization, async (req, res) => {
   try {
     const {
-      cartProducts,
-      orderSummary,
-      paymentDetails,
-      shippingDetails,
+      cartProducts = [],
+      orderSummary = {},
+      paymentDetails = {},
+      shippingDetails = {},
     } = req.body;
+
+    if (!cartProducts.length) {
+      return res.status(400).json({ message: "Cart is empty" });
+    }
 
     // 🔧 Normalize shipping details
     const normalizedShipping = {
@@ -40,9 +53,8 @@ router.post("/", authorization, async (req, res) => {
     });
 
     return res.status(201).json(order);
-
   } catch (error) {
-    console.error("❌ ORDER ERROR:", error.message);
+    console.error("❌ ORDER ERROR:", error);
 
     return res.status(500).json({
       message: "Order creation failed",
@@ -50,3 +62,23 @@ router.post("/", authorization, async (req, res) => {
     });
   }
 });
+
+/* =====================================================
+   GET USER ORDERS
+===================================================== */
+router.get("/", authorization, async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+
+    return res.status(200).json(orders);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to fetch orders",
+      error: error.message,
+    });
+  }
+});
+
+module.exports = router;
