@@ -2,18 +2,22 @@ const mongoose = require("mongoose");
 const Product = require("../models/product.model");
 
 /* ================= GET PRODUCTS ================= */
+/* ================= GET PRODUCTS ================= */
 exports.getProducts = async (req, res) => {
   try {
     const { category, productType } = req.query;
 
-    const filter = {};
-    if (category) filter.category = category;
-    if (productType) filter.productType = productType;
+    const filter = { status: "active" };
 
-    const products = await Product.find({
-     status: "active",
-      ...filter,
-    });
+    if (category) {
+      filter.category = new RegExp(`^${category}$`, "i");
+    }
+
+    if (productType) {
+      filter.productType = new RegExp(`^${productType}$`, "i");
+    }
+
+    const products = await Product.find(filter);
 
     return res.status(200).json({
       success: true,
@@ -27,6 +31,7 @@ exports.getProducts = async (req, res) => {
     });
   }
 };
+
 
 /* ================= GET PRODUCT BY ID ================= */
 exports.getProductById = async (req, res) => {

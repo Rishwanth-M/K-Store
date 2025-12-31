@@ -106,6 +106,9 @@ export const Products = () => {
     touchStartX.current = null;
   };
 
+  console.log("🟢 PRODUCTS FROM REDUX:", products);
+
+
   return (
     <>
       {/* ================= TOP BAR ================= */}
