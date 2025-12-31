@@ -6,14 +6,16 @@ import {
   RESET_FILTERS,
   SET_ALL_FILTERS,
   SORT_HIGH_TO_LOW,
-  SORT_LOW_TO_HIGH
+  SORT_LOW_TO_HIGH,
 } from "./actionTypes";
+
+/* ================= INITIAL STATE ================= */
 
 const initialFilters = {
   category: {},
   productType: {},
   sizes: {},
-  colors: {}
+  colors: {},
 };
 
 const initialState = {
@@ -22,20 +24,23 @@ const initialState = {
   products: [],
   backupData: [],
   filters: initialFilters,
-  priceRange: { minPrice: 0, maxPrice: Infinity }
+  priceRange: { minPrice: 0, maxPrice: Infinity },
 };
+
+/* ================= REDUCER ================= */
 
 export const prodReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case GET_DATA_LOADING:
-      return { ...state, isLoading: true };
+      return { ...state, isLoading: true, isError: false };
 
     case GET_DATA_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        products: payload,
-        backupData: payload
+        isError: false,
+        products: Array.isArray(payload) ? payload : [],
+        backupData: Array.isArray(payload) ? payload : [],
       };
 
     case GET_DATA_ERROR:
@@ -44,24 +49,20 @@ export const prodReducer = (state = initialState, { type, payload }) => {
     case SORT_LOW_TO_HIGH:
       return {
         ...state,
-        products: [...state.products].sort((a, b) => a.price - b.price)
+        products: [...state.products].sort((a, b) => a.price - b.price),
       };
 
     case SORT_HIGH_TO_LOW:
       return {
         ...state,
-        products: [...state.products].sort((a, b) => b.price - a.price)
+        products: [...state.products].sort((a, b) => b.price - a.price),
       };
 
     case GET_PRICE_RANGE:
       return {
         ...state,
         priceRange: payload,
-        products: applyFilters(
-          state.backupData,
-          state.filters,
-          payload
-        )
+        products: applyFilters(state.backupData, state.filters, payload),
       };
 
     case SET_ALL_FILTERS:
@@ -72,7 +73,7 @@ export const prodReducer = (state = initialState, { type, payload }) => {
           state.backupData,
           payload,
           state.priceRange
-        )
+        ),
       };
 
     case RESET_FILTERS:
@@ -80,7 +81,7 @@ export const prodReducer = (state = initialState, { type, payload }) => {
         ...state,
         filters: initialFilters,
         priceRange: { minPrice: 0, maxPrice: Infinity },
-        products: state.backupData
+        products: state.backupData,
       };
 
     default:
@@ -91,8 +92,10 @@ export const prodReducer = (state = initialState, { type, payload }) => {
 /* ================= FILTER ENGINE ================= */
 
 function applyFilters(data, filters, priceRange) {
+  if (!Array.isArray(data)) return [];
+
   return data.filter((product) => {
-    // PRICE
+    /* ===== PRICE FILTER ===== */
     if (
       product.price < priceRange.minPrice ||
       product.price > priceRange.maxPrice
@@ -100,30 +103,28 @@ function applyFilters(data, filters, priceRange) {
       return false;
     }
 
-    // CATEGORY (boys/girls/unisex)
+    /* ===== CATEGORY FILTER (CASE-SAFE) ===== */
     if (hasActive(filters.category)) {
-      if (!filters.category[product.category]) return false;
+      const category = product.category?.toLowerCase();
+      if (!filters.category[category]) return false;
     }
 
-    // PRODUCT TYPE
+    /* ===== PRODUCT TYPE FILTER (CRITICAL FIX) ===== */
     if (hasActive(filters.productType)) {
-      if (!filters.productType[product.productType]) return false;
+      const type = product.productType?.toLowerCase();
+      if (!filters.productType[type]) return false;
     }
 
-    // COLORS
+    /* ===== COLORS FILTER ===== */
     if (hasActive(filters.colors)) {
-      if (
-        !product.colors?.some((c) => filters.colors[c])
-      ) {
+      if (!product.colors?.some((c) => filters.colors[c])) {
         return false;
       }
     }
 
-    // SIZES
+    /* ===== SIZES FILTER ===== */
     if (hasActive(filters.sizes)) {
-      if (
-        !product.sizes?.some((s) => filters.sizes[s])
-      ) {
+      if (!product.sizes?.some((s) => filters.sizes[s])) {
         return false;
       }
     }
@@ -131,6 +132,8 @@ function applyFilters(data, filters, priceRange) {
     return true;
   });
 }
+
+/* ================= UTIL ================= */
 
 function hasActive(obj) {
   if (!obj) return false;
