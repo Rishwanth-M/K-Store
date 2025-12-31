@@ -1,15 +1,14 @@
-const express = require("express");
-const router = express.Router();
 const crypto = require("crypto");
-
-const authorization = require("../middlewares/authorization");
 const Product = require("../models/product.model");
 const Order = require("../models/order.model");
 
-/* =====================================================
-   INITIATE PAYMENT (PHONEPE STYLE - DEMO)
-===================================================== */
-router.post("/order", authorization, async (req, res) => {
+/* ================= HELPER ================= */
+const generateTransactionId = (orderId) => {
+  return `PP_${orderId}_${Date.now()}`;
+};
+
+/* ================= INITIATE PAYMENT ================= */
+const initiatePayment = async (req, res, next) => {
   try {
     const { cartProducts, shippingDetails } = req.body;
 
@@ -17,7 +16,7 @@ router.post("/order", authorization, async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    /* ================= SERVER-SIDE AMOUNT CALCULATION ================= */
+    /* ===== SERVER-SIDE PRICE VALIDATION ===== */
     let totalAmount = 0;
     const normalizedProducts = [];
 
@@ -32,62 +31,55 @@ router.post("/order", authorization, async (req, res) => {
       totalAmount += product.price * quantity;
 
       normalizedProducts.push({
-  title: item.name || product.name,   // ✅ FIX (CRITICAL)
-  gender: product.gender || "Unisex",
-  description: product.description || "",
-  category: product.category || "General",
-  price: Number(product.price),
-  size: item.size,
-  color: item.color || "Default",
-  rating: Number(product.rating || 0),
-  img: Array.isArray(product.images) ? product.images : [],
-  quantity,
-});
-
+        title: product.name,
+        price: product.price,
+        quantity,
+        size: item.size,
+        color: item.color || "Default",
+        img: product.images || [],
+      });
     }
 
-    /* ================= TRANSACTION ID ================= */
-    const merchantTransactionId = `TXN_${Date.now()}`;
-
-    /* ================= CREATE ORDER (CREATED STATE) ================= */
+    /* ================= CREATE ORDER ================= */
     const order = await Order.create({
-      amount: totalAmount,
-      orderStatus: "PAYMENT_PENDING",
-
+      user: req.user._id,
       cartProducts: normalizedProducts,
       shippingDetails,
-
-      paymentDetails: {
-        provider: "PHONEPE",
-        merchantTransactionId,
-        paymentStatus: "INITIATED",
+      orderStatus: "PAYMENT_PENDING",
+      paymentStatus: "INITIATED",
+      orderSummary: {
+        total: totalAmount,
       },
-
-      user: req.user._id,
     });
 
-    /* ================= DEMO REDIRECT URL ================= */
+    const merchantTransactionId = generateTransactionId(order._id);
+
+    order.paymentDetails = {
+      provider: "PHONEPE",
+      merchantTransactionId,
+    };
+
+    await order.save();
+
+    /* ================= DEMO REDIRECT ================= */
     const redirectUrl = `${process.env.FRONTEND_URL}/payment-success?txn=${merchantTransactionId}`;
 
     return res.status(200).json({
       success: true,
+      orderId: order._id,
+      amount: totalAmount,
       redirectUrl,
     });
+
   } catch (error) {
-    console.error("❌ PAYMENT INIT ERROR:", error);
-
-    return res.status(500).json({
-      message: "Payment initiation failed",
-    });
+    next(error);
   }
-});
+};
 
-/* =====================================================
-   VERIFY PAYMENT (PHONEPE CALLBACK STYLE - DEMO)
-===================================================== */
-router.post("/verify", async (req, res) => {
+/* ================= VERIFY PAYMENT (CALLBACK) ================= */
+const verifyPayment = async (req, res, next) => {
   try {
-    const { merchantTransactionId, status } = req.body;
+    const { merchantTransactionId, status, checksum } = req.body;
 
     const order = await Order.findOne({
       "paymentDetails.merchantTransactionId": merchantTransactionId,
@@ -97,35 +89,44 @@ router.post("/verify", async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    if (status !== "SUCCESS") {
-      order.orderStatus = "FAILED";
-      order.paymentDetails.paymentStatus = "FAILED";
-      await order.save();
+    /* ================= CHECKSUM VERIFY (STRUCTURE) ================= */
+    const payload = `${merchantTransactionId}|${order.orderSummary.total}`;
+    const expectedChecksum = crypto
+      .createHash("sha256")
+      .update(payload + process.env.PHONEPE_SALT_KEY)
+      .digest("hex");
 
+    if (checksum !== expectedChecksum) {
       return res.status(400).json({
         success: false,
-        message: "Payment failed",
+        message: "Checksum verification failed",
       });
     }
 
-    /* ================= PAYMENT VERIFIED ================= */
-    order.orderStatus = "PAID";
-    order.paymentDetails.paymentStatus = "SUCCESS";
-    order.paymentDetails.checksumVerified = true;
+    if (status !== "SUCCESS") {
+      order.orderStatus = "FAILED";
+      order.paymentStatus = "FAILED";
+      await order.save();
 
+      return res.status(400).json({ message: "Payment failed" });
+    }
+
+    /* ================= PAYMENT SUCCESS ================= */
+    order.orderStatus = "PAID";
+    order.paymentStatus = "SUCCESS";
     await order.save();
 
     return res.status(200).json({
       success: true,
-      message: "Payment verified and order confirmed",
+      message: "Payment verified",
     });
+
   } catch (error) {
-    console.error("❌ PAYMENT VERIFY ERROR:", error);
-
-    return res.status(500).json({
-      message: "Payment verification failed",
-    });
+    next(error);
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  initiatePayment,
+  verifyPayment,
+};

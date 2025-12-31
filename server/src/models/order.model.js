@@ -2,10 +2,12 @@ const { Schema, model } = require("mongoose");
 
 const orderSchema = new Schema(
   {
-    /* ================= ORDER AMOUNT (IMMUTABLE) ================= */
-    amount: {
-      type: Number,
-      required: true, // calculated ONLY on backend
+    /* ================= USER ================= */
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
 
     /* ================= ORDER STATUS ================= */
@@ -15,78 +17,37 @@ const orderSchema = new Schema(
       default: "CREATED",
     },
 
-    /* ================= CART PRODUCTS ================= */
+    /* ================= CART SNAPSHOT ================= */
     cartProducts: [
       {
-        title: {
-          type: String,
-          required: true, // product name at time of purchase
-        },
-
-        price: {
-          type: Number,
-          required: true,
-        },
-
-        size: {
-          type: String,
-          required: true,
-        },
-
-        quantity: {
-          type: Number,
-          required: true,
-        },
-
-        /* ===== OPTIONAL METADATA (NON-CRITICAL) ===== */
-        gender: {
-          type: String,
-          default: "Unisex",
-        },
-
-        description: {
-          type: String,
-          default: "",
-        },
-
-        category: {
-          type: String,
-          default: "General",
-        },
-
-        color: {
-          type: String,
-          default: "Default",
-        },
-
-        rating: {
-          type: Number,
-          default: 0,
-        },
-
-        img: {
-          type: [String],
-          default: [],
-        },
+        title: { type: String, required: true },
+        price: { type: Number, required: true },
+        size: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        color: { type: String, default: "Default" },
+        img: { type: [String], default: [] },
       },
     ],
 
-    /* ================= PAYMENT DETAILS (PHONEPE READY) ================= */
+    /* ================= ORDER SUMMARY (IMMUTABLE) ================= */
+    orderSummary: {
+      subTotal: { type: Number, required: true },
+      shipping: { type: Number, required: true },
+      discount: { type: Number, default: 0 },
+      total: { type: Number, required: true }, // 👈 SINGLE SOURCE OF TRUTH
+      quantity: { type: Number, required: true },
+    },
+
+    /* ================= PAYMENT DETAILS ================= */
     paymentDetails: {
       provider: {
         type: String,
-        enum: ["DEMO", "PHONEPE"],
-        default: "DEMO",
+        enum: ["PHONEPE"],
+        default: "PHONEPE",
       },
 
-      merchantTransactionId: {
-        type: String,
-        required: true,
-      },
-
-      phonepeTransactionId: {
-        type: String,
-      },
+      merchantTransactionId: { type: String },
+      phonepeTransactionId: { type: String },
 
       paymentStatus: {
         type: String,
@@ -100,31 +61,24 @@ const orderSchema = new Schema(
       },
     },
 
-    /* ================= SHIPPING DETAILS ================= */
+    /* ================= SHIPPING ================= */
     shippingDetails: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
-      addressLine1: { type: String, required: true },
-      addressLine2: { type: String, default: "" },
-      locality: { type: String, required: true },
-      pinCode: { type: Number, required: true },
-      state: { type: String, required: true },
-      country: { type: String, required: true },
-      email: { type: String, required: true },
-      mobile: { type: Number, required: true },
-    },
-
-    /* ================= USER ================= */
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
+      firstName: String,
+      lastName: String,
+      addressLine1: String,
+      addressLine2: String,
+      locality: String,
+      pinCode: String,
+      state: String,
+      country: String,
+      email: String,
+      mobile: String,
     },
   },
   {
-    versionKey: false,
     timestamps: true,
+    versionKey: false,
   }
 );
 
-module.exports = model("order", orderSchema);
+module.exports = model("Order", orderSchema);

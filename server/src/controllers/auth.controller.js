@@ -1,65 +1,108 @@
 const User = require("../models/user.model");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
+/* ================= JWT HELPER ================= */
+const createToken = (userId) => {
+  return jwt.sign(
+    { userId },
+    process.env.JWT_ASSESS_KEY,
+    { expiresIn: "7d" } // REQUIRED
+  );
+};
 
-const createToken = (user) => jwt.sign({ user }, process.env.JWT_ASSESS_KEY);
-
-
-const signup = async (req, res) => {
+/* ================= SIGNUP ================= */
+const signup = async (req, res, next) => {
   try {
-    console.log("REQ BODY:", req.body);
-    console.log("JWT KEY:", process.env.JWT_ASSESS_KEY);
+    const { email, password, name } = req.body;
 
-    let user = await User.findOne({ email: req.body.email });
-
-    if (user) {
+    // Basic validation
+    if (!email || !password || !name) {
       return res.status(400).json({
-        status: 'Failed',
-        message: 'Please try with different email'
+        success: false,
+        message: "All fields are required",
       });
     }
 
-    user = await User.create(req.body);
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters",
+      });
+    }
 
-    const token = createToken(user);
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already registered",
+      });
+    }
 
-    return res.status(201).json({ user, token });
+    const user = await User.create({ email, password, name });
 
-  } catch (e) {
-    console.error("SIGNUP ERROR:", e);
-    return res.status(500).json({
-      message: e.message,
-      status: 'Failed'
+    const token = createToken(user._id);
+
+    return res.status(201).json({
+      success: true,
+      message: "Signup successful",
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+      },
     });
+
+  } catch (error) {
+    next(error);
   }
 };
 
+/* ================= LOGIN ================= */
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-
-const login = async (req, res) => {
-
-    try {
-        const user = await User.findOne({ email: req.body.email });
-
-        if (!user) {
-            return res.status(500).json({ status: 'failed', message: 'Please check your email' });
-        }
-
-        const match = await user.checkPassword(req.body.password);
-
-        if (!match) {
-            return res.status(500).json({ status: 'failed', message: 'Please check your password' });
-        }
-
-        const token = createToken(user);
-
-        return res.status(201).json({ user, token });
-
-    } catch (e) {
-
-        return res.status(500).json({ message: e.message, status: 'Failed' });
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password required",
+      });
     }
-};
 
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const isMatch = await user.checkPassword(password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const token = createToken(user._id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = { signup, login };

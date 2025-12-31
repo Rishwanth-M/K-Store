@@ -1,58 +1,167 @@
+const mongoose = require("mongoose");
 const Product = require("../models/product.model");
 
-// GET /products
-// supports filters:
-// /products
-// /products?category=boys
-// /products?productType=combo
-// /products?category=boys&productType=combo
+/* ================= GET PRODUCTS ================= */
 exports.getProducts = async (req, res) => {
   try {
     const { category, productType } = req.query;
 
-    let filter = {};
+    const filter = {};
     if (category) filter.category = category;
     if (productType) filter.productType = productType;
 
-    const products = await Product.find(filter);
-    res.json(products);
+    const products = await Product.find(filter).lean();
+
+    return res.status(200).json({
+      success: true,
+      products,
+    });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
+/* ================= GET PRODUCT BY ID ================= */
 exports.getProductById = async (req, res) => {
-  console.log("ID RECEIVED:", req.params.id);
-  console.log("COLLECTION:", Product.collection.name);
-
-  const product = await Product.findById(req.params.id);
-  console.log("FOUND:", product);
-
-  if (!product) return res.status(404).json({ message: "Not found" });
-  res.json(product);
-};
-
-
-exports.updateProduct = async (req, res) => {
   try {
-    const updated = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    const product = await Product.findById(id).lean();
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      product,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// POST /products (for admin use later)
+/* ================= CREATE PRODUCT (ADMIN ONLY – PLACEHOLDER) ================= */
 exports.createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
+    // ⚠️ TEMP: later protect with admin middleware
+    const allowedFields = [
+      "name",
+      "price",
+      "category",
+      "productType",
+      "description",
+      "specs",
+      "sizes",
+      "colors",
+      "stock",
+      "images",
+      "productDetails",
+      "materialAndFit",
+      "careInstructions",
+      "sizeAndFitGuide",
+      "deliveryAndReturns",
+    ];
+
+    const data = {};
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        data[field] = req.body[field];
+      }
+    });
+
+    const product = await Product.create(data);
+
+    return res.status(201).json({
+      success: true,
+      product,
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/* ================= UPDATE PRODUCT (ADMIN ONLY – PLACEHOLDER) ================= */
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    const allowedFields = [
+      "name",
+      "price",
+      "category",
+      "productType",
+      "description",
+      "specs",
+      "sizes",
+      "colors",
+      "stock",
+      "images",
+      "productDetails",
+      "materialAndFit",
+      "careInstructions",
+      "sizeAndFitGuide",
+      "deliveryAndReturns",
+    ];
+
+    const updates = {};
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+
+    const updated = await Product.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      product: updated,
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

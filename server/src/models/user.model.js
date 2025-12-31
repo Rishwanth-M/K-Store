@@ -1,38 +1,79 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const reqString = { type: String, required: true };
-
+/* ================= ADDRESS SCHEMA ================= */
 const addressSchema = new Schema(
   {
-    firstName: String,
-    lastName: String,
-    addressLine1: String,
-    addressLine2: String,
-    locality: String,
-    pinCode: String,
-    state: String,
-    country: String,
+    firstName: { type: String, trim: true },
+    lastName: { type: String, trim: true },
 
-    email: String,      // ✅ ADD THIS
-    mobile: String,
+    addressLine1: { type: String, trim: true },
+    addressLine2: { type: String, trim: true },
+    locality: { type: String, trim: true },
 
-    createdAt: {
-      type: Date,
-      default: Date.now,
+    pinCode: {
+      type: String,
+      match: [/^\d{6}$/, "Invalid pin code"],
+    },
+
+    state: { type: String, trim: true },
+    country: { type: String, trim: true },
+
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
+
+    mobile: {
+      type: String,
+      match: [/^\d{10}$/, "Invalid mobile number"],
     },
   },
   { _id: false }
 );
 
+/* ================= USER SCHEMA ================= */
 const userSchema = new Schema(
   {
-    firstName: reqString,
-    lastName: reqString,
-    email: reqString,
-    password: reqString,
-    gender: reqString,
-    dateOfBirth: reqString,
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,              // ✅ REQUIRED
+      lowercase: true,
+      trim: true,
+      index: true,
+      match: [/^\S+@\S+\.\S+$/, "Invalid email address"],
+    },
+
+    password: {
+      type: String,
+      required: true,
+      select: false,             // ✅ NEVER return password
+    },
+
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      required: true,
+    },
+
+    dateOfBirth: {
+      type: String,
+      required: true,
+    },
 
     addresses: {
       type: [addressSchema],
@@ -40,22 +81,22 @@ const userSchema = new Schema(
     },
   },
   {
-    versionKey: false,
     timestamps: true,
+    versionKey: false,
   }
 );
 
-userSchema.pre("save", function (next) {
+/* ================= PASSWORD HASH ================= */
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
-  bcrypt.hash(this.password, 8, (err, hash) => {
-    this.password = hash;
-    next();
-  });
+  this.password = await bcrypt.hash(this.password, 12); // 🔐 stronger
+  next();
 });
 
+/* ================= PASSWORD CHECK ================= */
 userSchema.methods.checkPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-module.exports = model("user", userSchema);
+module.exports = model("User", userSchema);

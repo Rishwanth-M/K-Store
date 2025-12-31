@@ -1,12 +1,40 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 
+/* ================= SECURITY ================= */
+app.use(helmet());
+
+/* ================= RATE LIMIT ================= */
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP
+  message: "Too many requests, please try again later.",
+});
+app.use(limiter);
+
+/* ================= BODY PARSER ================= */
+app.use(express.json({ limit: "10kb" }));
+
 /* ================= CORS ================= */
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://your-vercel-domain.vercel.app", // change later
+];
+
 app.use(
   cors({
-    origin: "*", // later restrict to Vercel domain
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -14,30 +42,39 @@ app.use(
 
 app.options("*", cors());
 
-/* ================= BODY PARSER ================= */
-app.use(express.json());
-
-/* ================= HEALTH CHECK (RENDER) ================= */
+/* ================= HEALTH CHECK ================= */
 app.get("/", (req, res) => {
-  res.status(200).json({ status: "API is running 🚀" });
+  res.status(200).json({
+    success: true,
+    message: "API is running 🚀",
+  });
 });
 
-/* ================= AUTH ================= */
-const { signup, login } = require("./controllers/auth.controller");
-app.post("/signup", signup);
-app.post("/login", login);
+/* ================= AUTH ROUTES ================= */
+const authRoutes = require("./routes/auth.routes");
+app.use("/auth", authRoutes);
 
-/* ================= ROUTES ================= */
+/* ================= APP ROUTES ================= */
 const productRoutes = require("./routes/product.routes");
 const favouriteRoutes = require("./routes/favourite.route");
-const orderController = require("./controllers/order.controller");
-const paymentController = require("./controllers/payment.controller");
+const orderRoutes = require("./routes/order.routes");
+const paymentRoutes = require("./routes/payment.routes");
 const addressRoutes = require("./routes/address.routes");
 
 app.use("/products", productRoutes);
 app.use("/favourite", favouriteRoutes);
-app.use("/order", orderController);
+app.use("/order", orderRoutes);
+app.use("/api/payment", paymentRoutes);
 app.use("/users/addresses", addressRoutes);
-app.use("/api/payment", paymentController);
+
+/* ================= GLOBAL ERROR HANDLER ================= */
+app.use((err, req, res, next) => {
+  console.error("❌ Error:", err.message);
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 module.exports = app;

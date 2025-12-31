@@ -19,7 +19,14 @@ export const Auth = () => {
 
     return (
         <>
-            <Button onClick={onOpen} bg={'transparent'} size={'sm'}>Sign up</Button>
+            <Button
+  onClick={onOpen}
+  bg="transparent"
+  size="sm"
+  aria-label="Open authentication modal"
+>
+  Sign up
+</Button>
 
             <Modal isOpen={isOpen} onClose={onClose} >
                 <ModalOverlay />

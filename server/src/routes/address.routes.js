@@ -1,71 +1,102 @@
 const express = require("express");
+const router = express.Router();
+
 const User = require("../models/user.model");
 const authorization = require("../middlewares/authorization");
 
-const router = express.Router();
-
-/**
- * 🔹 GET saved addresses
- */
+/* ================= GET SAVED ADDRESSES ================= */
 router.get("/", authorization, async (req, res) => {
   try {
-    console.log("📥 Fetching addresses for user:", req.user._id);
+    const user = await User.findById(req.user._id)
+      .select("addresses")
+      .lean();
 
-    const user = await User.findById(req.user._id).select("addresses");
-
-    console.log("📦 Addresses found:", user.addresses);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     return res.status(200).json({
-      status: "Success",
+      success: true,
       addresses: user.addresses || [],
     });
   } catch (error) {
-    console.error("❌ Error fetching addresses:", error.message);
-
     return res.status(500).json({
-      status: "Failed",
+      success: false,
       message: error.message,
     });
   }
 });
 
-/**
- * 🔹 SAVE new address
- */
+/* ================= SAVE NEW ADDRESS ================= */
 router.post("/", authorization, async (req, res) => {
   try {
-    console.log("📤 Incoming address payload:", req.body);
-    console.log("👤 Address belongs to user:", req.user._id);
+    const {
+      firstName,
+      lastName,
+      addressLine1,
+      addressLine2,
+      locality,
+      pinCode,
+      state,
+      country,
+      email,
+      mobile,
+    } = req.body;
 
-    const address = req.body;
-
-    // Basic safety check
-    if (!address.addressLine1 || !address.mobile) {
-      console.log("⚠️ Address validation failed");
-
+    // Required fields check
+    if (
+      !firstName ||
+      !lastName ||
+      !addressLine1 ||
+      !locality ||
+      !pinCode ||
+      !state ||
+      !country ||
+      !mobile
+    ) {
       return res.status(400).json({
-        status: "Failed",
+        success: false,
         message: "Required address fields missing",
       });
     }
 
-    await User.findByIdAndUpdate(
+    const address = {
+      firstName,
+      lastName,
+      addressLine1,
+      addressLine2: addressLine2 || "",
+      locality,
+      pinCode: String(pinCode),
+      state,
+      country,
+      email,
+      mobile: String(mobile),
+    };
+
+    const user = await User.findByIdAndUpdate(
       req.user._id,
       { $push: { addresses: address } },
       { new: true }
     );
 
-    console.log("✅ Address successfully saved in MongoDB");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     return res.status(201).json({
-      status: "Success",
+      success: true,
       message: "Address saved successfully",
+      addresses: user.addresses,
     });
   } catch (error) {
-    console.error("❌ Error saving address:", error.message);
-
     return res.status(500).json({
-      status: "Failed",
+      success: false,
       message: error.message,
     });
   }

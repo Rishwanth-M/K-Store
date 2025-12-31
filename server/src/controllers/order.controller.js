@@ -1,24 +1,33 @@
-const express = require("express");
-const router = express.Router();
-
-const authorization = require("../middlewares/authorization");
 const Order = require("../models/order.model");
 
-/* =====================================================
-   CREATE ORDER
-===================================================== */
-router.post("/", authorization, async (req, res) => {
+/* ================= CREATE ORDER ================= */
+const createOrder = async (req, res, next) => {
   try {
-    const {
-      cartProducts = [],
-      orderSummary = {},
-      paymentDetails = {},
-      shippingDetails = {},
-    } = req.body;
+    const { cartProducts = [], shippingDetails = {} } = req.body;
 
     if (!cartProducts.length) {
       return res.status(400).json({ message: "Cart is empty" });
     }
+
+    /* ================= NORMALIZE CART ================= */
+    const normalizedProducts = cartProducts.map((item) => ({
+      title: item.name,
+      price: Number(item.price),
+      quantity: Number(item.quantity),
+      size: item.size,
+      color: item.color || "Default",
+      img: Array.isArray(item.images) ? item.images : [],
+    }));
+
+    /* ================= SERVER-SIDE CALCULATION ================= */
+    const subTotal = normalizedProducts.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    const shipping = subTotal > 999 ? 0 : 50; // example rule
+    const discount = 0;
+    const total = subTotal + shipping - discount;
 
     /* ================= NORMALIZE SHIPPING ================= */
     const normalizedShipping = {
@@ -27,72 +36,58 @@ router.post("/", authorization, async (req, res) => {
       addressLine1: shippingDetails.addressLine1,
       addressLine2: shippingDetails.addressLine2 || "",
       locality: shippingDetails.locality,
-      pinCode: Number(shippingDetails.pinCode),
+      pinCode: String(shippingDetails.pinCode),
       state: shippingDetails.state,
       country: shippingDetails.country,
       email: shippingDetails.email,
-      mobile: Number(shippingDetails.mobile),
-    };
-
-    /* ================= NORMALIZE CART PRODUCTS ================= */
-    const normalizedProducts = cartProducts.map((item) => ({
-      title: item.name,                     // ✅ FIX
-      gender: item.gender || "Unisex",      // ✅ DEFAULT
-      description: item.description || "",
-      category: item.category || "General",
-      price: Number(item.price),
-      size: item.size,                      // ✅ FROM CART
-      color: item.color || "Default",
-      rating: Number(item.rating || 0),     // ✅ DEFAULT
-      img: Array.isArray(item.images) ? item.images : [],
-      quantity: Number(item.quantity),
-    }));
-
-    /* ================= NORMALIZE ORDER SUMMARY ================= */
-    const normalizedSummary = {
-      subTotal: Number(orderSummary.subTotal),
-      quantity: Number(orderSummary.quantity),
-      shipping: Number(orderSummary.shipping),
-      discount: Number(orderSummary.discount),
-      total: Number(orderSummary.total),
+      mobile: String(shippingDetails.mobile),
     };
 
     /* ================= CREATE ORDER ================= */
     const order = await Order.create({
-      cartProducts: normalizedProducts,
-      orderSummary: normalizedSummary,
-      paymentDetails,
-      shippingDetails: normalizedShipping,
       user: req.user._id,
+      cartProducts: normalizedProducts,
+      orderSummary: {
+        subTotal,
+        shipping,
+        discount,
+        total,
+        quantity: normalizedProducts.length,
+      },
+      shippingDetails: normalizedShipping,
+      paymentStatus: "PENDING",
+      orderStatus: "CREATED",
     });
 
-    return res.status(201).json(order);
+    return res.status(201).json({
+      success: true,
+      message: "Order created",
+      orderId: order._id,
+      payableAmount: total,
+    });
+
   } catch (error) {
-    console.error("❌ ORDER ERROR:", error.message);
-
-    return res.status(500).json({
-      message: "Order creation failed",
-      error: error.message,
-    });
+    next(error);
   }
-});
+};
 
-/* =====================================================
-   GET USER ORDERS
-===================================================== */
-router.get("/", authorization, async (req, res) => {
+/* ================= GET USER ORDERS ================= */
+const getUserOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const orders = await Order.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .select("-__v");
 
-    return res.status(200).json(orders);
+    res.status(200).json({
+      success: true,
+      orders,
+    });
   } catch (error) {
-    return res.status(500).json({
-      message: "Failed to fetch orders",
-      error: error.message,
-    });
+    next(error);
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  createOrder,
+  getUserOrders,
+};

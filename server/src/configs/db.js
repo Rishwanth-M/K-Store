@@ -1,13 +1,22 @@
 const mongoose = require("mongoose");
 
-module.exports = async () => {
+const connectDB = async () => {
   try {
-    console.log("MONGO_PATH =", process.env.MONGO_PATH);
+    if (!process.env.MONGO_PATH) {
+      throw new Error("MONGO_PATH is not defined in environment variables");
+    }
 
-    await mongoose.connect(process.env.MONGO_PATH);
-    console.log("✅ MongoDB Connected to:", mongoose.connection.name);
-  } catch (err) {
-    console.error("❌ MongoDB Error:", err.message);
+    await mongoose.connect(process.env.MONGO_PATH, {
+      autoIndex: true,           // builds indexes
+      serverSelectionTimeoutMS: 5000,
+    });
+
+    console.log("✅ MongoDB connected successfully");
+
+  } catch (error) {
+    console.error("❌ MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };
+
+module.exports = connectDB;

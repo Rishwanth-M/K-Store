@@ -4,18 +4,32 @@ const favouriteSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
+      index: true,
     },
-    data: {
-      type: Object,
+
+    product: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
       required: true,
+      index: true,
     },
+
+    /* ===== SNAPSHOT (SAFE SUBSET) ===== */
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    images: { type: [String], default: [] },
+    category: { type: String },
+    productType: { type: String },
   },
   {
-    versionKey: false,
     timestamps: true,
+    versionKey: false,
   }
 );
 
-module.exports = model("favourite", favouriteSchema);
+/* ===== PREVENT DUPLICATES AT DB LEVEL ===== */
+favouriteSchema.index({ user: 1, product: 1 }, { unique: true });
+
+module.exports = model("Favourite", favouriteSchema);
