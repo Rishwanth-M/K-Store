@@ -5,34 +5,54 @@ const rateLimit = require("express-rate-limit");
 
 const app = express();
 
-/* ================= SECURITY ================= */
+/* ======================================================
+   TRUST PROXY (🔥 REQUIRED FOR RENDER / VERCEL)
+====================================================== */
+app.set("trust proxy", 1);
+
+/* ======================================================
+   SECURITY
+====================================================== */
 app.use(helmet());
 
-/* ================= RATE LIMIT ================= */
+/* ======================================================
+   RATE LIMIT
+====================================================== */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: "Too many requests, please try again later.",
 });
 app.use(limiter);
 
-/* ================= BODY PARSER ================= */
+/* ======================================================
+   BODY PARSER
+====================================================== */
 app.use(express.json({ limit: "10kb" }));
 
-/* ================= CORS ================= */
+/* ======================================================
+   CORS (PRODUCTION SAFE)
+====================================================== */
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://your-vercel-domain.vercel.app", // change later
+  "http://localhost:5173",
+  "https://kreedentialsstoredev.vercel.app",
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS not allowed"));
+      // Allow Postman / server-to-server
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
       }
+
+      console.error("❌ CORS blocked:", origin);
+      callback(new Error("CORS not allowed"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -42,7 +62,9 @@ app.use(
 
 app.options("*", cors());
 
-/* ================= HEALTH CHECK ================= */
+/* ======================================================
+   HEALTH CHECK
+====================================================== */
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -50,13 +72,18 @@ app.get("/", (req, res) => {
   });
 });
 
-/* ================= AUTH ROUTES ================= */
-const authRoutes = require("./routes/auth.routes");
-app.use("/auth", authRoutes);
+/* ======================================================
+   AUTH ROUTES (KEEP COMPATIBILITY)
+====================================================== */
+const authController = require("./controllers/auth.controller");
+app.post("/signup", authController.signup);
+app.post("/login", authController.login);
 
-/* ================= APP ROUTES ================= */
+/* ======================================================
+   APP ROUTES
+====================================================== */
 const productRoutes = require("./routes/product.routes");
-const favouriteRoutes = require("./routes/favourite.route");
+const favouriteRoutes = require("./routes/favourite.routes");
 const orderRoutes = require("./routes/order.routes");
 const paymentRoutes = require("./routes/payment.routes");
 const addressRoutes = require("./routes/address.routes");
@@ -67,7 +94,9 @@ app.use("/order", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/users/addresses", addressRoutes);
 
-/* ================= GLOBAL ERROR HANDLER ================= */
+/* ======================================================
+   GLOBAL ERROR HANDLER
+====================================================== */
 app.use((err, req, res, next) => {
   console.error("❌ Error:", err.message);
 
