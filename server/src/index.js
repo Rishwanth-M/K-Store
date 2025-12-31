@@ -83,7 +83,7 @@ app.post("/login", authController.login);
    APP ROUTES
 ====================================================== */
 const productRoutes = require("./routes/product.routes");
-const favouriteRoutes = require("./routes/favourite.routes");
+const favouriteRoutes = require("./routes/favourite.route");
 const orderRoutes = require("./routes/order.routes");
 const paymentRoutes = require("./routes/payment.routes");
 const addressRoutes = require("./routes/address.routes");
