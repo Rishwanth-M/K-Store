@@ -10,7 +10,10 @@ exports.getProducts = async (req, res) => {
     if (category) filter.category = category;
     if (productType) filter.productType = productType;
 
-    const products = await Product.find(filter).lean();
+    const products = await Product.find({
+     status: "active",
+      ...filter,
+    });
 
     return res.status(200).json({
       success: true,

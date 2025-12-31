@@ -55,34 +55,30 @@ export const getRequest = (path) => async (dispatch) => {
 
     let url = "/products";
 
-    // category filters
-    if (path === "boys" || path === "girls" || path === "unisex") {
-      url = `/products?category=${path}`;
+    if (path) {
+      const normalizedPath = path.toLowerCase();
+
+      if (["boys", "girls", "unisex"].includes(normalizedPath)) {
+        url = `/products?category=${normalizedPath}`;
+      }
+
+      if (normalizedPath === "combo") {
+        url = `/products?productType=combo`;
+      }
     }
 
-    // productType filters
-    if (path === "combo") {
-      url = `/products?productType=combo`;
-    }
+    const res = await axios.get(url);
 
-    const response = await axios.get(url);
-
-    /**
-     * BACKEND RESPONSE SHAPE:
-     * {
-     *   success: true,
-     *   products: [...]
-     * }
-     */
-
-    const products = Array.isArray(response.data?.products)
-      ? response.data.products
+    // 🔥 IMPORTANT FIX
+    const products = Array.isArray(res.data.products)
+      ? res.data.products
       : [];
 
-    // ✅ Redux stores ONLY the array
     dispatch(getDataSuccess(products));
-  } catch (error) {
-    console.error("❌ Product fetch failed:", error);
+
+  } catch (err) {
+    console.error("❌ Product fetch failed:", err);
     dispatch(getDataError());
   }
 };
+
