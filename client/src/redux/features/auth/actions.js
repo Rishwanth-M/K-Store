@@ -1,8 +1,13 @@
 import axios from "axios";
 import { setToast } from "../../../utils/extraFunctions";
-import { removeItem, setItem } from "../../../utils/localstorage";
-import { GET_TOKEN, REMOVE_TOKEN, SHOW_LOGIN_PAGE, SHOW_RESET_PAGE } from "./actionTypes";
+import {
+  GET_TOKEN,
+  REMOVE_TOKEN,
+  SHOW_LOGIN_PAGE,
+  SHOW_RESET_PAGE,
+} from "./actionTypes";
 
+/* ================= UI ACTIONS ================= */
 
 export const showLoginPage = () => ({ type: SHOW_LOGIN_PAGE });
 
@@ -12,46 +17,67 @@ export const getToken = (payload) => ({ type: GET_TOKEN, payload });
 
 export const removeToken = () => ({ type: REMOVE_TOKEN });
 
+/* ================= AUTH ASYNC ACTIONS ================= */
 
-export const getSignupSuccess = (data, toast, navigate) => async (dispatch) => {
-    try {
-        let res = await axios.post(`/signup`, data);
-        res = res.data;
-        dispatch(getToken(res));
-        setItem('token', res.token);
-        setItem('user', res.user);
-        setToast(toast, 'Signup successfully', 'success');
-        navigate(-1);
-    } catch (err) {
-        console.log(err);
-        setToast(toast, err.response.data.message, 'error');
+// SIGNUP
+export const signupUser = (data, toast, navigate) => async (dispatch) => {
+  try {
+    const response = await axios.post("/signup", data);
+    const res = response.data;
+
+    if (!res?.token || !res?.user) {
+      throw new Error("Invalid signup response");
     }
+
+    dispatch(getToken({ token: res.token, user: res.user }));
+
+    setToast(toast, "Signup successful", "success");
+    navigate(-1);
+  } catch (error) {
+    console.error("❌ Signup error:", error);
+
+    const message =
+      error.response?.data?.message ||
+      error.message ||
+      "Signup failed";
+
+    setToast(toast, message, "error");
+  }
 };
 
-export const getLoginSuccess = (data, toast, navigate) => async (dispatch) => {
-    try {
-        let res = await axios.post(`/login`, data);
-        res = res.data;
-        dispatch(getToken(res));
-        setItem('token', res.token);
-        setItem('user', res.user);
-        setToast(toast, 'Login Successfully', 'success');
-        navigate(-1);
-    } catch (err) {
-        console.log(err);
-        setToast(toast, err.response.data.message, 'error');
+// LOGIN
+export const loginUser = (data, toast, navigate) => async (dispatch) => {
+  try {
+    const response = await axios.post("/login", data);
+    const res = response.data;
+
+    if (!res?.token || !res?.user) {
+      throw new Error("Invalid login response");
     }
+
+    dispatch(getToken({ token: res.token, user: res.user }));
+
+    setToast(toast, "Login successful", "success");
+    navigate(-1);
+  } catch (error) {
+    console.error("❌ Login error:", error);
+
+    const message =
+      error.response?.data?.message ||
+      error.message ||
+      "Login failed";
+
+    setToast(toast, message, "error");
+  }
 };
 
-
-export const logoutFromAccount = (toast) => (dispatch) => {
-    try {
-        removeItem('token');
-        removeItem('user');
-        dispatch(removeToken());
-        setToast(toast, 'Logout Successfully', 'success');
-    } catch (err) {
-        console.log(err);
-        setToast(toast, 'Something went wrong', 'error');
-    }
+// LOGOUT
+export const logoutUser = (toast) => (dispatch) => {
+  try {
+    dispatch(removeToken());
+    setToast(toast, "Logout successful", "success");
+  } catch (error) {
+    console.error("❌ Logout error:", error);
+    setToast(toast, "Logout failed", "error");
+  }
 };

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { getItemSession } from "../../utils/sessionStorage";
 import { setToast } from "../../utils/extraFunctions";
+
 import { addToCartRequest } from "../../redux/features/cart/actions";
 import { addToFavouriteRequest } from "../../redux/features/favourite/actions";
 
@@ -21,7 +22,11 @@ export const Description = () => {
 
   const token = useSelector((state) => state.authReducer.token);
 
-  if (!product) return null;
+  /* 🔒 HARD GUARD */
+  if (!product || !product._id) {
+    navigate("/allProducts");
+    return null;
+  }
 
   /* ---------- ADD TO CART ---------- */
   const handleAddToCart = (selectedSize) => {
@@ -30,26 +35,22 @@ export const Description = () => {
       return;
     }
 
-    const selectedVariant = product.variants?.find(
-      (v) => v.size === selectedSize
-    );
-
-    if (!selectedVariant || Number(selectedVariant.stock) <= 0) {
-      setToast(toast, "Selected size is out of stock", "error");
+    // Backend has single stock, not per-size
+    if (Number(product.stock) <= 0) {
+      setToast(toast, "Product is out of stock", "error");
       return;
     }
 
-    dispatch(
-  addToCartRequest(
-    {
-      ...product,
-      size: selectedSize,   // ✅ BACKEND-COMPATIBLE
+    const cartPayload = {
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      size: selectedSize,
       quantity: 1,
-    },
-    toast
-  )
-);
+      images: product.images || [],
+    };
 
+    dispatch(addToCartRequest(cartPayload, toast));
   };
 
   /* ---------- ADD TO FAVOURITE ---------- */
@@ -66,25 +67,29 @@ export const Description = () => {
   return (
     <>
       {/* ===== HERO SECTION ===== */}
-      <Box maxW="1400px" mx="auto" px={["16px", "24px", "40px"]} mt="40px">
+      <Box
+        maxW="1400px"
+        mx="auto"
+        px={{ base: "16px", md: "24px", lg: "40px" }}
+        mt="40px"
+      >
         <Grid
-          templateColumns={["1fr", "1fr", "58% 42%"]}
-          gap={["32px", "48px"]}
+          templateColumns={{ base: "1fr", lg: "58% 42%" }}
+          gap={{ base: "32px", md: "48px" }}
           alignItems="flex-start"
         >
-          {/* ===== LEFT: STICKY IMAGE COLUMN (DESKTOP ONLY) ===== */}
+          {/* LEFT: IMAGE GALLERY */}
           <Box
-            position={["static", "static", "sticky"]}
+            position={{ base: "static", lg: "sticky" }}
             top="120px"
-            alignSelf="flex-start"
           >
             <ProductImageGallery
-              images={product.images}
+              images={product.images || []}
               alt={product.name}
             />
           </Box>
 
-          {/* ===== RIGHT: PRODUCT INFO (SCROLLS) ===== */}
+          {/* RIGHT: PRODUCT DETAILS */}
           <Box>
             <ProductSummary
               product={product}
@@ -92,13 +97,12 @@ export const Description = () => {
               onAddToFavourite={handleAddToFavourite}
             />
 
-            {/* INFO TABS (PART OF RIGHT SCROLL) */}
             <ProductInfoTabs product={product} />
           </Box>
         </Grid>
       </Box>
 
-      {/* ===== RELATED PRODUCTS (FULL WIDTH BELOW) ===== */}
+      {/* ===== RELATED PRODUCTS ===== */}
       <Box mt="120px">
         <RelatedProducts product={product} />
       </Box>

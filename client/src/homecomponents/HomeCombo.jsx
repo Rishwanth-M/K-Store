@@ -34,7 +34,14 @@ const HomeCombo = () => {
     navigate("/description");
   };
 
-  const comboProducts = products.slice(0, 4);
+const normalizedProducts = Array.isArray(products)
+  ? products
+  : Array.isArray(products?.products)
+  ? products.products
+  : [];
+
+const comboProducts = normalizedProducts.slice(0, 4);
+
 
   const getIncludesPreview = (details = "") => {
     if (!details.toLowerCase().includes("includes")) return null;
@@ -92,7 +99,8 @@ const HomeCombo = () => {
             lg: "repeat(4, 1fr)",
           }}
         >
-          {comboProducts.map((product) => {
+          {Array.isArray(comboProducts) &&
+            comboProducts.map((product) => {
             const includesPreview = getIncludesPreview(product.details);
 
             return (

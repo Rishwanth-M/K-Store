@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import ScrollToTop from "../components/ScrollToTop"; // 👈 ADD THIS
+import ScrollToTop from "../components/ScrollToTop";
 
 import { AuthPage } from "../pages/auth/AuthPage";
 import { Cart } from "../pages/cart/Cart";
@@ -11,20 +11,22 @@ import { Home } from "../pages/home/Home";
 import { Navbar } from "../pages/navbar/Navbar";
 import { Order } from "../pages/orders/Order";
 import { Products } from "../pages/products/Products";
-import { Private } from "./Private";
-import { Public } from "./Public";
 import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
 
-/* 🔐 ADMIN */
+import { Private } from "./Private";
+import { Public } from "./Public";
+
+/* 🔐 ADMIN (AUTH ONLY FOR NOW) */
 import { AdminProducts } from "../pages/admin/AdminProducts";
 import ProductForm from "../pages/admin/ProductForm";
+
+/* ❌ OPTIONAL: create later */
+// import { NotFound } from "../pages/NotFound";
 
 export const Router = () => {
   return (
     <>
       <Navbar />
-
-      {/* 👇 GLOBAL SCROLL FIX */}
       <ScrollToTop />
 
       <Routes>
@@ -37,7 +39,6 @@ export const Router = () => {
         <Route path="/description" element={<Description />} />
 
         <Route path="/payment-success" element={<PaymentSuccess />} />
-        
 
         <Route
           path="/auth"
@@ -50,6 +51,15 @@ export const Router = () => {
 
         {/* ================= PRIVATE ================= */}
         <Route
+          path="/cart"
+          element={
+            <Private>
+              <Cart />
+            </Private>
+          }
+        />
+
+        <Route
           path="/favourite"
           element={
             <Private>
@@ -57,8 +67,6 @@ export const Router = () => {
             </Private>
           }
         />
-
-        <Route path="/cart" element={<Cart />} />
 
         <Route
           path="/checkout"
@@ -79,6 +87,7 @@ export const Router = () => {
         />
 
         {/* ================= ADMIN ================= */}
+        {/* ⚠️ Auth-only for now, role-based later */}
         <Route
           path="/admin/products"
           element={
@@ -105,6 +114,9 @@ export const Router = () => {
             </Private>
           }
         />
+
+        {/* ================= FALLBACK ================= */}
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
 
       <Footer />

@@ -1,24 +1,77 @@
-import { getItem } from "../../../utils/localstorage";
-import { GET_TOKEN, REMOVE_TOKEN, SHOW_LOGIN_PAGE, SHOW_RESET_PAGE } from "./actionTypes";
+import {
+  GET_TOKEN,
+  REMOVE_TOKEN,
+  SHOW_LOGIN_PAGE,
+  SHOW_RESET_PAGE,
+  SHOW_SIGNUP_PAGE,
+} from "./actionTypes";
 
-const init = {
-    isLogin: false,
-    isReset: false,
-    token: getItem('token') || false,
-    user: getItem('user') || {}
-}
+import {
+  getItem,
+  setItem,
+  removeItem,
+} from "../../../utils/localstorage";
 
-export const authReducer = (state = init, { type, payload }) => {
-    switch (type) {
-        case SHOW_LOGIN_PAGE:
-            return { ...state, isLogin: !state.isLogin, isReset: false };
-        case SHOW_RESET_PAGE:
-            return { ...state, isReset: !state.isReset, isLogin: false };
-        case GET_TOKEN:
-            return { ...state, token: payload.token, user: payload.user };
-        case REMOVE_TOKEN:
-            return { ...state, token: false, user: {} };
-        default:
-            return state;
+const initialState = {
+  isLogin: true,        // default to login view
+  isReset: false,
+  token: getItem("token") || null,
+  user: getItem("user") || null,
+};
+
+export const authReducer = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case SHOW_LOGIN_PAGE:
+      return {
+        ...state,
+        isLogin: true,
+        isReset: false,
+      };
+
+    case SHOW_RESET_PAGE:
+      return {
+        ...state,
+        isLogin: false,
+        isReset: true,
+      };
+
+    case SHOW_SIGNUP_PAGE:
+      return {
+        ...state,
+        isLogin: false,
+        isReset: false,
+      };
+
+    case GET_TOKEN: {
+      const { token, user } = payload;
+
+      // Persist securely
+      setItem("token", token);
+      setItem("user", user);
+
+      return {
+        ...state,
+        token,
+        user,
+        isLogin: false,
+        isReset: false,
+      };
     }
-}
+
+    case REMOVE_TOKEN:
+      // Clear storage completely
+      removeItem("token");
+      removeItem("user");
+
+      return {
+        ...state,
+        token: null,
+        user: null,
+        isLogin: true,
+        isReset: false,
+      };
+
+    default:
+      return state;
+  }
+};

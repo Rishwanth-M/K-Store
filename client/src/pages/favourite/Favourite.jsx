@@ -1,6 +1,8 @@
 import { Box, Center, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import { FavouriteItemBox } from "../../components/favourite/FavouriteItemBox";
 import { Error } from "../../components/loading/Error";
 import { Loading } from "../../components/loading/Loading";
@@ -8,20 +10,29 @@ import { getFavouriteRequest } from "../../redux/features/favourite/actions";
 
 export const Favourite = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const token = useSelector((state) => state.authReducer.token);
-  const { isLoading, isError, favourite } = useSelector(
-    (state) => state.favouriteReducer
-  );
+  const {
+    isLoading,
+    isError,
+    favourite = [],
+  } = useSelector((state) => state.favouriteReducer);
 
+  /* 🔒 AUTH GUARD */
   useEffect(() => {
-    if (token) dispatch(getFavouriteRequest(token));
-  }, [token]);
+    if (!token) {
+      navigate("/auth");
+      return;
+    }
 
-  return isLoading ? (
-    <Loading />
-  ) : isError ? (
-    <Error />
-  ) : (
+    dispatch(getFavouriteRequest(token));
+  }, [token, dispatch, navigate]);
+
+  if (isLoading) return <Loading />;
+  if (isError) return <Error />;
+
+  return (
     <Box maxW="1450px" mx="auto" my="20px" p="15px">
       <Text fontSize="20px" fontWeight={500}>
         Favourites
@@ -36,13 +47,13 @@ export const Favourite = () => {
       ) : (
         <Box
           display="grid"
-          gap={["20px", "20px", "20px", "40px"]}
+          gap={{ base: "20px", lg: "40px" }}
           mt="40px"
-          gridTemplateColumns={[
-            "repeat(2, 1fr)",
-            "repeat(2, 1fr)",
-            "repeat(3, 1fr)",
-          ]}
+          gridTemplateColumns={{
+            base: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(4, 1fr)",
+          }}
         >
           {favourite.map((item) => (
             <FavouriteItemBox

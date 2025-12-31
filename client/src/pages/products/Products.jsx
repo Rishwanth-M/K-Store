@@ -10,61 +10,74 @@ import {
   useToast,
   useBreakpointValue,
 } from "@chakra-ui/react";
+
 import { useEffect, useRef, useState } from "react";
 import { IoOptionsOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import { getRequest } from "../../redux/features/products/actions";
 import { LeftSideFilter } from "../../components/products/LeftSideFilter";
 import { SortFilters } from "../../components/products/SortFilters";
-import { useNavigate } from "react-router-dom";
-import { getItemSession, setItemSession } from "../../utils/sessionStorage";
 import { ProductDisplayBox } from "../../components/products/ProductDisplayBox";
 import { Loading } from "../../components/loading/Loading";
 import { Error } from "../../components/loading/Error";
 
+import {
+  getItemSession,
+  setItemSession,
+} from "../../utils/sessionStorage";
+
+import { RESET_FILTERS } from "../../redux/features/products/actionTypes";
+
 export const Products = () => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
   const [showFilter, setShowFilter] = useState(false);
   const touchStartX = useRef(null);
+
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const { products = [], isLoading, isError } = useSelector(
     (state) => state.prodReducer
   );
 
-  const path = getItemSession("path");
-  const dispatch = useDispatch();
-  const toast = useToast();
-  const navigate = useNavigate();
+  /* ✅ SAFE PATH FALLBACK */
+  const sessionPath = getItemSession("path");
+  const path = sessionPath || "all";
 
   useEffect(() => {
     dispatch(getRequest(path));
+    setItemSession("path", path);
   }, [path, dispatch]);
 
-  /* 🔒 Lock scroll ONLY when mobile drawer open */
+  /* 🔒 Lock scroll when mobile filter open */
   useEffect(() => {
-    if (isMobile && showFilter) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow =
+      isMobile && showFilter ? "hidden" : "auto";
+
     return () => (document.body.style.overflow = "auto");
   }, [isMobile, showFilter]);
 
-  const handleSingleProduct = (data) => {
-    setItemSession("singleProduct", data);
+  const handleSingleProduct = (product) => {
+    setItemSession("singleProduct", product);
     navigate("/description");
   };
 
   const handleReset = () => {
-    dispatch({ type: "RESET_FILTERS" });
+    dispatch({ type: RESET_FILTERS });
     setShowFilter(false);
-    toast({ title: "Filters reset", status: "success", duration: 1500 });
+    toast({
+      title: "Filters reset",
+      status: "success",
+      duration: 1500,
+    });
   };
 
-  const handleApplyClose = () => {
-    setShowFilter(false);
-  };
+  const handleApplyClose = () => setShowFilter(false);
 
   const getHeading = () => {
     switch (path) {
@@ -81,7 +94,7 @@ export const Products = () => {
     }
   };
 
-  /* 📱 Swipe to close */
+  /* 📱 Swipe to close mobile filter */
   const onTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -95,17 +108,21 @@ export const Products = () => {
 
   return (
     <>
-      {/* TOP BAR */}
+      {/* ================= TOP BAR ================= */}
       <Flex
-        direction={["column", "column", "row"]}
-        h={["100px", "100px", "60px"]}
+        direction={{ base: "column", md: "row" }}
+        h={{ base: "100px", md: "60px" }}
         position="sticky"
         top="0"
         bg={colorMode === "light" ? "white" : "#1a202c"}
         zIndex={10}
       >
         <Center>
-          <Text ml={["20px", "30px", "50px"]} fontSize={["20px", "25px"]} fontWeight={500}>
+          <Text
+            ml={{ base: "20px", md: "50px" }}
+            fontSize={{ base: "20px", md: "25px" }}
+            fontWeight={500}
+          >
             {getHeading()} [{products.length}]
           </Text>
         </Center>
@@ -113,9 +130,9 @@ export const Products = () => {
         <Spacer />
 
         <Center>
-          <Flex gap="8px" px={["10px", "20px"]}>
+          <Flex gap="8px" px={{ base: "10px", md: "20px" }}>
             <Button
-              fontSize={["13px", "16px"]}
+              fontSize={{ base: "13px", md: "16px" }}
               rightIcon={<IoOptionsOutline />}
               onClick={() => setShowFilter((p) => !p)}
             >
@@ -127,9 +144,13 @@ export const Products = () => {
         </Center>
       </Flex>
 
-      {/* DESKTOP */}
+      {/* ================= DESKTOP ================= */}
       {!isMobile && (
-        <Grid gap="2%" templateColumns={showFilter ? "20% 78%" : "100%"} px="20px">
+        <Grid
+          gap="2%"
+          templateColumns={showFilter ? "260px 1fr" : "1fr"}
+          px="20px"
+        >
           {showFilter && (
             <Box position="sticky" top="80px">
               <LeftSideFilter onApplyClose={handleApplyClose} />
@@ -137,8 +158,19 @@ export const Products = () => {
           )}
 
           <Box>
-            {isLoading ? <Loading /> : isError ? <Error /> : (
-              <Grid gap={4} templateColumns="repeat(3, 1fr)">
+            {isLoading ? (
+              <Loading />
+            ) : isError ? (
+              <Error />
+            ) : (
+              <Grid
+                gap={4}
+                templateColumns={{
+                  base: "1fr",
+                  md: "repeat(2, 1fr)",
+                  xl: "repeat(4, 1fr)",
+                }}
+              >
                 {products.map((product) => (
                   <ProductDisplayBox
                     key={product._id}
@@ -152,17 +184,15 @@ export const Products = () => {
         </Grid>
       )}
 
-      {/* MOBILE PRODUCTS */}
+      {/* ================= MOBILE ================= */}
       {isMobile && (
         <Box px="0" w="100%" overflowX="hidden" pb="120px">
-          {isLoading ? <Loading /> : isError ? <Error /> : (
-            <Grid
-  gap={4}
-  templateColumns="1fr"
-  w="100%"
-  maxW="100%"
->
-
+          {isLoading ? (
+            <Loading />
+          ) : isError ? (
+            <Error />
+          ) : (
+            <Grid gap={4} templateColumns="1fr">
               {products.map((product) => (
                 <ProductDisplayBox
                   key={product._id}
@@ -175,10 +205,9 @@ export const Products = () => {
         </Box>
       )}
 
-      {/* MOBILE FILTER */}
+      {/* ================= MOBILE FILTER ================= */}
       {isMobile && (
         <>
-          {/* BACKDROP */}
           <Box
             position="fixed"
             inset="0"
@@ -191,24 +220,23 @@ export const Products = () => {
             onClick={() => setShowFilter(false)}
           />
 
-          {/* DRAWER */}
           <Box
             position="fixed"
             top="0"
             right="0"
             h="100dvh"
-            minH="100dvh"
             w="88%"
             maxW="420px"
             bg={colorMode === "light" ? "white" : "#1a202c"}
             zIndex={2000}
             boxShadow="2xl"
-            transform={showFilter ? "translateX(0)" : "translateX(100%)"}
+            transform={
+              showFilter ? "translateX(0)" : "translateX(100%)"
+            }
             transition="transform 0.35s cubic-bezier(0.4,0,0.2,1)"
             overflowY="auto"
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
-            pb="env(safe-area-inset-bottom)"
           >
             <Flex
               p="16px"
@@ -220,8 +248,8 @@ export const Products = () => {
               <Text fontSize="18px" fontWeight={600}>
                 Filters
               </Text>
-              <Button size="sm" onClick={() => setShowFilter(false)}>
-                Close
+              <Button size="sm" onClick={handleReset}>
+                Reset
               </Button>
             </Flex>
 

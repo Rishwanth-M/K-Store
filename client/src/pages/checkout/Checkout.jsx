@@ -2,25 +2,26 @@ import {
   isCheckoutFormEmpty,
   validateEmail,
   validateMobile,
-  validatePinCode
+  validatePinCode,
 } from "../../utils/formValidator";
 
 import { CheckoutOrderSummary } from "../../components/checkout/CheckoutOrderSummary";
 import { CheckoutForm } from "../../components/checkout/CheckoutForm";
+
 import {
   Box,
   Checkbox,
   Flex,
   Text,
   Button,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
+
 import { setToast } from "../../utils/extraFunctions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { updateCartDetails } from "../../redux/features/cart/actions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 /* ================= INITIAL FORM ================= */
 const initState = {
@@ -37,13 +38,28 @@ const initState = {
 };
 
 export const Checkout = () => {
-  /* ================= AUTH DATA ================= */
+  const navigate = useNavigate();
+  const toast = useToast();
+  const dispatch = useDispatch();
+
+  /* ================= AUTH ================= */
   const { token, user } = useSelector((state) => state.authReducer);
 
-  const { orderSummary, cartProducts } = useSelector(
+  /* 🔒 AUTH GUARD */
+  if (!token) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  /* ================= CART ================= */
+  const { orderSummary, cartProducts = [] } = useSelector(
     (state) => state.cartReducer,
     shallowEqual
   );
+
+  /* 🛒 EMPTY CART GUARD */
+  if (!cartProducts.length) {
+    return <Navigate to="/allProducts" replace />;
+  }
 
   /* ================= STATE ================= */
   const [form, setForm] = useState(initState);
@@ -52,24 +68,15 @@ export const Checkout = () => {
   const [isUsingSavedAddress, setIsUsingSavedAddress] = useState(false);
   const [originalSavedAddress, setOriginalSavedAddress] = useState(null);
 
-  const toast = useToast();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   /* ================= AUTO-FILL EMAIL ================= */
   useEffect(() => {
     if (user?.email) {
-      setForm((prev) => ({
-        ...prev,
-        email: user.email,
-      }));
+      setForm((prev) => ({ ...prev, email: user.email }));
     }
   }, [user?.email]);
 
   /* ================= FETCH SAVED ADDRESSES ================= */
   useEffect(() => {
-    if (!token) return;
-
     axios
       .get("/users/addresses", {
         headers: { Authorization: `Bearer ${token}` },
@@ -120,13 +127,17 @@ export const Checkout = () => {
   const saveAddressIfNeeded = async () => {
     if (!saveAddress) return;
 
-    await axios.post("/users/addresses", form, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      await axios.post("/users/addresses", form, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch {
+      setToast(toast, "Failed to save address", "error");
+    }
   };
 
   /* ================= VALIDATION ================= */
-  const handleFormValidation = (form) => {
+  const handleFormValidation = () => {
     const isEmpty = isCheckoutFormEmpty(form);
     if (!isEmpty.status) return setToast(toast, isEmpty.message, "error");
 
@@ -142,18 +153,25 @@ export const Checkout = () => {
     return true;
   };
 
-  /* ================= SUBMIT (PHONEPE READY) ================= */
+  /* ================= SUBMIT ================= */
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!handleFormValidation(form)) return;
+    if (!handleFormValidation()) return;
 
     await saveAddressIfNeeded();
+
+    /* ✅ NORMALIZE CART */
+    const normalizedCart = cartProducts.map((item) => ({
+      _id: item._id,
+      quantity: Number(item.quantity),
+      size: item.size,
+    }));
 
     try {
       const { data } = await axios.post(
         "/api/payment/order",
         {
-          cartProducts,
+          cartProducts: normalizedCart,
           shippingDetails: form,
         },
         {
@@ -162,13 +180,11 @@ export const Checkout = () => {
       );
 
       if (!data?.redirectUrl) {
-        throw new Error("Payment redirect URL missing");
+        throw new Error("Redirect URL missing");
       }
 
-      // 🔥 PHONEPE-COMPLIANT REDIRECT
       window.location.href = data.redirectUrl;
-
-    } catch (error) {
+    } catch {
       setToast(toast, "Payment initiation failed", "error");
     }
   };
@@ -182,7 +198,7 @@ export const Checkout = () => {
       maxW="1200px"
       display="grid"
       gap="10%"
-      gridTemplateColumns={["100%", "100%", "55% 35%"]}
+      gridTemplateColumns={{ base: "100%", md: "55% 35%" }}
     >
       <Box>
         <Box mb="6">
@@ -190,7 +206,7 @@ export const Checkout = () => {
             Saved Addresses
           </Text>
 
-          {savedAddresses.length > 0 ? (
+          {savedAddresses.length ? (
             savedAddresses.map((addr, i) => (
               <Box
                 key={i}
