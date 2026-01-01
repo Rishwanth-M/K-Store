@@ -10,11 +10,11 @@ exports.getProducts = async (req, res) => {
     const filter = { status: "active" };
 
     if (category) {
-      filter.category = new RegExp(`^${category}$`, "i");
+      filter.category = new RegExp(`^${category}$`, "i"); // case-insensitive
     }
 
     if (productType) {
-      filter.productType = new RegExp(`^${productType}$`, "i");
+      filter.productType = new RegExp(`^${productType}$`, "i"); // case-insensitive
     }
 
     const products = await Product.find(filter);
@@ -23,7 +23,6 @@ exports.getProducts = async (req, res) => {
       success: true,
       products,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -31,6 +30,7 @@ exports.getProducts = async (req, res) => {
     });
   }
 };
+
 
 
 /* ================= GET PRODUCT BY ID ================= */
