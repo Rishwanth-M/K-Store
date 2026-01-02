@@ -3,6 +3,8 @@ const Product = require("../models/product.model");
 
 /* ================= GET PRODUCTS ================= */
 /* ================= GET PRODUCTS ================= */
+console.log("🔥 USING COLLECTION:", Product.collection.name);
+
 exports.getProducts = async (req, res) => {
   try {
     const { category, productType } = req.query;
@@ -19,6 +21,7 @@ exports.getProducts = async (req, res) => {
 
     const products = await Product.find(filter);
 
+
     return res.status(200).json({
       success: true,
       products,
@@ -31,6 +34,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+console.log("📦 Product collection:", Product.collection.name);
 
 
 /* ================= GET PRODUCT BY ID ================= */
