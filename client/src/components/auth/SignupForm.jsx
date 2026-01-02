@@ -68,11 +68,14 @@ export const SignupForm = () => {
       });
     }
 
-    // ✅ 4️⃣ BACKEND-COMPATIBLE PAYLOAD
+    // ✅ 4️⃣ PAYLOAD THAT MATCHES BACKEND + MONGOOSE SCHEMA
     const payload = {
       email: form.email,
       password: form.password,
-      name: `${form.firstName} ${form.lastName}`, // 🔑 REQUIRED BY BACKEND
+      firstName: form.firstName,
+      lastName: form.lastName,
+      gender: form.gender,
+      dateOfBirth: form.dateOfBirth,
     };
 
     dispatch(signupUser(payload, toast, navigate));

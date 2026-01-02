@@ -17,13 +17,27 @@ const createToken = (userId) => {
 /* ================= SIGNUP ================= */
 const signup = async (req, res, next) => {
   try {
-    const { email, password, name } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      gender,
+      dateOfBirth,
+    } = req.body;
 
-    // Validation
-    if (!email || !password || !name) {
+    // ✅ FULL VALIDATION (MATCHES SCHEMA)
+    if (
+      !email ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      !gender ||
+      !dateOfBirth
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Email, password and name are required",
+        message: "All fields are required",
       });
     }
 
@@ -42,11 +56,14 @@ const signup = async (req, res, next) => {
       });
     }
 
-    // ✅ Create user (password hashing must be in model)
+    // ✅ CREATE USER WITH REQUIRED FIELDS
     const user = await User.create({
       email,
       password,
-      name,
+      firstName,
+      lastName,
+      gender,
+      dateOfBirth,
     });
 
     const token = createToken(user._id);
@@ -58,9 +75,11 @@ const signup = async (req, res, next) => {
       user: {
         id: user._id,
         email: user.email,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
       },
     });
+
   } catch (error) {
     console.error("❌ Signup error:", error.message);
     next(error);
@@ -104,9 +123,11 @@ const login = async (req, res, next) => {
       user: {
         id: user._id,
         email: user.email,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
       },
     });
+
   } catch (error) {
     console.error("❌ Login error:", error.message);
     next(error);
