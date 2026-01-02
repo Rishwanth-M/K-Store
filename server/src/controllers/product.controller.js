@@ -2,28 +2,27 @@ const mongoose = require("mongoose");
 const Product = require("../models/product.model");
 
 /* ================= GET PRODUCTS ================= */
-/* ================= GET PRODUCTS ================= */
-console.log("🔥 USING COLLECTION:", Product.collection.name);
-
 exports.getProducts = async (req, res) => {
   try {
     const { category, productType } = req.query;
 
-    const filter = { status: "active" };
+    const filter = {
+      status: { $regex: /^active$/i },
+    };
 
     if (category) {
-      filter.category = new RegExp(`^${category}$`, "i"); // case-insensitive
+      filter.category = new RegExp(`^${category}$`, "i");
     }
 
     if (productType) {
-      filter.productType = new RegExp(`^${productType}$`, "i"); // case-insensitive
+      filter.productType = new RegExp(`^${productType}$`, "i");
     }
 
-    const products = await Product.find(filter);
-
+    const products = await Product.find(filter).lean();
 
     return res.status(200).json({
       success: true,
+      count: products.length,
       products,
     });
   } catch (error) {
@@ -33,9 +32,6 @@ exports.getProducts = async (req, res) => {
     });
   }
 };
-
-console.log("📦 Product collection:", Product.collection.name);
-
 
 /* ================= GET PRODUCT BY ID ================= */
 exports.getProductById = async (req, res) => {
@@ -62,7 +58,6 @@ exports.getProductById = async (req, res) => {
       success: true,
       product,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -71,42 +66,15 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-/* ================= CREATE PRODUCT (ADMIN ONLY – PLACEHOLDER) ================= */
+/* ================= CREATE PRODUCT ================= */
 exports.createProduct = async (req, res) => {
   try {
-    // ⚠️ TEMP: later protect with admin middleware
-    const allowedFields = [
-      "name",
-      "price",
-      "category",
-      "productType",
-      "description",
-      "specs",
-      "sizes",
-      "colors",
-      "stock",
-      "images",
-      "productDetails",
-      "materialAndFit",
-      "careInstructions",
-      "sizeAndFitGuide",
-      "deliveryAndReturns",
-    ];
-
-    const data = {};
-    allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) {
-        data[field] = req.body[field];
-      }
-    });
-
-    const product = await Product.create(data);
+    const product = await Product.create(req.body);
 
     return res.status(201).json({
       success: true,
       product,
     });
-
   } catch (error) {
     return res.status(400).json({
       success: false,
@@ -115,7 +83,7 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-/* ================= UPDATE PRODUCT (ADMIN ONLY – PLACEHOLDER) ================= */
+/* ================= UPDATE PRODUCT ================= */
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -127,35 +95,10 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-    const allowedFields = [
-      "name",
-      "price",
-      "category",
-      "productType",
-      "description",
-      "specs",
-      "sizes",
-      "colors",
-      "stock",
-      "images",
-      "productDetails",
-      "materialAndFit",
-      "careInstructions",
-      "sizeAndFitGuide",
-      "deliveryAndReturns",
-    ];
-
-    const updates = {};
-    allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) {
-        updates[field] = req.body[field];
-      }
-    });
-
     const updated = await Product.findByIdAndUpdate(
       id,
-      updates,
-      { new: true, runValidators: true }
+      req.body,
+      { new: true }
     ).lean();
 
     if (!updated) {
@@ -169,7 +112,6 @@ exports.updateProduct = async (req, res) => {
       success: true,
       product: updated,
     });
-
   } catch (error) {
     return res.status(400).json({
       success: false,

@@ -1,6 +1,6 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
 
-const productSchema = new Schema(
+const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -15,16 +15,15 @@ const productSchema = new Schema(
 
     category: {
       type: String,
-      enum: ["boys", "girls", "unisex"],
       required: true,
-      lowercase: true, // 🔒 normalize
+      lowercase: true,
+      index: true,
     },
 
     productType: {
       type: String,
-      enum: ["combo", "tshirt", "short", "jacket", "cap", "socks"],
       required: true,
-      lowercase: true, // 🔒 normalize
+      index: true,
     },
 
     description: {
@@ -32,19 +31,9 @@ const productSchema = new Schema(
       required: true,
     },
 
-    specs: {
-      type: [String],
-      default: [],
-    },
-
-    sizes: {
-      type: [String],
-      default: [], // ⚠️ your DB uses variants instead
-    },
-
-    colors: {
-      type: [String],
-      default: [],
+    color: {
+      type: String,
+      default: "",
     },
 
     stock: {
@@ -52,20 +41,15 @@ const productSchema = new Schema(
       required: true,
     },
 
+    /* 🔥 FIX: allow OBJECTS inside images array */
     images: {
-      type: [String],
+      type: [mongoose.Schema.Types.Mixed],
       required: true,
     },
 
-    /* ===== YOUR EXISTING FIELDS ===== */
-
+    /* 🔥 MATCH DB STRUCTURE */
     variants: {
-      type: [
-        {
-          size: String,
-          stock: Number,
-        },
-      ],
+      type: Array,
       default: [],
     },
 
@@ -91,20 +75,15 @@ const productSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["active", "inactive"],
       default: "active",
       index: true,
     },
   },
   {
-    versionKey: false,
     timestamps: true,
+    versionKey: false,
   }
 );
 
-/* 🔥 CRITICAL FIX — FORCE COLLECTION NAME */
-module.exports = model(
-  "product",
-  productSchema,
-  "allproducts" // ✅ MATCHES YOUR MONGODB COLLECTION
-);
+/* 🔥 KEEP YOUR COLLECTION NAME */
+module.exports = mongoose.model("product", productSchema, "allproducts");
