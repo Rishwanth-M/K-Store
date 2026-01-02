@@ -6,31 +6,50 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 
 /* ======================================================
-   TRUST PROXY (🔥 REQUIRED FOR RENDER / VERCEL)
+   TRUST PROXY (REQUIRED FOR RENDER / VERCEL)
 ====================================================== */
 app.set("trust proxy", 1);
 
 /* ======================================================
-   SECURITY
+   SECURITY (PHONEPE SAFE)
 ====================================================== */
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false, // 🔑 Required for payment redirects
+  })
+);
 
 /* ======================================================
-   RATE LIMIT
+   BODY PARSERS
+====================================================== */
+// JSON APIs
+app.use(express.json({ limit: "10kb" }));
+
+// Form / webhook payloads
+app.use(express.urlencoded({ extended: true }));
+
+/* ======================================================
+   RAW BODY (PHONEPE WEBHOOK)
+====================================================== */
+app.use(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" })
+);
+
+/* ======================================================
+   RATE LIMIT (EXCLUDE PAYMENT)
 ====================================================== */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  message: "Too many requests, please try again later.",
 });
-app.use(limiter);
 
-/* ======================================================
-   BODY PARSER
-====================================================== */
-app.use(express.json({ limit: "10kb" }));
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/payment")) return next();
+  limiter(req, res, next);
+});
 
 /* ======================================================
    CORS (PRODUCTION SAFE)
@@ -43,16 +62,11 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow Postman / server-to-server
+    origin: (origin, callback) => {
       if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.error("❌ CORS blocked:", origin);
-      callback(new Error("CORS not allowed"));
+      return callback(null, false); // ❌ don’t throw error
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -73,7 +87,7 @@ app.get("/", (req, res) => {
 });
 
 /* ======================================================
-   AUTH ROUTES (KEEP COMPATIBILITY)
+   AUTH ROUTES
 ====================================================== */
 const authController = require("./controllers/auth.controller");
 app.post("/signup", authController.signup);
@@ -82,17 +96,21 @@ app.post("/login", authController.login);
 /* ======================================================
    APP ROUTES
 ====================================================== */
-const productRoutes = require("./routes/product.routes");
-const favouriteRoutes = require("./routes/favourite.route");
-const orderRoutes = require("./routes/order.routes");
-const paymentRoutes = require("./routes/payment.routes");
-const addressRoutes = require("./routes/address.routes");
+app.use("/products", require("./routes/product.routes"));
+app.use("/favourite", require("./routes/favourite.route"));
+app.use("/order", require("./routes/order.routes"));
+app.use("/api/payment", require("./routes/payment.routes"));
+app.use("/users/addresses", require("./routes/address.routes"));
 
-app.use("/products", productRoutes);
-app.use("/favourite", favouriteRoutes);
-app.use("/order", orderRoutes);
-app.use("/api/payment", paymentRoutes);
-app.use("/users/addresses", addressRoutes);
+/* ======================================================
+   404 HANDLER
+====================================================== */
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
 
 /* ======================================================
    GLOBAL ERROR HANDLER

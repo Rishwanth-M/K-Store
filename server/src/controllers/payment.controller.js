@@ -1,132 +1,124 @@
 const crypto = require("crypto");
-const Product = require("../models/product.model");
-const Order = require("../models/order.model");
+const axios = require("axios");
 
-/* ================= HELPER ================= */
-const generateTransactionId = (orderId) => {
-  return `PP_${orderId}_${Date.now()}`;
-};
-
-/* ================= INITIATE PAYMENT ================= */
-const initiatePayment = async (req, res, next) => {
+/* ======================================================
+   INITIATE PAYMENT
+====================================================== */
+exports.initiatePayment = async (req, res) => {
   try {
-    const { cartProducts, shippingDetails } = req.body;
-
-    if (!cartProducts || !cartProducts.length) {
-      return res.status(400).json({ message: "Cart is empty" });
-    }
-
-    /* ===== SERVER-SIDE PRICE VALIDATION ===== */
-    let totalAmount = 0;
-    const normalizedProducts = [];
-
-    for (const item of cartProducts) {
-      const product = await Product.findById(item._id);
-
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-
-      const quantity = Number(item.quantity);
-      totalAmount += product.price * quantity;
-
-      normalizedProducts.push({
-        title: product.name,
-        price: product.price,
-        quantity,
-        size: item.size,
-        color: item.color || "Default",
-        img: product.images || [],
-      });
-    }
-
-    /* ================= CREATE ORDER ================= */
-    const order = await Order.create({
-      user: req.user._id,
-      cartProducts: normalizedProducts,
-      shippingDetails,
-      orderStatus: "PAYMENT_PENDING",
-      paymentStatus: "INITIATED",
-      orderSummary: {
-        total: totalAmount,
+    // 1️⃣ Build payload
+    const payload = {
+      merchantId: process.env.PHONEPE_MERCHANT_ID,
+      merchantTransactionId: "MT" + Date.now(),
+      merchantUserId: req.user.id,
+      amount: req.body.amount * 100, // paise
+      redirectUrl: `${process.env.BASE_URL}/payment-success`,
+      redirectMode: "POST",
+      callbackUrl: `${process.env.BASE_URL}/api/payment/webhook`,
+      paymentInstrument: {
+        type: "PAY_PAGE",
       },
-    });
-
-    const merchantTransactionId = generateTransactionId(order._id);
-
-    order.paymentDetails = {
-      provider: "PHONEPE",
-      merchantTransactionId,
     };
 
-    await order.save();
+    // 2️⃣ Encode payload
+    const base64Payload = Buffer.from(JSON.stringify(payload)).toString(
+      "base64"
+    );
 
-    /* ================= DEMO REDIRECT ================= */
-    const redirectUrl = `${process.env.FRONTEND_URL}/payment-success?txn=${merchantTransactionId}`;
+    // 3️⃣ Generate checksum
+    const checksum =
+      crypto
+        .createHash("sha256")
+        .update(
+          base64Payload +
+            "/pg/v1/pay" +
+            process.env.PHONEPE_SALT_KEY
+        )
+        .digest("hex") +
+      "###" +
+      process.env.PHONEPE_SALT_INDEX;
 
-    return res.status(200).json({
-      success: true,
-      orderId: order._id,
-      amount: totalAmount,
-      redirectUrl,
-    });
+    // 4️⃣ Call PhonePe
+    const response = await axios.post(
+      `${process.env.PHONEPE_BASE_URL}/pg/v1/pay`,
+      { request: base64Payload },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-VERIFY": checksum,
+        },
+      }
+    );
 
+    return res.status(200).json(response.data);
   } catch (error) {
-    next(error);
+    console.error("Payment Initiation Error:", error.message);
+    res.status(500).json({ success: false, message: "Payment failed" });
   }
 };
 
-/* ================= VERIFY PAYMENT (CALLBACK) ================= */
-const verifyPayment = async (req, res, next) => {
+/* ======================================================
+   PAYMENT STATUS CHECK
+====================================================== */
+exports.paymentStatus = async (req, res) => {
   try {
-    const { merchantTransactionId, status, checksum } = req.body;
+    const { merchantTransactionId } = req.params;
 
-    const order = await Order.findOne({
-      "paymentDetails.merchantTransactionId": merchantTransactionId,
-    });
+    const checksum =
+      crypto
+        .createHash("sha256")
+        .update(
+          `/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}` +
+            process.env.PHONEPE_SALT_KEY
+        )
+        .digest("hex") +
+      "###" +
+      process.env.PHONEPE_SALT_INDEX;
 
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
+    const response = await axios.get(
+      `${process.env.PHONEPE_BASE_URL}/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`,
+      {
+        headers: {
+          "X-VERIFY": checksum,
+          "X-MERCHANT-ID": process.env.PHONEPE_MERCHANT_ID,
+        },
+      }
+    );
 
-    /* ================= CHECKSUM VERIFY (STRUCTURE) ================= */
-    const payload = `${merchantTransactionId}|${order.orderSummary.total}`;
-    const expectedChecksum = crypto
-      .createHash("sha256")
-      .update(payload + process.env.PHONEPE_SALT_KEY)
-      .digest("hex");
-
-    if (checksum !== expectedChecksum) {
-      return res.status(400).json({
-        success: false,
-        message: "Checksum verification failed",
-      });
-    }
-
-    if (status !== "SUCCESS") {
-      order.orderStatus = "FAILED";
-      order.paymentStatus = "FAILED";
-      await order.save();
-
-      return res.status(400).json({ message: "Payment failed" });
-    }
-
-    /* ================= PAYMENT SUCCESS ================= */
-    order.orderStatus = "PAID";
-    order.paymentStatus = "SUCCESS";
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Payment verified",
-    });
-
+    return res.status(200).json(response.data);
   } catch (error) {
-    next(error);
+    console.error("Payment Status Error:", error.message);
+    res.status(500).json({ success: false });
   }
 };
 
-module.exports = {
-  initiatePayment,
-  verifyPayment,
+/* ======================================================
+   PHONEPE WEBHOOK (RAW BODY)
+====================================================== */
+exports.phonePeWebhook = async (req, res) => {
+  try {
+    const receivedChecksum = req.headers["x-verify"];
+    const payload = req.body.toString("utf8");
+
+    const calculatedChecksum =
+      crypto
+        .createHash("sha256")
+        .update(payload + process.env.PHONEPE_SALT_KEY)
+        .digest("hex") +
+      "###" +
+      process.env.PHONEPE_SALT_INDEX;
+
+    if (receivedChecksum !== calculatedChecksum) {
+      return res.status(400).json({ success: false });
+    }
+
+    const data = JSON.parse(payload);
+
+    // ✅ Update order/payment status in DB here
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Webhook Error:", error.message);
+    res.status(500).json({ success: false });
+  }
 };
