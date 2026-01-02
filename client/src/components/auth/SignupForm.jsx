@@ -34,6 +34,7 @@ export const SignupForm = () => {
   const handleOnSubmit = (e) => {
     e.preventDefault();
 
+    // 1️⃣ Empty check
     const emptyCheck = isSignupFormEmpty(form);
     if (!emptyCheck.status) {
       return toast({
@@ -44,6 +45,7 @@ export const SignupForm = () => {
       });
     }
 
+    // 2️⃣ Email validation
     const emailCheck = validateEmail(form.email);
     if (!emailCheck.status) {
       return toast({
@@ -54,6 +56,7 @@ export const SignupForm = () => {
       });
     }
 
+    // 3️⃣ Password validation
     const passwordCheck = validatePassword(form.password);
     if (!passwordCheck.status) {
       return toast({
@@ -65,7 +68,14 @@ export const SignupForm = () => {
       });
     }
 
-    dispatch(signupUser(form, toast, navigate));
+    // ✅ 4️⃣ BACKEND-COMPATIBLE PAYLOAD
+    const payload = {
+      email: form.email,
+      password: form.password,
+      name: `${form.firstName} ${form.lastName}`, // 🔑 REQUIRED BY BACKEND
+    };
+
+    dispatch(signupUser(payload, toast, navigate));
   };
 
   return (
@@ -89,6 +99,7 @@ export const SignupForm = () => {
           placeholder="Password"
           value={form.password}
           onChange={handleInputChange}
+          autoComplete="new-password"
         />
 
         <Input
