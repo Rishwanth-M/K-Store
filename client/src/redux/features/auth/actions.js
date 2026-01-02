@@ -5,17 +5,31 @@ import {
   REMOVE_TOKEN,
   SHOW_LOGIN_PAGE,
   SHOW_RESET_PAGE,
+  SHOW_SIGNUP_PAGE,
 } from "./actionTypes";
 
 /* ================= UI ACTIONS ================= */
 
-export const showLoginPage = () => ({ type: SHOW_LOGIN_PAGE });
+export const showLoginPage = () => ({
+  type: SHOW_LOGIN_PAGE,
+});
 
-export const showResetPage = () => ({ type: SHOW_RESET_PAGE });
+export const showResetPage = () => ({
+  type: SHOW_RESET_PAGE,
+});
 
-export const getToken = (payload) => ({ type: GET_TOKEN, payload });
+export const showSignupPage = () => ({
+  type: SHOW_SIGNUP_PAGE,
+});
 
-export const removeToken = () => ({ type: REMOVE_TOKEN });
+export const getToken = (payload) => ({
+  type: GET_TOKEN,
+  payload,
+});
+
+export const removeToken = () => ({
+  type: REMOVE_TOKEN,
+});
 
 /* ================= AUTH ASYNC ACTIONS ================= */
 
@@ -34,8 +48,6 @@ export const signupUser = (data, toast, navigate) => async (dispatch) => {
     setToast(toast, "Signup successful", "success");
     navigate(-1);
   } catch (error) {
-    console.error("❌ Signup error:", error);
-
     const message =
       error.response?.data?.message ||
       error.message ||
@@ -60,8 +72,6 @@ export const loginUser = (data, toast, navigate) => async (dispatch) => {
     setToast(toast, "Login successful", "success");
     navigate(-1);
   } catch (error) {
-    console.error("❌ Login error:", error);
-
     const message =
       error.response?.data?.message ||
       error.message ||
@@ -73,11 +83,6 @@ export const loginUser = (data, toast, navigate) => async (dispatch) => {
 
 // LOGOUT
 export const logoutUser = (toast) => (dispatch) => {
-  try {
-    dispatch(removeToken());
-    setToast(toast, "Logout successful", "success");
-  } catch (error) {
-    console.error("❌ Logout error:", error);
-    setToast(toast, "Logout failed", "error");
-  }
+  dispatch(removeToken());
+  setToast(toast, "Logout successful", "success");
 };

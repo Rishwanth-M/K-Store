@@ -14,14 +14,10 @@ import { Products } from "../pages/products/Products";
 import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
 
 import { Private } from "./Private";
-import { Public } from "./Public";
 
-/* 🔐 ADMIN (AUTH ONLY FOR NOW) */
+/* 🔐 ADMIN */
 import { AdminProducts } from "../pages/admin/AdminProducts";
 import ProductForm from "../pages/admin/ProductForm";
-
-/* ❌ OPTIONAL: create later */
-// import { NotFound } from "../pages/NotFound";
 
 export const Router = () => {
   return (
@@ -37,17 +33,10 @@ export const Router = () => {
         <Route path="/women" element={<Products />} />
         <Route path="/kids" element={<Products />} />
         <Route path="/description" element={<Description />} />
-
         <Route path="/payment-success" element={<PaymentSuccess />} />
 
-        <Route
-          path="/auth"
-          element={
-            <Public>
-              <AuthPage />
-            </Public>
-          }
-        />
+        {/* 🔑 AUTH (NO Public WRAPPER) */}
+        <Route path="/auth" element={<AuthPage />} />
 
         {/* ================= PRIVATE ================= */}
         <Route
@@ -87,7 +76,6 @@ export const Router = () => {
         />
 
         {/* ================= ADMIN ================= */}
-        {/* ⚠️ Auth-only for now, role-based later */}
         <Route
           path="/admin/products"
           element={
@@ -114,9 +102,6 @@ export const Router = () => {
             </Private>
           }
         />
-
-        {/* ================= FALLBACK ================= */}
-        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
 
       <Footer />

@@ -13,7 +13,7 @@ import {
 } from "../../../utils/localstorage";
 
 const initialState = {
-  isLogin: true,        // default to login view
+  isLogin: true,
   isReset: false,
   token: getItem("token") || null,
   user: getItem("user") || null,
@@ -45,7 +45,6 @@ export const authReducer = (state = initialState, { type, payload }) => {
     case GET_TOKEN: {
       const { token, user } = payload;
 
-      // Persist securely
       setItem("token", token);
       setItem("user", user);
 
@@ -59,7 +58,6 @@ export const authReducer = (state = initialState, { type, payload }) => {
     }
 
     case REMOVE_TOKEN:
-      // Clear storage completely
       removeItem("token");
       removeItem("user");
 

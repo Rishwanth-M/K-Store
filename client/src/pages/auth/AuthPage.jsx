@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   showLoginPage,
   showResetPage,
+  showSignupPage,
 } from "../../redux/features/auth/actions";
 
 import { LoginForm } from "../../components/auth/LoginForm";
@@ -18,11 +19,9 @@ export const AuthPage = () => {
   const dispatch = useDispatch();
 
   const handleSwitchAuth = () => {
-    // If currently login or reset → go to signup
     if (isLogin || isReset) {
-      dispatch({ type: "SHOW_SIGNUP_PAGE" });
+      dispatch(showSignupPage());
     } else {
-      // If signup → go to login
       dispatch(showLoginPage());
     }
   };
