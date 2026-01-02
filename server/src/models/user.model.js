@@ -23,6 +23,7 @@ const addressSchema = new Schema(
       type: String,
       lowercase: true,
       trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Invalid email address"],
     },
 
     mobile: {
@@ -51,7 +52,8 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true,              // ✅ REQUIRED
+      unique: true,
+      immutable: true,          // 🔒 email should not change
       lowercase: true,
       trim: true,
       index: true,
@@ -61,7 +63,8 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false,             // ✅ NEVER return password
+      minlength: 8,             // 🔐 schema-level safety
+      select: false,
     },
 
     gender: {
@@ -71,7 +74,7 @@ const userSchema = new Schema(
     },
 
     dateOfBirth: {
-      type: String,
+      type: Date,               // ✅ FIXED (was String)
       required: true,
     },
 
@@ -83,6 +86,18 @@ const userSchema = new Schema(
   {
     timestamps: true,
     versionKey: false,
+    toJSON: {
+      transform(_, ret) {
+        delete ret.password;    // 🔒 extra safety
+        return ret;
+      },
+    },
+    toObject: {
+      transform(_, ret) {
+        delete ret.password;
+        return ret;
+      },
+    },
   }
 );
 
@@ -90,7 +105,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
-  this.password = await bcrypt.hash(this.password, 12); // 🔐 stronger
+  this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
