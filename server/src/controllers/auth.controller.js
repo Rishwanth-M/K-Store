@@ -3,10 +3,14 @@ const jwt = require("jsonwebtoken");
 
 /* ================= JWT HELPER ================= */
 const createToken = (userId) => {
+  if (!process.env.JWT_ACCESS_KEY) {
+    throw new Error("JWT_ACCESS_KEY not defined");
+  }
+
   return jwt.sign(
     { userId },
-    process.env.JWT_ASSESS_KEY,
-    { expiresIn: "7d" } // REQUIRED
+    process.env.JWT_ACCESS_KEY,
+    { expiresIn: "7d" }
   );
 };
 
@@ -15,11 +19,11 @@ const signup = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
 
-    // Basic validation
+    // Validation
     if (!email || !password || !name) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message: "Email, password and name are required",
       });
     }
 
@@ -38,7 +42,12 @@ const signup = async (req, res, next) => {
       });
     }
 
-    const user = await User.create({ email, password, name });
+    // ✅ Create user (password hashing must be in model)
+    const user = await User.create({
+      email,
+      password,
+      name,
+    });
 
     const token = createToken(user._id);
 
@@ -52,8 +61,8 @@ const signup = async (req, res, next) => {
         name: user.name,
       },
     });
-
   } catch (error) {
+    console.error("❌ Signup error:", error.message);
     next(error);
   }
 };
@@ -71,7 +80,6 @@ const login = async (req, res, next) => {
     }
 
     const user = await User.findOne({ email }).select("+password");
-
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -99,8 +107,8 @@ const login = async (req, res, next) => {
         name: user.name,
       },
     });
-
   } catch (error) {
+    console.error("❌ Login error:", error.message);
     next(error);
   }
 };

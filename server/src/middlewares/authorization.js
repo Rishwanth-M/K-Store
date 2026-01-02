@@ -13,7 +13,8 @@ const authorization = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    const decoded = jwt.verify(token, process.env.JWT_ASSESS_KEY);
+    // ✅ USE CORRECT ENV KEY
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
 
     if (!decoded || !decoded.userId) {
       return res.status(401).json({
@@ -26,6 +27,7 @@ const authorization = (req, res, next) => {
     next();
 
   } catch (error) {
+    console.error("❌ Auth error:", error.message);
     return res.status(401).json({
       success: false,
       message: "Invalid or expired token",
