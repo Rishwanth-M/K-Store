@@ -6,9 +6,7 @@ exports.getProducts = async (req, res) => {
   try {
     const { category, productType } = req.query;
 
-    const filter = {
-      status: { $regex: /^active$/i },
-    };
+    const filter = {};
 
     if (category) {
       filter.category = new RegExp(`^${category}$`, "i");
