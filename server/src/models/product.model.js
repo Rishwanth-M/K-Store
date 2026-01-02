@@ -17,19 +17,14 @@ const productSchema = new Schema(
       type: String,
       enum: ["boys", "girls", "unisex"],
       required: true,
+      lowercase: true, // 🔒 normalize
     },
 
     productType: {
       type: String,
-      enum: [
-        "combo",
-        "tshirt",
-        "short",
-        "jacket",
-        "cap",
-        "socks",
-      ],
+      enum: ["combo", "tshirt", "short", "jacket", "cap", "socks"],
       required: true,
+      lowercase: true, // 🔒 normalize
     },
 
     description: {
@@ -38,18 +33,18 @@ const productSchema = new Schema(
     },
 
     specs: {
-      type: [String], // bullet points
+      type: [String],
       default: [],
     },
 
     sizes: {
-      type: [String], // ["S","M","L","XL"]
-      required: true,
+      type: [String],
+      default: [], // ⚠️ your DB uses variants instead
     },
 
     colors: {
-      type: [String], // ["Red","Blue"]
-      required: true,
+      type: [String],
+      default: [],
     },
 
     stock: {
@@ -58,41 +53,48 @@ const productSchema = new Schema(
     },
 
     images: {
-      type: [String], // image URLs
+      type: [String],
       required: true,
     },
 
-    productDetails: {
-  includes: [String],
-  occasion: String,
-  idealFor: String,
-},
+    /* ===== YOUR EXISTING FIELDS ===== */
 
-materialAndFit: {
-  material: String,
-  fit: String,
-  sleeve: String,
-  neckType: String,
-},
+    variants: {
+      type: [
+        {
+          size: String,
+          stock: Number,
+        },
+      ],
+      default: [],
+    },
 
-careInstructions: {
-  type: [String],
-  default: [],
-},
+    details: {
+      type: String,
+      default: "",
+    },
 
-sizeAndFitGuide: {
-  modelHeight: String,
-  modelSize: String,
-  fitNote: String,
-},
+    material: {
+      type: String,
+      default: "",
+    },
 
-deliveryAndReturns: {
-  deliveryTime: String,
-  deliveryDays: String,
-  deliveryNote: String,
-  returnPolicy: String,
-},
+    sizeGuide: {
+      type: String,
+      default: "",
+    },
 
+    delivery: {
+      type: String,
+      default: "",
+    },
+
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+      index: true,
+    },
   },
   {
     versionKey: false,
@@ -100,4 +102,9 @@ deliveryAndReturns: {
   }
 );
 
-module.exports = model("product", productSchema);
+/* 🔥 CRITICAL FIX — FORCE COLLECTION NAME */
+module.exports = model(
+  "product",
+  productSchema,
+  "allproducts" // ✅ MATCHES YOUR MONGODB COLLECTION
+);
