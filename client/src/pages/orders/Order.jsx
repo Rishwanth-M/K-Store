@@ -40,14 +40,12 @@ export const Order = () => {
         setIsLoading(true);
         setIsError(false);
 
-        const res = await api.get("/order", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.get("/order");
 
-        // newest first (safe)
-        setData([...res.data].reverse());
+        // ✅ FIX: use res.data.orders
+        const orders = res.data.orders || [];
+        setData([...orders].reverse());
+
       } catch (error) {
         console.error(error);
         setIsError(true);
@@ -57,7 +55,7 @@ export const Order = () => {
     };
 
     fetchOrders();
-  }, [token]);
+  }, []);
 
   if (isLoading) return <Loading />;
   if (isError) return <Error />;
@@ -117,7 +115,6 @@ export const Order = () => {
                   <Summary
                     createdAt={item.createdAt}
                     {...item.orderSummary}
-                    amount={item.amount}
                     paymentStatus={item.paymentDetails?.paymentStatus}
                     merchantTransactionId={
                       item.paymentDetails?.merchantTransactionId
