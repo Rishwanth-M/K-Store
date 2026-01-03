@@ -48,102 +48,88 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* ===================== TOP AUTH BAR ===================== */}
+      {/* ===================== NAVBAR WRAPPER ===================== */}
       <Box
-        h="36px"
-        bg={colorMode === "light" ? "#f5f5f5" : "transparent"}
+        position="sticky"
+        top="0"
+        zIndex="1000"
+        bg={colorMode === "light" ? "white" : "gray.900"}
       >
-        <Center
-          h="36px"
-          justifyContent="flex-end"
-          px="20px"
-          fontSize="15px"
-          gap="12px"
+        {/* ===================== TOP AUTH BAR ===================== */}
+        <Box
+          h="46px"
+          bg={colorMode === "light" ? "#f5f5f5" : "transparent"}
         >
-          {!token ? <Auth /> : <Logout />}
-          <DarkModeBtn />
-        </Center>
-      </Box>
+          <Center
+            h="46px"
+            justifyContent="flex-end"
+            px="16px"
+            gap="8px"
+          >
+            {/* USER / AUTH */}
+            {!token ? <Auth /> : <Logout />}
 
-      {/* ===================== MAIN NAVBAR ===================== */}
-      <Flex
-        h={{ base: "56px", md: "72px" }}
-        px={{ base: "16px", md: "30px" }}
-        align="center"
-      >
-        {/* LOGO */}
-        <Box w={{ base: "90px", md: "150px" }}>
-          <Link to="/">
-            <Image
-              src={KreedentialsLogo}
-              alt="Kreedentials Logo"
-              filter={
-                colorMode === "dark"
-                  ? "brightness(0) invert(1)"
-                  : "none"
-              }
-              h={{ base: "44px", md: "68px" }}
-              objectFit="contain"
-            />
-          </Link>
+            {/* DARK MODE → DESKTOP ONLY */}
+            <Box display={{ base: "none", md: "block" }}>
+              <DarkModeBtn />
+            </Box>
+          </Center>
         </Box>
 
-        {/* DESKTOP CATEGORIES */}
-        <Spacer display={{ base: "none", md: "block" }} />
-
-        <Box display={{ base: "none", md: "flex" }}>
-          <Category
-            handlePath={handlePath}
-            name="all"
-            text="All Products"
-            link="/allProducts"
-          />
-          <Category
-            handlePath={handlePath}
-            name="boys"
-            text="Boys"
-            link="/allProducts"
-          />
-          <Category
-            handlePath={handlePath}
-            name="girls"
-            text="Girls"
-            link="/allProducts"
-          />
-          <Category
-            handlePath={handlePath}
-            name="unisex"
-            text="Unisex"
-            link="/allProducts"
-          />
-          <Category
-            handlePath={handlePath}
-            name="combo"
-            text="Combo"
-            link="/allProducts"
-          />
-        </Box>
-
-        <Spacer />
-
-        {/* RIGHT ICONS */}
-        <Flex align="center" gap="12px">
-          <NavIcon
-            iconName={RiHeartLine}
-            onClick={() => handleProtectedNav("/favourite")}
-          />
-
-          <NavIcon
-            iconName={RiShoppingBagLine}
-            onClick={() => handleProtectedNav("/cart")}
-          />
-
-          {/* MOBILE MENU */}
-          <Box display={{ base: "flex", md: "none" }}>
-            <SideDrawer handlePath={handlePath} />
+        {/* ===================== MAIN NAVBAR ===================== */}
+        <Flex
+          h={{ base: "56px", md: "72px" }}
+          px={{ base: "16px", md: "30px" }}
+          align="center"
+        >
+          {/* LOGO */}
+          <Box w={{ base: "90px", md: "150px" }}>
+            <Link to="/">
+              <Image
+                src={KreedentialsLogo}
+                alt="Kreedentials Logo"
+                filter={
+                  colorMode === "dark"
+                    ? "brightness(0) invert(1)"
+                    : "none"
+                }
+                h={{ base: "44px", md: "68px" }}
+                objectFit="contain"
+              />
+            </Link>
           </Box>
+
+          {/* DESKTOP CATEGORIES */}
+          <Spacer display={{ base: "none", md: "block" }} />
+
+          <Box display={{ base: "none", md: "flex" }}>
+            <Category handlePath={handlePath} name="all" text="All Products" link="/allProducts" />
+            <Category handlePath={handlePath} name="boys" text="Boys" link="/allProducts" />
+            <Category handlePath={handlePath} name="girls" text="Girls" link="/allProducts" />
+            <Category handlePath={handlePath} name="unisex" text="Unisex" link="/allProducts" />
+            <Category handlePath={handlePath} name="combo" text="Combo" link="/allProducts" />
+          </Box>
+
+          <Spacer />
+
+          {/* RIGHT ICONS */}
+          <Flex align="center" gap="12px">
+            <NavIcon
+              iconName={RiHeartLine}
+              onClick={() => handleProtectedNav("/favourite")}
+            />
+            <NavIcon
+              iconName={RiShoppingBagLine}
+              onClick={() => handleProtectedNav("/cart")}
+            />
+
+            {/* MOBILE MENU */}
+            <Box display={{ base: "flex", md: "none" }}>
+              <SideDrawer handlePath={handlePath} />
+            </Box>
+          </Flex>
         </Flex>
-      </Flex>
+      </Box>
     </>
   );
 };

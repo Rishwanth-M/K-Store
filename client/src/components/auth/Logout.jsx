@@ -7,10 +7,11 @@ import {
   MenuItem,
   MenuList,
   useToast,
+  useColorMode,
 } from "@chakra-ui/react";
 
 import { FiLogOut } from "react-icons/fi";
-import { FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaSun, FaMoon } from "react-icons/fa";
 import { BsCart2, BsFillCaretDownFill } from "react-icons/bs";
 import { RiLuggageCartLine } from "react-icons/ri";
 
@@ -24,6 +25,7 @@ export const Logout = () => {
   const dispatch = useDispatch();
   const toast = useToast();
   const navigate = useNavigate();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const user = useSelector(
     (state) => state.authReducer.user?.firstName || "Account"
@@ -34,29 +36,42 @@ export const Logout = () => {
     navigate("/");
   };
 
+  // ✅ Safe navigation handler for Chakra Menu
+  const handleMenuNav = (path) => {
+    setTimeout(() => {
+      navigate(path);
+    }, 0);
+  };
+
   return (
     <Menu>
+      {/* ================= USER BUTTON ================= */}
       <MenuButton
         as={Button}
-        size="sm"
+        size={{ base: "sm", md: "md" }}
+        px={{ base: "10px", md: "16px" }}
+        minW={{ base: "90px", md: "120px" }}
+        fontSize={{ base: "14px", md: "16px" }}
+        fontWeight="500"
         bg="transparent"
-        rightIcon={<BsFillCaretDownFill />}
+        rightIcon={<BsFillCaretDownFill size={14} />}
       >
         {user}
       </MenuButton>
 
-      <MenuList zIndex={2}>
-        <Flex flexDirection="column" gap="5px" fontSize="17px">
+      {/* ================= DROPDOWN ================= */}
+      <MenuList zIndex="1100">
+        <Flex direction="column" fontSize="16px">
           <MenuItem
-            onClick={() => navigate("/favourite")}
             icon={<FaRegHeart />}
+            onClick={() => handleMenuNav("/favourite")}
           >
             Wishlist
           </MenuItem>
 
           <MenuItem
-            onClick={() => navigate("/orders")}
             icon={<RiLuggageCartLine />}
+            onClick={() => handleMenuNav("/orders")}
           >
             Orders
           </MenuItem>
@@ -64,15 +79,24 @@ export const Logout = () => {
           <Coupon />
 
           <MenuItem
-            onClick={() => navigate("/cart")}
             icon={<BsCart2 />}
+            onClick={() => handleMenuNav("/cart")}
           >
             Cart
           </MenuItem>
 
+          {/* DARK / LIGHT MODE — MOBILE ONLY */}
+          <MenuItem
+            display={{ base: "flex", md: "none" }}
+            icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}
+            onClick={toggleColorMode}
+          >
+            {colorMode === "dark" ? "Light Mode" : "Dark Mode"}
+          </MenuItem>
+
           <Divider />
 
-          <MenuItem onClick={handleLogoutBtn} icon={<FiLogOut />}>
+          <MenuItem icon={<FiLogOut />} onClick={handleLogoutBtn}>
             Logout
           </MenuItem>
         </Flex>

@@ -1,26 +1,55 @@
-import { Box } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Text,
+} from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 import { BagItems } from "../../components/cart/BagItems";
 import { OrderSummary } from "../../components/cart/OrderSummary";
 
 export const Cart = () => {
+  const navigate = useNavigate();
+
   const token = useSelector((state) => state.authReducer.token);
   const cartItems = useSelector(
-    (state) => state.cartReducer?.cart || []
-  );
+  (state) => state.cartReducer?.cartProducts || []
+);
+
 
   /* 🔒 AUTH GUARD */
   if (!token) {
     return <Navigate to="/auth" replace />;
   }
 
-  /* 🛒 EMPTY CART GUARD */
+  /* 🛒 EMPTY CART UI (NO REDIRECT) */
   if (!cartItems.length) {
-    return <Navigate to="/allProducts" replace />;
+    return (
+      <Center minH="60vh" flexDirection="column" gap="16px">
+        <Text fontSize="22px" fontWeight="600">
+          Your cart is empty 🛒
+        </Text>
+
+        <Text color="gray.500">
+          Looks like you haven’t added anything yet.
+        </Text>
+
+        <Button
+          mt="10px"
+          bg="black"
+          color="white"
+          _hover={{ bg: "#1e1e1e" }}
+          onClick={() => navigate("/allProducts")}
+        >
+          Continue Shopping
+        </Button>
+      </Center>
+    );
   }
 
+  /* 🛍 CART WITH ITEMS */
   return (
     <Box
       display="grid"

@@ -1,89 +1,72 @@
 import {
-  ADD_TO_FAVOURITE,
   GET_FAVOURITE_ERROR,
   GET_FAVOURITE_LOADING,
-  GET_FAVOURITE_SUCCESS
+  GET_FAVOURITE_SUCCESS,
 } from "./actionTypes";
 
 import { setToast } from "../../../utils/extraFunctions";
 import axios from "axios";
 
-export const addToFavourite = (payload) => ({
-  type: ADD_TO_FAVOURITE,
-  payload
-});
-
-export const getFavouriteLoading = () => ({
-  type: GET_FAVOURITE_LOADING
-});
-
-export const getFavouriteSuccess = (payload) => ({
-  type: GET_FAVOURITE_SUCCESS,
-  payload
-});
-
-export const getFavouriteError = () => ({
-  type: GET_FAVOURITE_ERROR
-});
-
-// ✅ ADD TO FAVOURITE
-export const addToFavouriteRequest = (data, token, toast) => async () => {
-  try {
-    await axios.post(
-      "/favourite",
-      data, // 🔥 DO NOT delete _id
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    setToast(toast, "Item added to favourites", "success");
-  } catch (err) {
-    console.log(err?.response?.data);
-
-    if (err?.response?.status === 400) {
-      setToast(toast, err.response.data.message, "info");
-    } else {
-      setToast(toast, "Something went wrong", "error");
-    }
-  }
-};
-
-// ✅ GET FAVOURITES
+/* ================= GET FAVOURITES ================= */
 export const getFavouriteRequest = (token) => async (dispatch) => {
-  try {
-    dispatch(getFavouriteLoading());
+  dispatch({ type: GET_FAVOURITE_LOADING });
 
+  try {
     const res = await axios.get("/favourite", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    dispatch(getFavouriteSuccess(res.data));
+    // ✅ BACKEND RETURNS res.data.favourites
+    dispatch({
+      type: GET_FAVOURITE_SUCCESS,
+      payload: res.data.favourites, // ✅ ARRAY
+    });
   } catch (err) {
-    console.log(err);
-    dispatch(getFavouriteError());
+    dispatch({ type: GET_FAVOURITE_ERROR });
   }
 };
 
-// ✅ DELETE FAVOURITE
-export const deleteFavouriteRequest = (id, token, toast) => async (dispatch) => {
-  try {
-    dispatch(getFavouriteLoading());
+/* ================= ADD TO FAVOURITE ================= */
+export const addToFavouriteRequest =
+  (product, token, toast) => async (dispatch) => {
+    try {
+      await axios.post(
+        "/favourite",
+        { productId: product._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    axios.delete(`/favourite/${id}`, {
-  headers: { Authorization: `Bearer ${token}` }
-});
+      setToast(toast, "Added to favourites", "success");
+      dispatch(getFavouriteRequest(token));
+    } catch (err) {
+      if (err?.response?.status === 409) {
+        setToast(toast, "Already in favourites", "info");
+        dispatch(getFavouriteRequest(token));
+      } else {
+        setToast(toast, "Something went wrong", "error");
+      }
+    }
+  };
 
+/* ================= DELETE FAVOURITE ================= */
+export const deleteFavouriteRequest =
+  (id, token, toast) => async (dispatch) => {
+    try {
+      await axios.delete(`/favourite/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    dispatch(getFavouriteRequest(token));
-    setToast(toast, "Product removed from favourites", "success");
-  } catch (err) {
-    console.log(err);
-    dispatch(getFavouriteError());
-    setToast(toast, "Something went wrong", "error");
-  }
-};
+      setToast(toast, "Removed from favourites", "success");
+      dispatch(getFavouriteRequest(token));
+    } catch (err) {
+      setToast(toast, "Something went wrong", "error");
+    }
+  };

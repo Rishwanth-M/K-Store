@@ -71,16 +71,20 @@ export const DrawerCategory = ({ text, link, handlePath, name }) => {
 };
 
 /* ===================== NAV ICON ===================== */
-export const NavIcon = ({ iconName }) => {
+/* ===================== NAV ICON ===================== */
+export const NavIcon = ({ iconName, onClick }) => {
   return (
     <Icon
       as={iconName}
       boxSize="26px"
       mr="10px"
       cursor="pointer"
+      onClick={onClick}          // ✅ FIX
+      _hover={{ opacity: 0.8 }}
     />
   );
 };
+
 
 /* ===================== SEARCH BOX ===================== */
 export const SearchBox = () => {

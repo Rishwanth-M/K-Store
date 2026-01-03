@@ -10,6 +10,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export const ProductSummary = ({
   product,
@@ -27,6 +28,22 @@ export const ProductSummary = ({
   } = product;
 
   const [selectedSize, setSelectedSize] = useState(null);
+
+  /* ===================== */
+  /* ✅ SAFE FAVOURITE READ */
+  /* ===================== */
+  const favouriteState = useSelector(
+    (state) => state.favouriteReducer
+  );
+
+  // Normalize favourites into an array
+  const favouriteList = Array.isArray(favouriteState?.favourite)
+    ? favouriteState.favourite
+    : favouriteState?.favourite?.data || [];
+
+  const isFavourite = favouriteList.some(
+    (item) => item.productId?._id === product._id
+  );
 
   const inStock = variants.some((v) => Number(v.stock) > 0);
 
@@ -50,7 +67,6 @@ export const ProductSummary = ({
         fontSize={["26px", "30px", "34px"]}
         fontWeight="700"
         lineHeight="1.15"
-        letterSpacing="-0.02em"
       >
         {name}
       </Text>
@@ -82,19 +98,19 @@ export const ProductSummary = ({
 
       {/* DESCRIPTION */}
       {description && (
-        <Text mt="22px" fontSize="15px" lineHeight="1.7" color={textColor}>
+        <Text mt="22px" fontSize="15px" lineHeight="1.7">
           {description}
         </Text>
       )}
 
-      <Divider my="28px" borderColor={useColorModeValue("gray.200", "gray.600")} />
+      <Divider my="28px" />
 
       {/* SIZE SELECT */}
       {variants.length > 0 && (
         <Box>
-          <Flex justify="space-between" mb="10px">
-            <Text fontWeight="600">Select Size</Text>
-          </Flex>
+          <Text fontWeight="600" mb="10px">
+            Select Size
+          </Text>
 
           <SimpleGrid columns={4} spacing="12px">
             {variants.map((variant) => {
@@ -104,18 +120,10 @@ export const ProductSummary = ({
               return (
                 <Button
                   key={variant.size}
-                  size="md"
                   variant="outline"
                   bg={isSelected ? primaryBg : "transparent"}
                   color={isSelected ? primaryText : textColor}
                   borderColor={borderColor}
-                  _hover={{
-                    bg: isSelected ? primaryBg : hoverBg,
-                  }}
-                  _disabled={{
-                    opacity: 0.4,
-                    cursor: "not-allowed",
-                  }}
                   isDisabled={isDisabled}
                   onClick={() => setSelectedSize(variant.size)}
                 >
@@ -134,10 +142,6 @@ export const ProductSummary = ({
           bg={primaryBg}
           color={primaryText}
           h="52px"
-          fontSize="15px"
-          _hover={{
-            bg: useColorModeValue("blackAlpha.900", "gray.200"),
-          }}
           isDisabled={!selectedSize || !inStock}
           onClick={() => onAddToCart(selectedSize)}
         >
@@ -148,13 +152,15 @@ export const ProductSummary = ({
           size="lg"
           variant="outline"
           h="52px"
-          fontSize="15px"
           borderColor={borderColor}
-          color={textColor}
-          _hover={{ bg: hoverBg }}
-          onClick={onAddToFavourite}
+          isDisabled={isFavourite}
+          onClick={() => {
+            if (!isFavourite) {
+              onAddToFavourite();
+            }
+          }}
         >
-          Favourite
+          {isFavourite ? "Added to Favourites" : "Favourite"}
         </Button>
       </Stack>
     </Box>

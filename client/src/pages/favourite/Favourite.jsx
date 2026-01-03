@@ -19,7 +19,7 @@ export const Favourite = () => {
     favourite = [],
   } = useSelector((state) => state.favouriteReducer);
 
-  /* 🔒 AUTH GUARD */
+  /* 🔒 AUTH GUARD + FETCH */
   useEffect(() => {
     if (!token) {
       navigate("/auth");
@@ -58,8 +58,8 @@ export const Favourite = () => {
           {favourite.map((item) => (
             <FavouriteItemBox
               key={item._id}
-              _id={item._id}
-              data={item.data}
+              _id={item._id}   // favourite document id (for delete)
+              data={item}     // ✅ PASS THE ACTUAL PRODUCT DATA
             />
           ))}
         </Box>
