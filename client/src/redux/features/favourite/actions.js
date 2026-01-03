@@ -16,9 +16,9 @@ export const getFavouriteRequest = () => async (dispatch) => {
 
     dispatch({
       type: GET_FAVOURITE_SUCCESS,
-      payload: res.data.favourites, // ✅ ARRAY
+      payload: res.data.favourites,
     });
-  } catch (err) {
+  } catch {
     dispatch({ type: GET_FAVOURITE_ERROR });
   }
 };
@@ -37,7 +37,7 @@ export const addToFavouriteRequest =
       } else {
         setToast(
           toast,
-          err?.response?.data?.message || "Something went wrong",
+          err?.response?.data?.message || "Unauthorized",
           "error"
         );
       }
@@ -52,7 +52,7 @@ export const deleteFavouriteRequest =
 
       setToast(toast, "Removed from favourites", "success");
       dispatch(getFavouriteRequest());
-    } catch (err) {
-      setToast(toast, "Something went wrong", "error");
+    } catch {
+      setToast(toast, "Unauthorized", "error");
     }
   };
