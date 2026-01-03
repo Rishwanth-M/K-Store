@@ -12,25 +12,22 @@ const authorization = (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
 
-    // ✅ MATCH auth.controller payload
     if (!decoded || !decoded.id) {
       return res.status(401).json({
         success: false,
-        message: "Invalid token payload",
+        message: "Invalid token",
       });
     }
 
-    // ✅ STANDARDIZE USER OBJECT (VERY IMPORTANT)
+    // ✅ SINGLE STANDARD
     req.user = {
       _id: decoded.id,
     };
 
     next();
   } catch (error) {
-    console.error("❌ Auth error:", error.message);
     return res.status(401).json({
       success: false,
       message: "Invalid or expired token",

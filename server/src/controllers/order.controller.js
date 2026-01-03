@@ -4,7 +4,8 @@ const Product = require("../models/product.model");
 /* ================= CREATE ORDER ================= */
 const createOrder = async (req, res, next) => {
   try {
-    const userId = req.user.id; // ✅ FIX
+    const userId = req.user._id; // ✅ FIXED (ONLY THIS)
+
     const { cartProducts = [], shippingDetails = {} } = req.body;
 
     if (!cartProducts.length) {
@@ -14,7 +15,6 @@ const createOrder = async (req, res, next) => {
       });
     }
 
-    /* ================= FETCH PRODUCTS SAFELY ================= */
     const productIds = cartProducts.map((p) => p._id);
     const productsFromDB = await Product.find({
       _id: { $in: productIds },
@@ -27,29 +27,23 @@ const createOrder = async (req, res, next) => {
       });
     }
 
-    /* ================= BUILD ORDER ITEMS ================= */
     const orderItems = cartProducts.map((cartItem) => {
       const product = productsFromDB.find(
         (p) => String(p._id) === String(cartItem._id)
       );
 
-      if (!product) {
-        throw new Error("Product mismatch");
-      }
+      if (!product) throw new Error("Product mismatch");
 
       return {
-        product: product._id,
-        name: product.name,
-        price: product.price, // ✅ SERVER TRUSTED
+        title: product.name,
+        price: product.price,
         quantity: Number(cartItem.quantity),
         size: cartItem.size,
-        images: product.images || [],
-        category: product.category,
-        productType: product.productType,
+        img: product.images || [],
+        color: product.color || "Default",
       };
     });
 
-    /* ================= CALCULATE TOTAL ================= */
     const subTotal = orderItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
@@ -59,9 +53,8 @@ const createOrder = async (req, res, next) => {
     const discount = 0;
     const total = subTotal + shipping - discount;
 
-    /* ================= CREATE ORDER ================= */
     const order = await Order.create({
-      user: userId,
+      user: userId, // ✅ ALWAYS PRESENT NOW
       cartProducts: orderItems,
       orderSummary: {
         subTotal,
@@ -71,15 +64,17 @@ const createOrder = async (req, res, next) => {
         quantity: orderItems.length,
       },
       shippingDetails,
-      paymentStatus: "PENDING",
       orderStatus: "CREATED",
+      paymentDetails: {
+        paymentStatus: "INITIATED",
+      },
     });
 
     return res.status(201).json({
       success: true,
       message: "Order created",
       orderId: order._id,
-      amount: total,
+      payableAmount: total,
     });
   } catch (error) {
     next(error);
@@ -89,7 +84,7 @@ const createOrder = async (req, res, next) => {
 /* ================= GET USER ORDERS ================= */
 const getUserOrders = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const orders = await Order.find({ user: userId })
       .sort({ createdAt: -1 })
