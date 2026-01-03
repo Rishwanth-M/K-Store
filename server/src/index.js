@@ -6,38 +6,36 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 
 /* ======================================================
-   TRUST PROXY (REQUIRED FOR RENDER / VERCEL)
+   BASIC SECURITY
 ====================================================== */
+app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
 /* ======================================================
-   SECURITY (PHONEPE SAFE)
+   HELMET (PAYMENT SAFE)
 ====================================================== */
 app.use(
   helmet({
-    crossOriginEmbedderPolicy: false, // 🔑 Required for payment redirects
+    crossOriginEmbedderPolicy: false,
   })
+);
+
+/* ======================================================
+   PHONEPE RAW BODY (MUST COME FIRST)
+====================================================== */
+app.use(
+  "/api/payment/webhook",
+  express.raw({ type: "*/*" })
 );
 
 /* ======================================================
    BODY PARSERS
 ====================================================== */
-// JSON APIs
 app.use(express.json({ limit: "10kb" }));
-
-// Form / webhook payloads
 app.use(express.urlencoded({ extended: true }));
 
 /* ======================================================
-   RAW BODY (PHONEPE WEBHOOK)
-====================================================== */
-app.use(
-  "/api/payment/webhook",
-  express.raw({ type: "application/json" })
-);
-
-/* ======================================================
-   RATE LIMIT (EXCLUDE PAYMENT)
+   RATE LIMITING (EXCLUDE PAYMENT)
 ====================================================== */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -47,18 +45,20 @@ const limiter = rateLimit({
 });
 
 app.use((req, res, next) => {
-  if (req.path.startsWith("/api/payment")) return next();
+  if (req.originalUrl.startsWith("/api/payment")) return next();
   limiter(req, res, next);
 });
 
 /* ======================================================
    CORS (PRODUCTION SAFE)
 ====================================================== */
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://kreedentialsstoredev.vercel.app",
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://kreedentialsstoredev.vercel.app",
+    ];
 
 app.use(
   cors({
@@ -66,15 +66,13 @@ app.use(
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
 
-      return callback(null, false); // ❌ don’t throw error
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-app.options("*", cors());
 
 /* ======================================================
    HEALTH CHECK
@@ -87,11 +85,11 @@ app.get("/", (req, res) => {
 });
 
 /* ======================================================
-   AUTH ROUTES
+   AUTH ROUTES (NAMESPACED)
 ====================================================== */
 const authController = require("./controllers/auth.controller");
-app.post("/signup", authController.signup);
-app.post("/login", authController.login);
+app.post("/api/auth/signup", authController.signup);
+app.post("/api/auth/login", authController.login);
 
 /* ======================================================
    APP ROUTES
@@ -99,8 +97,8 @@ app.post("/login", authController.login);
 app.use("/products", require("./routes/product.routes"));
 app.use("/favourite", require("./routes/favourite.route"));
 app.use("/order", require("./routes/order.routes"));
-app.use("/api/payment", require("./routes/payment.routes"));
 app.use("/users/addresses", require("./routes/address.routes"));
+app.use("/api/payment", require("./routes/payment.routes"));
 
 /* ======================================================
    404 HANDLER
@@ -116,7 +114,11 @@ app.use((req, res) => {
    GLOBAL ERROR HANDLER
 ====================================================== */
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.message);
+  if (process.env.NODE_ENV !== "production") {
+    console.error("❌ Error stack:", err.stack);
+  } else {
+    console.error("❌ Error:", err.message);
+  }
 
   res.status(err.status || 500).json({
     success: false,

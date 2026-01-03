@@ -14,6 +14,7 @@ import { Products } from "../pages/products/Products";
 import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
 
 import { Private } from "./Private";
+import { Public } from "./Public";
 
 /* 🔐 ADMIN */
 import { AdminProducts } from "../pages/admin/AdminProducts";
@@ -35,8 +36,15 @@ export const Router = () => {
         <Route path="/description" element={<Description />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
 
-        {/* 🔑 AUTH (NO Public WRAPPER) */}
-        <Route path="/auth" element={<AuthPage />} />
+        {/* 🔑 AUTH (PUBLIC ROUTE) */}
+        <Route
+          path="/auth"
+          element={
+            <Public>
+              <AuthPage />
+            </Public>
+          }
+        />
 
         {/* ================= PRIVATE ================= */}
         <Route
@@ -75,7 +83,7 @@ export const Router = () => {
           }
         />
 
-        {/* ================= ADMIN ================= */}
+        {/* ================= ADMIN (TEMP PROTECTED) ================= */}
         <Route
           path="/admin/products"
           element={

@@ -19,6 +19,7 @@ const addressSchema = new Schema(
     state: { type: String, trim: true },
     country: { type: String, trim: true },
 
+    // Optional contact overrides
     email: {
       type: String,
       lowercase: true,
@@ -53,7 +54,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      immutable: true,          // 🔒 email should not change
       lowercase: true,
       trim: true,
       index: true,
@@ -63,18 +63,18 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minlength: 8,             // 🔐 schema-level safety
+      minlength: 8,
       select: false,
     },
 
     gender: {
       type: String,
-      enum: ["Male", "Female", "other"],
+      enum: ["male", "female", "other"], // ✅ frontend-friendly
       required: true,
     },
 
     dateOfBirth: {
-      type: Date,               // ✅ FIXED (was String)
+      type: Date,
       required: true,
     },
 
@@ -88,7 +88,7 @@ const userSchema = new Schema(
     versionKey: false,
     toJSON: {
       transform(_, ret) {
-        delete ret.password;    // 🔒 extra safety
+        delete ret.password;
         return ret;
       },
     },
@@ -103,10 +103,13 @@ const userSchema = new Schema(
 
 /* ================= PASSWORD HASH ================= */
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+  try {
+    if (!this.isModified("password")) return next();
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 /* ================= PASSWORD CHECK ================= */

@@ -8,7 +8,7 @@ const createToken = (userId) => {
   }
 
   return jwt.sign(
-    { userId },
+    { id: userId }, // ✅ standardized payload
     process.env.JWT_ACCESS_KEY,
     { expiresIn: "7d" }
   );
@@ -17,7 +17,7 @@ const createToken = (userId) => {
 /* ================= SIGNUP ================= */
 const signup = async (req, res, next) => {
   try {
-    const {
+    let {
       email,
       password,
       firstName,
@@ -26,7 +26,7 @@ const signup = async (req, res, next) => {
       dateOfBirth,
     } = req.body;
 
-    // ✅ FULL VALIDATION (MATCHES SCHEMA)
+    /* ================= VALIDATION ================= */
     if (
       !email ||
       !password ||
@@ -48,6 +48,9 @@ const signup = async (req, res, next) => {
       });
     }
 
+    /* ================= NORMALIZATION ================= */
+    email = email.toLowerCase().trim();
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
@@ -56,7 +59,7 @@ const signup = async (req, res, next) => {
       });
     }
 
-    // ✅ CREATE USER WITH REQUIRED FIELDS
+    /* ================= CREATE USER ================= */
     const user = await User.create({
       email,
       password,
@@ -79,7 +82,6 @@ const signup = async (req, res, next) => {
         lastName: user.lastName,
       },
     });
-
   } catch (error) {
     console.error("❌ Signup error:", error.message);
     next(error);
@@ -89,7 +91,7 @@ const signup = async (req, res, next) => {
 /* ================= LOGIN ================= */
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -97,6 +99,9 @@ const login = async (req, res, next) => {
         message: "Email and password required",
       });
     }
+
+    /* ================= NORMALIZATION ================= */
+    email = email.toLowerCase().trim();
 
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
@@ -127,7 +132,6 @@ const login = async (req, res, next) => {
         lastName: user.lastName,
       },
     });
-
   } catch (error) {
     console.error("❌ Login error:", error.message);
     next(error);

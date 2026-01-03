@@ -68,13 +68,13 @@ export const SignupForm = () => {
       });
     }
 
-    // ✅ 4️⃣ PAYLOAD THAT MATCHES BACKEND + MONGOOSE SCHEMA
+    // ✅ Payload perfectly aligned with backend
     const payload = {
       email: form.email,
       password: form.password,
       firstName: form.firstName,
       lastName: form.lastName,
-      gender: form.gender,
+      gender: form.gender, // must be lowercase
       dateOfBirth: form.dateOfBirth,
     };
 
@@ -127,8 +127,9 @@ export const SignupForm = () => {
           value={form.gender}
           onChange={handleInputChange}
         >
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
         </Select>
 
         <Input
