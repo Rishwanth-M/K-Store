@@ -5,7 +5,6 @@ import {
 } from "./actionTypes";
 
 import { setToast } from "../../../utils/extraFunctions";
-import api from "../../../utils/api"; // axios instance with interceptor
 import axios from "axios";
 
 /* ================= GET FAVOURITES ================= */

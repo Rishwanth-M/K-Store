@@ -1,15 +1,22 @@
 export const setItem = (key, data) => {
-    return localStorage.setItem(key, JSON.stringify(data));
+  if (typeof data === "string") {
+    localStorage.setItem(key, data);
+  } else {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
 };
-
 
 export const getItem = (key) => {
-    if (localStorage.getItem(key)) {
-        return JSON.parse(localStorage.getItem(key));
-    }
-    return undefined;
+  const value = localStorage.getItem(key);
+  if (!value) return null;
+
+  try {
+    return JSON.parse(value); // objects, arrays
+  } catch (err) {
+    return value; // strings (JWT token)
+  }
 };
 
-export const removeItem = (key)=>{
-    return localStorage.removeItem(key);
+export const removeItem = (key) => {
+  localStorage.removeItem(key);
 };
