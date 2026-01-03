@@ -30,7 +30,7 @@ export const FavouriteItemBox = ({ data, _id }) => {
   const imageUrl = images.length ? images[0] : noImage;
 
   const handleDeleteRequest = () => {
-    dispatch(deleteFavouriteRequest(_id, token, toast));
+    dispatch(deleteFavouriteRequest(_id, toast));
   };
 
   const handleDisplayProduct = () => {

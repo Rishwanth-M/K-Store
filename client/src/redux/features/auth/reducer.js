@@ -6,7 +6,11 @@ import {
   SHOW_SIGNUP_PAGE,
 } from "./actionTypes";
 
-import { getItem } from "../../../utils/localstorage";
+import {
+  getItem,
+  setItem,
+  removeItem,
+} from "../../../utils/localstorage";
 
 const initialState = {
   isLogin: true,
@@ -41,6 +45,10 @@ export const authReducer = (state = initialState, { type, payload }) => {
     case GET_TOKEN: {
       const { token, user } = payload;
 
+      // ✅ THIS WAS MISSING
+      setItem("token", token);
+      setItem("user", user);
+
       return {
         ...state,
         token,
@@ -51,6 +59,10 @@ export const authReducer = (state = initialState, { type, payload }) => {
     }
 
     case REMOVE_TOKEN:
+      // ✅ CLEANUP
+      removeItem("token");
+      removeItem("user");
+
       return {
         ...state,
         token: null,

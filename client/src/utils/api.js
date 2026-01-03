@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -9,15 +9,9 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    let token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-    // ✅ FIX: remove JSON quotes
     if (token) {
-      try {
-        token = JSON.parse(token);
-      } catch {
-        // already a string
-      }
       config.headers.Authorization = `Bearer ${token}`;
     }
 
