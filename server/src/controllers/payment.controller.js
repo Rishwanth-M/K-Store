@@ -16,7 +16,7 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
-    // 1️⃣ FIND ORDER
+    /* ✅ FIND ORDER */
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({
@@ -25,23 +25,23 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
-    // 2️⃣ GENERATE TRANSACTION ID
+    /* ✅ GENERATE TRANSACTION ID */
     const merchantTransactionId = "MT" + Date.now();
 
-    // 3️⃣ SAVE PAYMENT META
+    /* ✅ SAVE TRANSACTION */
     order.paymentDetails.merchantTransactionId = merchantTransactionId;
     order.paymentDetails.paymentStatus = "INITIATED";
     await order.save();
 
-    // 4️⃣ PHONEPE PAYLOAD
+    /* ✅ PHONEPE PAYLOAD */
     const payload = {
       merchantId: process.env.PHONEPE_MERCHANT_ID,
       merchantTransactionId,
-      merchantUserId: req.user._id.toString(), // ✅ FIX
-      amount: Number(amount) * 100, // paise
+      merchantUserId: req.user._id.toString(), // ✅ FIXED
+      amount: amount * 100,
       redirectUrl: `${process.env.FRONTEND_URL}/payment-success`,
       redirectMode: "POST",
-      callbackUrl: `${process.env.BASE_URL}/api/payment/webhook`, // ✅ FIX
+      callbackUrl: `${process.env.FRONTEND_URL}/api/payment/webhook`,
       paymentInstrument: {
         type: "PAY_PAGE",
       },
@@ -51,7 +51,7 @@ exports.initiatePayment = async (req, res) => {
       JSON.stringify(payload)
     ).toString("base64");
 
-    // 5️⃣ CHECKSUM
+    /* ✅ CHECKSUM */
     const checksum =
       crypto
         .createHash("sha256")
@@ -64,7 +64,7 @@ exports.initiatePayment = async (req, res) => {
       "###" +
       process.env.PHONEPE_SALT_INDEX;
 
-    // 6️⃣ PHONEPE API CALL
+    /* ✅ CALL PHONEPE */
     const response = await axios.post(
       `${process.env.PHONEPE_BASE_URL}/pg/v1/pay`,
       { request: base64Payload },
@@ -81,9 +81,8 @@ exports.initiatePayment = async (req, res) => {
       redirectUrl:
         response.data.data.instrumentResponse.redirectInfo.url,
     });
-
   } catch (error) {
-    console.error("❌ Payment Initiation Error:", error.message);
+    console.error("❌ Payment Initiation Error:", error);
     return res.status(500).json({
       success: false,
       message: "Payment initiation failed",
@@ -92,7 +91,7 @@ exports.initiatePayment = async (req, res) => {
 };
 
 /* ======================================================
-   PHONEPE WEBHOOK (RAW BODY)
+   PHONEPE WEBHOOK
 ====================================================== */
 exports.phonePeWebhook = async (req, res) => {
   try {
@@ -139,7 +138,7 @@ exports.phonePeWebhook = async (req, res) => {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("❌ Webhook Error:", error.message);
+    console.error("❌ Webhook Error:", error);
     return res.status(500).json({ success: false });
   }
 };
