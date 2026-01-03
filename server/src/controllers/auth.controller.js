@@ -8,7 +8,7 @@ const createToken = (userId) => {
   }
 
   return jwt.sign(
-    { id: userId }, // ✅ standardized payload
+    { userId }, // ✅ standardized payload
     process.env.JWT_ACCESS_KEY,
     { expiresIn: "7d" }
   );
