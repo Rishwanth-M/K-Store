@@ -144,41 +144,43 @@ export const Checkout = () => {
 
   /* ================= SUBMIT ================= */
   const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    if (!handleFormValidation()) return;
+  e.preventDefault();
+  if (!handleFormValidation()) return;
 
-    await saveAddressIfNeeded();
+  await saveAddressIfNeeded();
 
-    try {
-      /* 1️⃣ CREATE ORDER */
-      const orderRes = await api.post("/order", {
-        cartProducts,
-        shippingDetails: form,
-      });
+  try {
+    /* 1️⃣ CREATE ORDER */
+    const orderRes = await api.post("/order", {
+      cartProducts,
+      shippingDetails: form,
+    });
 
-      const { payableAmount } = orderRes.data;
+    const { orderId, payableAmount } = orderRes.data;
 
-      if (!payableAmount) {
-        throw new Error("Order amount missing");
-      }
-
-      /* 2️⃣ INITIATE PAYMENT */
-      const paymentRes = await api.post("/api/payment/initiate", {
-        amount: payableAmount,
-      });
-
-      const redirectUrl =
-        paymentRes.data?.data?.instrumentResponse?.redirectInfo?.url;
-
-      if (!redirectUrl) {
-        throw new Error("PhonePe redirect URL missing");
-      }
-
-      window.location.href = redirectUrl;
-    } catch (err) {
-      setToast(toast, "Payment initiation failed", "error");
+    if (!orderId || !payableAmount) {
+      throw new Error("Order creation failed");
     }
-  };
+
+    /* 2️⃣ INITIATE PAYMENT (SEND orderId + amount) */
+    const paymentRes = await api.post("/api/payment/initiate", {
+      orderId,
+      amount: payableAmount,
+    });
+
+    const redirectUrl = paymentRes.data?.redirectUrl;
+
+    if (!redirectUrl) {
+      throw new Error("PhonePe redirect URL missing");
+    }
+
+    /* 3️⃣ REDIRECT TO PHONEPE */
+    window.location.href = redirectUrl;
+  } catch (err) {
+    setToast(toast, "Payment initiation failed", "error");
+  }
+};
+
 
   /* ================= UI ================= */
   return (
