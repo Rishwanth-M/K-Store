@@ -16,7 +16,7 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
-    // 1️⃣ Find order
+    // 1️⃣ FIND ORDER
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({
@@ -25,31 +25,33 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
-    // 2️⃣ Generate transaction ID
+    // 2️⃣ GENERATE TRANSACTION ID
     const merchantTransactionId = "MT" + Date.now();
 
-    // 3️⃣ Save transaction ID
+    // 3️⃣ SAVE PAYMENT META
     order.paymentDetails.merchantTransactionId = merchantTransactionId;
     order.paymentDetails.paymentStatus = "INITIATED";
     await order.save();
 
-    // 4️⃣ Build PhonePe payload
+    // 4️⃣ PHONEPE PAYLOAD
     const payload = {
       merchantId: process.env.PHONEPE_MERCHANT_ID,
       merchantTransactionId,
-      merchantUserId: req.user.id,
-      amount: amount * 100, // paise
+      merchantUserId: req.user._id.toString(), // ✅ FIX
+      amount: Number(amount) * 100, // paise
       redirectUrl: `${process.env.FRONTEND_URL}/payment-success`,
       redirectMode: "POST",
-      callbackUrl: `${process.env.FRONTEND_URL}/api/payment/webhook`,
+      callbackUrl: `${process.env.BASE_URL}/api/payment/webhook`, // ✅ FIX
       paymentInstrument: {
         type: "PAY_PAGE",
       },
     };
 
-    const base64Payload = Buffer.from(JSON.stringify(payload)).toString("base64");
+    const base64Payload = Buffer.from(
+      JSON.stringify(payload)
+    ).toString("base64");
 
-    // 5️⃣ Generate checksum
+    // 5️⃣ CHECKSUM
     const checksum =
       crypto
         .createHash("sha256")
@@ -62,7 +64,7 @@ exports.initiatePayment = async (req, res) => {
       "###" +
       process.env.PHONEPE_SALT_INDEX;
 
-    // 6️⃣ Call PhonePe
+    // 6️⃣ PHONEPE API CALL
     const response = await axios.post(
       `${process.env.PHONEPE_BASE_URL}/pg/v1/pay`,
       { request: base64Payload },
@@ -76,7 +78,8 @@ exports.initiatePayment = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      redirectUrl: response.data.data.instrumentResponse.redirectInfo.url,
+      redirectUrl:
+        response.data.data.instrumentResponse.redirectInfo.url,
     });
 
   } catch (error) {
@@ -135,7 +138,6 @@ exports.phonePeWebhook = async (req, res) => {
     await order.save();
 
     return res.status(200).json({ success: true });
-
   } catch (error) {
     console.error("❌ Webhook Error:", error.message);
     return res.status(500).json({ success: false });
