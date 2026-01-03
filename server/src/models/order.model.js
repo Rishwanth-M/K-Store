@@ -13,28 +13,38 @@ const orderSchema = new Schema(
     /* ================= ORDER STATUS ================= */
     orderStatus: {
       type: String,
-      enum: ["CREATED", "PAYMENT_PENDING", "PAID", "FAILED"],
+      enum: ["CREATED", "PAID", "FAILED"],
       default: "CREATED",
+      index: true,
     },
 
     /* ================= CART SNAPSHOT ================= */
     cartProducts: [
       {
-        title: { type: String, required: true },
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+
+        name: { type: String, required: true },
         price: { type: Number, required: true },
+
         size: { type: String, required: true },
         quantity: { type: Number, required: true },
-        color: { type: String, default: "Default" },
-        img: { type: [String], default: [] },
+
+        images: { type: [String], default: [] },
+        category: { type: String },
+        productType: { type: String },
       },
     ],
 
-    /* ================= ORDER SUMMARY (IMMUTABLE) ================= */
+    /* ================= ORDER SUMMARY ================= */
     orderSummary: {
       subTotal: { type: Number, required: true },
       shipping: { type: Number, required: true },
       discount: { type: Number, default: 0 },
-      total: { type: Number, required: true }, // 👈 SINGLE SOURCE OF TRUTH
+      total: { type: Number, required: true },
       quantity: { type: Number, required: true },
     },
 
@@ -46,8 +56,14 @@ const orderSchema = new Schema(
         default: "PHONEPE",
       },
 
-      merchantTransactionId: { type: String },
-      phonepeTransactionId: { type: String },
+      merchantTransactionId: {
+        type: String,
+        index: true,
+      },
+
+      phonepeTransactionId: {
+        type: String,
+      },
 
       paymentStatus: {
         type: String,

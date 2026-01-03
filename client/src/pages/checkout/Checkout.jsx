@@ -18,10 +18,10 @@ import {
 } from "@chakra-ui/react";
 
 import { setToast } from "../../utils/extraFunctions";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 /* ================= INITIAL FORM ================= */
 const initState = {
@@ -38,17 +38,12 @@ const initState = {
 };
 
 export const Checkout = () => {
-  const navigate = useNavigate();
   const toast = useToast();
-  const dispatch = useDispatch();
 
   /* ================= AUTH ================= */
   const { token, user } = useSelector((state) => state.authReducer);
 
-  /* 🔒 AUTH GUARD */
-  if (!token) {
-    return <Navigate to="/auth" replace />;
-  }
+  if (!token) return <Navigate to="/auth" replace />;
 
   /* ================= CART ================= */
   const { orderSummary, cartProducts = [] } = useSelector(
@@ -56,7 +51,6 @@ export const Checkout = () => {
     shallowEqual
   );
 
-  /* 🛒 EMPTY CART GUARD */
   if (!cartProducts.length) {
     return <Navigate to="/allProducts" replace />;
   }
@@ -77,25 +71,23 @@ export const Checkout = () => {
 
   /* ================= FETCH SAVED ADDRESSES ================= */
   useEffect(() => {
-    axios
-      .get("/users/addresses", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api
+      .get("/users/addresses")
       .then((res) => setSavedAddresses(res.data.addresses || []))
       .catch(() => setSavedAddresses([]));
-  }, [token]);
+  }, []);
 
   /* ================= INPUT CHANGE ================= */
   const handleInputChange = ({ target: { name, value } }) => {
-    const updatedForm = { ...form, [name]: value };
-    setForm(updatedForm);
+    const updated = { ...form, [name]: value };
+    setForm(updated);
 
     if (isUsingSavedAddress && originalSavedAddress) {
-      const isModified = Object.keys(originalSavedAddress).some(
-        (key) => originalSavedAddress[key] !== updatedForm[key]
+      const modified = Object.keys(originalSavedAddress).some(
+        (k) => originalSavedAddress[k] !== updated[k]
       );
 
-      if (isModified) {
+      if (modified) {
         setIsUsingSavedAddress(false);
         setSaveAddress(true);
       }
@@ -104,7 +96,7 @@ export const Checkout = () => {
 
   /* ================= USE SAVED ADDRESS ================= */
   const handleUseAddress = (address) => {
-    const filledAddress = {
+    const filled = {
       firstName: address.firstName || "",
       lastName: address.lastName || "",
       addressLine1: address.addressLine1 || "",
@@ -117,8 +109,8 @@ export const Checkout = () => {
       mobile: address.mobile || "",
     };
 
-    setForm(filledAddress);
-    setOriginalSavedAddress(filledAddress);
+    setForm(filled);
+    setOriginalSavedAddress(filled);
     setIsUsingSavedAddress(true);
     setSaveAddress(false);
   };
@@ -126,11 +118,8 @@ export const Checkout = () => {
   /* ================= SAVE ADDRESS ================= */
   const saveAddressIfNeeded = async () => {
     if (!saveAddress) return;
-
     try {
-      await api.post("/users/addresses", form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post("/users/addresses", form);
     } catch {
       setToast(toast, "Failed to save address", "error");
     }
@@ -138,17 +127,17 @@ export const Checkout = () => {
 
   /* ================= VALIDATION ================= */
   const handleFormValidation = () => {
-    const isEmpty = isCheckoutFormEmpty(form);
-    if (!isEmpty.status) return setToast(toast, isEmpty.message, "error");
+    const empty = isCheckoutFormEmpty(form);
+    if (!empty.status) return setToast(toast, empty.message, "error");
 
-    const isEmail = validateEmail(form.email);
-    if (!isEmail.status) return setToast(toast, isEmail.message, "error");
+    const email = validateEmail(form.email);
+    if (!email.status) return setToast(toast, email.message, "error");
 
-    const isPinCode = validatePinCode(form.pinCode);
-    if (!isPinCode.status) return setToast(toast, isPinCode.message, "error");
+    const pin = validatePinCode(form.pinCode);
+    if (!pin.status) return setToast(toast, pin.message, "error");
 
-    const isMobile = validateMobile(form.mobile);
-    if (!isMobile.status) return setToast(toast, isMobile.message, "error");
+    const mobile = validateMobile(form.mobile);
+    if (!mobile.status) return setToast(toast, mobile.message, "error");
 
     return true;
   };
@@ -160,31 +149,33 @@ export const Checkout = () => {
 
     await saveAddressIfNeeded();
 
-    /* ✅ NORMALIZE CART */
-    const normalizedCart = cartProducts.map((item) => ({
-      _id: item._id,
-      quantity: Number(item.quantity),
-      size: item.size,
-    }));
-
     try {
-      const { data } = await api.post(
-        "/api/payment/order",
-        {
-          cartProducts: normalizedCart,
-          shippingDetails: form,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      /* 1️⃣ CREATE ORDER */
+      const orderRes = await api.post("/order", {
+        cartProducts,
+        shippingDetails: form,
+      });
 
-      if (!data?.redirectUrl) {
-        throw new Error("Redirect URL missing");
+      const { payableAmount } = orderRes.data;
+
+      if (!payableAmount) {
+        throw new Error("Order amount missing");
       }
 
-      window.location.href = data.redirectUrl;
-    } catch {
+      /* 2️⃣ INITIATE PAYMENT */
+      const paymentRes = await api.post("/api/payment/initiate", {
+        amount: payableAmount,
+      });
+
+      const redirectUrl =
+        paymentRes.data?.data?.instrumentResponse?.redirectInfo?.url;
+
+      if (!redirectUrl) {
+        throw new Error("PhonePe redirect URL missing");
+      }
+
+      window.location.href = redirectUrl;
+    } catch (err) {
       setToast(toast, "Payment initiation failed", "error");
     }
   };
@@ -201,53 +192,40 @@ export const Checkout = () => {
       gridTemplateColumns={{ base: "100%", md: "55% 35%" }}
     >
       <Box>
-        <Box mb="6">
-          <Text fontSize="20px" fontWeight={600} mb="3">
-            Saved Addresses
+        <Text fontSize="20px" fontWeight={600} mb="3">
+          Saved Addresses
+        </Text>
+
+        {savedAddresses.length ? (
+          savedAddresses.map((addr, i) => (
+            <Box key={i} p="4" mb="3" border="1px solid #e2e8f0">
+              <Text fontWeight={600}>
+                {addr.firstName} {addr.lastName}
+              </Text>
+              <Text fontSize="14px">
+                {addr.addressLine1}, {addr.locality}
+              </Text>
+              <Button size="sm" mt="2" onClick={() => handleUseAddress(addr)}>
+                Use this address
+              </Button>
+            </Box>
+          ))
+        ) : (
+          <Text fontSize="14px" color="gray.500">
+            No saved addresses found
           </Text>
-
-          {savedAddresses.length ? (
-            savedAddresses.map((addr, i) => (
-              <Box
-                key={i}
-                p="4"
-                mb="3"
-                border="1px solid #e2e8f0"
-                borderRadius="8px"
-              >
-                <Text fontWeight={600}>
-                  {addr.firstName} {addr.lastName}
-                </Text>
-                <Text fontSize="14px">
-                  {addr.addressLine1}, {addr.locality}
-                </Text>
-                <Text fontSize="14px">
-                  {addr.state}, {addr.country} - {addr.pinCode}
-                </Text>
-
-                <Button size="sm" mt="2" onClick={() => handleUseAddress(addr)}>
-                  Use this address
-                </Button>
-              </Box>
-            ))
-          ) : (
-            <Text fontSize="14px" color="gray.500">
-              No saved addresses found
-            </Text>
-          )}
-        </Box>
+        )}
 
         <CheckoutForm form={form} onChange={handleInputChange} />
 
-        <Flex mt="5">
-          <Checkbox
-            isChecked={saveAddress}
-            isDisabled={isUsingSavedAddress}
-            onChange={(e) => setSaveAddress(e.target.checked)}
-          >
-            Save this address to my account
-          </Checkbox>
-        </Flex>
+        <Checkbox
+          mt="5"
+          isChecked={saveAddress}
+          isDisabled={isUsingSavedAddress}
+          onChange={(e) => setSaveAddress(e.target.checked)}
+        >
+          Save this address
+        </Checkbox>
       </Box>
 
       <CheckoutOrderSummary

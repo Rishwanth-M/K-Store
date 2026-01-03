@@ -1,60 +1,76 @@
 const Order = require("../models/order.model");
+const Product = require("../models/product.model");
 
 /* ================= CREATE ORDER ================= */
 const createOrder = async (req, res, next) => {
   try {
+    const userId = req.user.id; // ✅ FIX
     const { cartProducts = [], shippingDetails = {} } = req.body;
 
     if (!cartProducts.length) {
-      return res.status(400).json({ message: "Cart is empty" });
+      return res.status(400).json({
+        success: false,
+        message: "Cart is empty",
+      });
     }
 
-    /* ================= NORMALIZE CART ================= */
-    const normalizedProducts = cartProducts.map((item) => ({
-      title: item.name,
-      price: Number(item.price),
-      quantity: Number(item.quantity),
-      size: item.size,
-      color: item.color || "Default",
-      img: Array.isArray(item.images) ? item.images : [],
-    }));
+    /* ================= FETCH PRODUCTS SAFELY ================= */
+    const productIds = cartProducts.map((p) => p._id);
+    const productsFromDB = await Product.find({
+      _id: { $in: productIds },
+    }).lean();
 
-    /* ================= SERVER-SIDE CALCULATION ================= */
-    const subTotal = normalizedProducts.reduce(
+    if (!productsFromDB.length) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid cart products",
+      });
+    }
+
+    /* ================= BUILD ORDER ITEMS ================= */
+    const orderItems = cartProducts.map((cartItem) => {
+      const product = productsFromDB.find(
+        (p) => String(p._id) === String(cartItem._id)
+      );
+
+      if (!product) {
+        throw new Error("Product mismatch");
+      }
+
+      return {
+        product: product._id,
+        name: product.name,
+        price: product.price, // ✅ SERVER TRUSTED
+        quantity: Number(cartItem.quantity),
+        size: cartItem.size,
+        images: product.images || [],
+        category: product.category,
+        productType: product.productType,
+      };
+    });
+
+    /* ================= CALCULATE TOTAL ================= */
+    const subTotal = orderItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    const shipping = subTotal > 999 ? 0 : 50; // example rule
+    const shipping = subTotal > 999 ? 0 : 50;
     const discount = 0;
     const total = subTotal + shipping - discount;
 
-    /* ================= NORMALIZE SHIPPING ================= */
-    const normalizedShipping = {
-      firstName: shippingDetails.firstName,
-      lastName: shippingDetails.lastName,
-      addressLine1: shippingDetails.addressLine1,
-      addressLine2: shippingDetails.addressLine2 || "",
-      locality: shippingDetails.locality,
-      pinCode: String(shippingDetails.pinCode),
-      state: shippingDetails.state,
-      country: shippingDetails.country,
-      email: shippingDetails.email,
-      mobile: String(shippingDetails.mobile),
-    };
-
     /* ================= CREATE ORDER ================= */
     const order = await Order.create({
-      user: req.user._id,
-      cartProducts: normalizedProducts,
+      user: userId,
+      cartProducts: orderItems,
       orderSummary: {
         subTotal,
         shipping,
         discount,
         total,
-        quantity: normalizedProducts.length,
+        quantity: orderItems.length,
       },
-      shippingDetails: normalizedShipping,
+      shippingDetails,
       paymentStatus: "PENDING",
       orderStatus: "CREATED",
     });
@@ -63,9 +79,8 @@ const createOrder = async (req, res, next) => {
       success: true,
       message: "Order created",
       orderId: order._id,
-      payableAmount: total,
+      amount: total,
     });
-
   } catch (error) {
     next(error);
   }
@@ -74,11 +89,13 @@ const createOrder = async (req, res, next) => {
 /* ================= GET USER ORDERS ================= */
 const getUserOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({ user: req.user._id })
-      .sort({ createdAt: -1 })
-      .select("-__v");
+    const userId = req.user.id;
 
-    res.status(200).json({
+    const orders = await Order.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
       success: true,
       orders,
     });

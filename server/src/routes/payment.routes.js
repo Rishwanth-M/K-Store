@@ -4,7 +4,6 @@ const router = express.Router();
 const authorization = require("../middlewares/authorization");
 const {
   initiatePayment,
-  paymentStatus,
   phonePeWebhook,
 } = require("../controllers/payment.controller");
 
@@ -14,13 +13,8 @@ const {
 router.post("/initiate", authorization, initiatePayment);
 
 /* ======================================================
-   PAYMENT STATUS CHECK (OPTIONAL CLIENT POLL)
-====================================================== */
-router.get("/status/:merchantTransactionId", paymentStatus);
-
-/* ======================================================
    PHONEPE WEBHOOK (SERVER → SERVER)
-   ⚠ MUST MATCH raw-body middleware path
+   ❌ DO NOT ADD AUTH HERE
 ====================================================== */
 router.post("/webhook", phonePeWebhook);
 
