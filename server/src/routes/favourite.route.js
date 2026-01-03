@@ -26,10 +26,9 @@ router.post("/", authorization, async (req, res) => {
     }
 
     const favourite = await Favourite.create({
-      user: userId,
+      user: userId, // ✅ NOW PRESENT
       product: product._id,
       size,
-
       name: product.name,
       price: product.price,
       images: product.images || [],
@@ -42,7 +41,6 @@ router.post("/", authorization, async (req, res) => {
       favourite,
     });
   } catch (error) {
-    // ✅ DUPLICATE (USER + PRODUCT + SIZE)
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
@@ -62,7 +60,6 @@ router.post("/", authorization, async (req, res) => {
 router.get("/", authorization, async (req, res) => {
   try {
     const userId = req.user._id; // ✅ FIXED
-
     const favourites = await Favourite.find({ user: userId })
       .sort({ createdAt: -1 })
       .lean();
