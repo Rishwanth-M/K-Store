@@ -13,26 +13,24 @@ const authorization = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    // ✅ Verify token
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
 
-    // ✅ MATCH JWT PAYLOAD (userId)
-    if (!decoded || !decoded.userId) {
+    // ✅ MATCH auth.controller payload
+    if (!decoded || !decoded.id) {
       return res.status(401).json({
         success: false,
         message: "Invalid token payload",
       });
     }
 
-    // ✅ STANDARDIZED USER OBJECT
+    // ✅ STANDARDIZE USER OBJECT (VERY IMPORTANT)
     req.user = {
-      _id: decoded.userId,
+      _id: decoded.id,
     };
 
     next();
   } catch (error) {
     console.error("❌ Auth error:", error.message);
-
     return res.status(401).json({
       success: false,
       message: "Invalid or expired token",
