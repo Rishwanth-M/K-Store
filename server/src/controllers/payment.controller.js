@@ -38,7 +38,7 @@ exports.initiatePayment = async (req, res) => {
 
       // ✅ FRONTEND redirect (user)
       redirectUrl: `${process.env.FRONTEND_URL}/payment-success`,
-      redirectMode: "POST",
+      redirectMode: "GET",
 
       // ✅ BACKEND webhook (server-to-server)
       callbackUrl: `${process.env.BACKEND_URL}/api/payment/webhook`,
