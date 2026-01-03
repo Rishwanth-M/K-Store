@@ -16,7 +16,6 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
-    /* ✅ FIND ORDER */
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({
@@ -25,23 +24,25 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
-    /* ✅ GENERATE TRANSACTION ID */
     const merchantTransactionId = "MT" + Date.now();
 
-    /* ✅ SAVE TRANSACTION */
     order.paymentDetails.merchantTransactionId = merchantTransactionId;
     order.paymentDetails.paymentStatus = "INITIATED";
     await order.save();
 
-    /* ✅ PHONEPE PAYLOAD */
     const payload = {
       merchantId: process.env.PHONEPE_MERCHANT_ID,
       merchantTransactionId,
-      merchantUserId: req.user._id.toString(), // ✅ FIXED
+      merchantUserId: req.user._id.toString(),
       amount: amount * 100,
+
+      // ✅ FRONTEND redirect (user)
       redirectUrl: `${process.env.FRONTEND_URL}/payment-success`,
       redirectMode: "POST",
-      callbackUrl: `${process.env.FRONTEND_URL}/api/payment/webhook`,
+
+      // ✅ BACKEND webhook (server-to-server)
+      callbackUrl: `${process.env.BACKEND_URL}/api/payment/webhook`,
+
       paymentInstrument: {
         type: "PAY_PAGE",
       },
@@ -51,7 +52,6 @@ exports.initiatePayment = async (req, res) => {
       JSON.stringify(payload)
     ).toString("base64");
 
-    /* ✅ CHECKSUM */
     const checksum =
       crypto
         .createHash("sha256")
@@ -64,7 +64,6 @@ exports.initiatePayment = async (req, res) => {
       "###" +
       process.env.PHONEPE_SALT_INDEX;
 
-    /* ✅ CALL PHONEPE */
     const response = await axios.post(
       `${process.env.PHONEPE_BASE_URL}/pg/v1/pay`,
       { request: base64Payload },
@@ -82,7 +81,7 @@ exports.initiatePayment = async (req, res) => {
         response.data.data.instrumentResponse.redirectInfo.url,
     });
   } catch (error) {
-    console.error("❌ Payment Initiation Error:", error);
+    console.error("❌ Payment Initiation Error:", error.response?.data || error.message);
     return res.status(500).json({
       success: false,
       message: "Payment initiation failed",
@@ -118,9 +117,7 @@ exports.phonePeWebhook = async (req, res) => {
       "paymentDetails.merchantTransactionId": transactionId,
     });
 
-    if (!order) {
-      return res.status(404).json({ success: false });
-    }
+    if (!order) return res.status(404).json({ success: false });
 
     if (status === "COMPLETED") {
       order.paymentDetails.paymentStatus = "SUCCESS";
@@ -138,7 +135,7 @@ exports.phonePeWebhook = async (req, res) => {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("❌ Webhook Error:", error);
+    console.error("❌ Webhook Error:", error.message);
     return res.status(500).json({ success: false });
   }
 };
