@@ -12,18 +12,20 @@ const authorization = (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
+
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
 
-    if (!decoded || !decoded.id) {
+    // ✅ TOKEN HAS userId (THIS IS THE FIX)
+    if (!decoded || !decoded.userId) {
       return res.status(401).json({
         success: false,
         message: "Invalid token",
       });
     }
 
-    // ✅ SINGLE STANDARD
+    // ✅ STANDARDIZED USER OBJECT
     req.user = {
-      _id: decoded.id,
+      _id: decoded.userId,
     };
 
     next();
