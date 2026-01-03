@@ -8,21 +8,6 @@ import {
   SHOW_SIGNUP_PAGE,
 } from "./actionTypes";
 
-/* ================= AXIOS CONFIG ================= */
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
-});
-
-// Attach token automatically
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
 /* ================= UI ACTIONS ================= */
 
 export const showLoginPage = () => ({ type: SHOW_LOGIN_PAGE });
@@ -50,7 +35,6 @@ export const signupUser = (data, toast, navigate) => async (dispatch) => {
       throw new Error("Invalid signup response");
     }
 
-    // ✅ Persist token
     localStorage.setItem("token", res.token);
     localStorage.setItem("user", JSON.stringify(res.user));
 
@@ -78,7 +62,6 @@ export const loginUser = (data, toast, navigate) => async (dispatch) => {
       throw new Error("Invalid login response");
     }
 
-    // ✅ Persist token
     localStorage.setItem("token", res.token);
     localStorage.setItem("user", JSON.stringify(res.user));
 

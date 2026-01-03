@@ -19,6 +19,7 @@ const favouriteSchema = new Schema(
     size: {
       type: String,
       required: true,
+      trim: true,
     },
 
     /* ===== SNAPSHOT (SAFE SUBSET) ===== */

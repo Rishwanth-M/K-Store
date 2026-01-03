@@ -8,17 +8,12 @@ import { setToast } from "../../../utils/extraFunctions";
 import api from "../../../utils/api";
 
 /* ================= GET FAVOURITES ================= */
-export const getFavouriteRequest = (token) => async (dispatch) => {
+export const getFavouriteRequest = () => async (dispatch) => {
   dispatch({ type: GET_FAVOURITE_LOADING });
 
   try {
-    const res = await api.get("/favourite", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await api.get("/favourite");
 
-    // ✅ BACKEND RETURNS res.data.favourites
     dispatch({
       type: GET_FAVOURITE_SUCCESS,
       payload: res.data.favourites, // ✅ ARRAY
@@ -28,6 +23,7 @@ export const getFavouriteRequest = (token) => async (dispatch) => {
   }
 };
 
+/* ================= ADD TO FAVOURITE ================= */
 export const addToFavouriteRequest =
   (data, toast) => async (dispatch) => {
     try {
@@ -39,23 +35,23 @@ export const addToFavouriteRequest =
       if (err?.response?.status === 409) {
         setToast(toast, "Already in favourites", "info");
       } else {
-        setToast(toast, "Something went wrong", "error");
+        setToast(
+          toast,
+          err?.response?.data?.message || "Something went wrong",
+          "error"
+        );
       }
     }
   };
 
 /* ================= DELETE FAVOURITE ================= */
 export const deleteFavouriteRequest =
-  (id, token, toast) => async (dispatch) => {
+  (id, toast) => async (dispatch) => {
     try {
-      await api.delete(`/favourite/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/favourite/${id}`);
 
       setToast(toast, "Removed from favourites", "success");
-      dispatch(getFavouriteRequest(token));
+      dispatch(getFavouriteRequest());
     } catch (err) {
       setToast(toast, "Something went wrong", "error");
     }

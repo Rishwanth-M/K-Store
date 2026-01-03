@@ -30,23 +30,16 @@ export const ProductSummary = ({
   const [selectedSize, setSelectedSize] = useState(null);
 
   /* ===================== */
-  /* ✅ SAFE FAVOURITE READ */
+  /* FAVOURITES (SIZE AWARE) */
   /* ===================== */
-  const favouriteState = useSelector(
-    (state) => state.favouriteReducer
-  );
-
-  // Normalize favourites into an array
-  const favouriteList = Array.isArray(favouriteState?.favourite)
-    ? favouriteState.favourite
-    : favouriteState?.favourite?.data || [];
+  const favouriteList =
+    useSelector((state) => state.favouriteReducer.favourite) || [];
 
   const isFavourite = favouriteList.some(
-  (item) =>
-    item.product?._id === product._id &&
-    item.size === selectedSize
-);
-
+    (item) =>
+      item.product === product._id &&
+      item.size === selectedSize
+  );
 
   const inStock = variants.some((v) => Number(v.stock) > 0);
 
@@ -61,7 +54,6 @@ export const ProductSummary = ({
   const primaryText = useColorModeValue("white", "black");
 
   const borderColor = useColorModeValue("black", "white");
-  const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
     <Box color={textColor}>
@@ -152,20 +144,15 @@ export const ProductSummary = ({
         </Button>
 
         <Button
-  size="lg"
-  variant="outline"
-  h="52px"
-  borderColor={borderColor}
-  isDisabled={!selectedSize || isFavourite}
-  onClick={() => {
-    if (!isFavourite) {
-      onAddToFavourite(selectedSize); // ✅ PASS SIZE
-    }
-  }}
->
-  {isFavourite ? "Added to Favourites" : "Favourite"}
-</Button>
-
+          size="lg"
+          variant="outline"
+          h="52px"
+          borderColor={borderColor}
+          isDisabled={!selectedSize || isFavourite}
+          onClick={() => onAddToFavourite(selectedSize)}
+        >
+          {isFavourite ? "Added to Favourites" : "Favourite"}
+        </Button>
       </Stack>
     </Box>
   );

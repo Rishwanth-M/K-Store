@@ -1,4 +1,4 @@
-import api from "../../../utils/api";
+import api from "../../utils/api";
 import { updateCartDetails } from "../../redux/features/cart/actions";
 import { setToast } from "../../utils/extraFunctions";
 import { removeItem } from "../../utils/localstorage";

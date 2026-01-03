@@ -20,7 +20,7 @@ import {
 import { setToast } from "../../utils/extraFunctions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import api from "../../../utils/api";
+import api from "../../utils/api";
 import { useNavigate, Navigate } from "react-router-dom";
 
 /* ================= INITIAL FORM ================= */

@@ -18,7 +18,7 @@ import { OrderSection } from "../../components/orders/OrderSection";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import api from "../../../utils/api";
+import api from "../../utils/api";
 
 import { dateFormator } from "../../utils/dateFormator";
 

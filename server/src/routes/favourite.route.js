@@ -1,15 +1,13 @@
 const router = require("express").Router();
 
 const authorization = require("../middlewares/authorization");
-const checkDuplicateFavourite = require("../middlewares/checkDuplicateFavourite");
-
 const Favourite = require("../models/favourite.model");
 const Product = require("../models/product.model");
 
 /* ================= ADD TO FAVOURITES ================= */
-router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
+router.post("/", authorization, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id; // ✅ FIXED
     const { productId, size } = req.body;
 
     if (!productId || !size) {
@@ -20,7 +18,6 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
     }
 
     const product = await Product.findById(productId).lean();
-
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -33,7 +30,6 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
       product: product._id,
       size,
 
-      // snapshot
       name: product.name,
       price: product.price,
       images: product.images || [],
@@ -46,6 +42,14 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
       favourite,
     });
   } catch (error) {
+    // ✅ DUPLICATE (USER + PRODUCT + SIZE)
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Already in favourites",
+      });
+    }
+
     console.error("❌ Favourite Add Error:", error.message);
     return res.status(500).json({
       success: false,
@@ -57,9 +61,11 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
 /* ================= GET USER FAVOURITES ================= */
 router.get("/", authorization, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id; // ✅ FIXED
 
-    const favourites = await Favourite.find({ user: userId }).lean();
+    const favourites = await Favourite.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .lean();
 
     return res.status(200).json({
       success: true,
@@ -77,7 +83,7 @@ router.get("/", authorization, async (req, res) => {
 router.delete("/:id", authorization, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user._id; // ✅ FIXED
 
     const deleted = await Favourite.findOneAndDelete({
       _id: id,

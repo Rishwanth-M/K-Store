@@ -1,4 +1,4 @@
-import api from "../../../utils/api";
+import api from "../../utils/api";
 import { KreedentialsLogoPayment } from "../../constants/images";
 import { setToast } from "../../utils/extraFunctions";
 import { sendOrderRequest } from "./sendOrderRequest";
