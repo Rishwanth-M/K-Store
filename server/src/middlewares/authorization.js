@@ -16,17 +16,17 @@ const authorization = (req, res, next) => {
     // ✅ Verify token
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
 
-    // ✅ Match auth.controller payload
-    if (!decoded || !decoded.id) {
+    // ✅ MATCH JWT PAYLOAD (userId)
+    if (!decoded || !decoded.userId) {
       return res.status(401).json({
         success: false,
         message: "Invalid token payload",
       });
     }
 
-    // ✅ Standardized user object
+    // ✅ STANDARDIZED USER OBJECT
     req.user = {
-      id: decoded.id,
+      _id: decoded.userId,
     };
 
     next();
