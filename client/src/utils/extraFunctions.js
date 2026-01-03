@@ -29,15 +29,18 @@ export const numberWithCommas = (value) => {
 
 
 /* ===============================
-   TOAST HELPER
+   TOAST HELPER (SAFE)
 ================================ */
 export const setToast = (
   toast,
   title,
-  status,
+  status = "info",
   duration = 2000,
   description
 ) => {
+  // ✅ SAFETY CHECK (FIXES YOUR ERROR)
+  if (typeof toast !== "function") return;
+
   toast({
     title,
     description,
@@ -47,6 +50,7 @@ export const setToast = (
     position: "top",
   });
 };
+
 
 
 /* ===============================
