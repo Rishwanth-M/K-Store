@@ -4,7 +4,7 @@ import {
   Center,
   Text,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { useNavigate, Navigate } from "react-router-dom";
 
 import { BagItems } from "../../components/cart/BagItems";
@@ -13,18 +13,22 @@ import { OrderSummary } from "../../components/cart/OrderSummary";
 export const Cart = () => {
   const navigate = useNavigate();
 
+  // ✅ TOKEN MUST BE DEFINED FIRST
   const token = useSelector((state) => state.authReducer.token);
-  const cartItems = useSelector(
-  (state) => state.cartReducer?.cartProducts || []
-);
 
+  // ✅ MEMOIZED SELECTOR (NO WARNING)
+  const cartItems =
+    useSelector(
+      (state) => state.cartReducer.cartProducts,
+      shallowEqual
+    ) || [];
 
   /* 🔒 AUTH GUARD */
   if (!token) {
     return <Navigate to="/auth" replace />;
   }
 
-  /* 🛒 EMPTY CART UI (NO REDIRECT) */
+  /* 🛒 EMPTY CART UI */
   if (!cartItems.length) {
     return (
       <Center minH="60vh" flexDirection="column" gap="16px">

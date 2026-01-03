@@ -9,22 +9,21 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    let token = localStorage.getItem("token");
+
+    // ✅ FIX: remove JSON quotes
     if (token) {
+      try {
+        token = JSON.parse(token);
+      } catch {
+        // already a string
+      }
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
-);
-
-// Optional: global response handler
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // You can add global 401 handling here later
-    return Promise.reject(error);
-  }
 );
 
 export default api;
