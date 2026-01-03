@@ -39,7 +39,7 @@ exports.initiatePayment = async (req, res) => {
       process.env.PHONEPE_SALT_INDEX;
 
     // 4️⃣ Call PhonePe
-    const response = await axios.post(
+    const response = await api.post(
       `${process.env.PHONEPE_BASE_URL}/pg/v1/pay`,
       { request: base64Payload },
       {
@@ -75,7 +75,7 @@ exports.paymentStatus = async (req, res) => {
       "###" +
       process.env.PHONEPE_SALT_INDEX;
 
-    const response = await axios.get(
+    const response = await api.get(
       `${process.env.PHONEPE_BASE_URL}/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`,
       {
         headers: {

@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../../utils/api";
 import { updateCartDetails } from "../../redux/features/cart/actions";
 import { setToast } from "../../utils/extraFunctions";
 import { removeItem } from "../../utils/localstorage";
@@ -18,7 +18,7 @@ export const sendOrderRequest = async (shippingDetails, orderId, response, order
     };
 
     try {
-        await axios.post('/order', payload, { headers: { 'Authorization': `Bearer ${token}` } });
+        await api.post('/order', payload, { headers: { 'Authorization': `Bearer ${token}` } });
 
         setToast(toast, 'Order placed successfully', 'success');
 

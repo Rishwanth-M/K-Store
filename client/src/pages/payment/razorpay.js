@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../../utils/api";
 import { KreedentialsLogoPayment } from "../../constants/images";
 import { setToast } from "../../utils/extraFunctions";
 import { sendOrderRequest } from "./sendOrderRequest";
@@ -25,7 +25,7 @@ export const initPayment = (form, orderDetails, orderSummary, cartProducts, toke
 
         handler: async function (response) {
             try {
-                const { data } = await axios.post('/api/payment/verify', response);
+                const { data } = await api.post('/api/payment/verify', response);
                 
                 setToast(toast, data.message, 'success');
 

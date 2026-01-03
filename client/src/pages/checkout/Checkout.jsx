@@ -20,7 +20,7 @@ import {
 import { setToast } from "../../utils/extraFunctions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../../utils/api";
 import { useNavigate, Navigate } from "react-router-dom";
 
 /* ================= INITIAL FORM ================= */
@@ -128,7 +128,7 @@ export const Checkout = () => {
     if (!saveAddress) return;
 
     try {
-      await axios.post("/users/addresses", form, {
+      await api.post("/users/addresses", form, {
         headers: { Authorization: `Bearer ${token}` },
       });
     } catch {
@@ -168,7 +168,7 @@ export const Checkout = () => {
     }));
 
     try {
-      const { data } = await axios.post(
+      const { data } = await api.post(
         "/api/payment/order",
         {
           cartProducts: normalizedCart,

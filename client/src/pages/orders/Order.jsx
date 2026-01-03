@@ -18,7 +18,7 @@ import { OrderSection } from "../../components/orders/OrderSection";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../utils/api";
 
 import { dateFormator } from "../../utils/dateFormator";
 
@@ -40,7 +40,7 @@ export const Order = () => {
         setIsLoading(true);
         setIsError(false);
 
-        const res = await axios.get("/order", {
+        const res = await api.get("/order", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

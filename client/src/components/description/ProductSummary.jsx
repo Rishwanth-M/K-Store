@@ -42,8 +42,11 @@ export const ProductSummary = ({
     : favouriteState?.favourite?.data || [];
 
   const isFavourite = favouriteList.some(
-    (item) => item.productId?._id === product._id
-  );
+  (item) =>
+    item.product?._id === product._id &&
+    item.size === selectedSize
+);
+
 
   const inStock = variants.some((v) => Number(v.stock) > 0);
 
@@ -149,19 +152,20 @@ export const ProductSummary = ({
         </Button>
 
         <Button
-          size="lg"
-          variant="outline"
-          h="52px"
-          borderColor={borderColor}
-          isDisabled={isFavourite}
-          onClick={() => {
-            if (!isFavourite) {
-              onAddToFavourite();
-            }
-          }}
-        >
-          {isFavourite ? "Added to Favourites" : "Favourite"}
-        </Button>
+  size="lg"
+  variant="outline"
+  h="52px"
+  borderColor={borderColor}
+  isDisabled={!selectedSize || isFavourite}
+  onClick={() => {
+    if (!isFavourite) {
+      onAddToFavourite(selectedSize); // ✅ PASS SIZE
+    }
+  }}
+>
+  {isFavourite ? "Added to Favourites" : "Favourite"}
+</Button>
+
       </Stack>
     </Box>
   );

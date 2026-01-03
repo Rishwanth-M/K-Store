@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../../utils/api";
 import { GET_DATA_ERROR_HOME, GET_DATA_LOADING_HOME, GET_DATA_SUCCESS_CLOTH, GET_DATA_SUCCESS_SHOE } from "./actionTypes";
 
 export const getDataLoadingHome = () => ({ type: GET_DATA_LOADING_HOME });
@@ -13,7 +13,7 @@ export const getDataErrorHome = () => ({ type: GET_DATA_ERROR_HOME });
 export const getClothData = () => async (dispatch) => {
     try {
         dispatch(getDataLoadingHome());
-        let res = await axios.get("/clothData");
+        let res = await api.get("/clothData");
         dispatch(getDataSuccessCloth(res.data));
     } catch (err) {
         console.log(err);
@@ -24,7 +24,7 @@ export const getClothData = () => async (dispatch) => {
 export const getShoeData = () => async (dispatch) => {
     try {
         dispatch(getDataLoadingHome());
-        let res = await axios.get("/shoeData");
+        let res = await api.get("/shoeData");
         dispatch(getDataSuccessShoe(res.data));
     } catch (err) {
         console.log(err);

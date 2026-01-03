@@ -13,7 +13,7 @@ import {
   SORT_LOW_TO_HIGH,
 } from "./actionTypes";
 
-import axios from "axios";
+import api from "../../../utils/api";
 
 /* ================= ACTION CREATORS ================= */
 
@@ -67,7 +67,7 @@ export const getRequest = (path) => async (dispatch) => {
       }
     }
 
-    const res = await axios.get(url);
+    const res = await api.get(url);
 
     // 🔥 IMPORTANT FIX
     const products = Array.isArray(res.data.products)

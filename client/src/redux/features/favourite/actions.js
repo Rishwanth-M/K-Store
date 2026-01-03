@@ -5,14 +5,14 @@ import {
 } from "./actionTypes";
 
 import { setToast } from "../../../utils/extraFunctions";
-import axios from "axios";
+import api from "../../../utils/api";
 
 /* ================= GET FAVOURITES ================= */
 export const getFavouriteRequest = (token) => async (dispatch) => {
   dispatch({ type: GET_FAVOURITE_LOADING });
 
   try {
-    const res = await axios.get("/favourite", {
+    const res = await api.get("/favourite", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -48,7 +48,7 @@ export const addToFavouriteRequest =
 export const deleteFavouriteRequest =
   (id, token, toast) => async (dispatch) => {
     try {
-      await axios.delete(`/favourite/${id}`, {
+      await api.delete(`/favourite/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
