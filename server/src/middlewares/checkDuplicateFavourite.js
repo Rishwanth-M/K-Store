@@ -2,25 +2,26 @@ const Favourite = require("../models/favourite.model");
 
 const checkDuplicateFavourite = async (req, res, next) => {
   try {
-    const userId = req.user._id;
-    const { productId } = req.body;
+    const userId = req.user.id;
+    const { productId, size } = req.body;
 
-    if (!productId) {
+    if (!productId || !size) {
       return res.status(400).json({
         success: false,
-        message: "productId is required",
+        message: "productId and size are required",
       });
     }
 
     const exists = await Favourite.findOne({
       user: userId,
       product: productId,
+      size,
     });
 
     if (exists) {
       return res.status(409).json({
         success: false,
-        message: "Product already added to favourites",
+        message: "Already in favourites",
       });
     }
 
@@ -28,7 +29,7 @@ const checkDuplicateFavourite = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Favourite check failed",
     });
   }
 };

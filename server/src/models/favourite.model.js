@@ -16,6 +16,11 @@ const favouriteSchema = new Schema(
       index: true,
     },
 
+    size: {
+      type: String,
+      required: true,
+    },
+
     /* ===== SNAPSHOT (SAFE SUBSET) ===== */
     name: { type: String, required: true },
     price: { type: Number, required: true },
@@ -29,7 +34,10 @@ const favouriteSchema = new Schema(
   }
 );
 
-/* ===== PREVENT DUPLICATES AT DB LEVEL ===== */
-favouriteSchema.index({ user: 1, product: 1 }, { unique: true });
+/* ===== PREVENT DUPLICATES (USER + PRODUCT + SIZE) ===== */
+favouriteSchema.index(
+  { user: 1, product: 1, size: 1 },
+  { unique: true }
+);
 
 module.exports = model("Favourite", favouriteSchema);

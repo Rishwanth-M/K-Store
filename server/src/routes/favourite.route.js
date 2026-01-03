@@ -9,13 +9,13 @@ const Product = require("../models/product.model");
 /* ================= ADD TO FAVOURITES ================= */
 router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
   try {
-    const userId = req.user._id;
-    const { productId } = req.body;
+    const userId = req.user.id;
+    const { productId, size } = req.body;
 
-    if (!productId) {
+    if (!productId || !size) {
       return res.status(400).json({
         success: false,
-        message: "productId is required",
+        message: "productId and size are required",
       });
     }
 
@@ -31,6 +31,7 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
     const favourite = await Favourite.create({
       user: userId,
       product: product._id,
+      size,
 
       // snapshot
       name: product.name,
@@ -45,6 +46,7 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
       favourite,
     });
   } catch (error) {
+    console.error("❌ Favourite Add Error:", error.message);
     return res.status(500).json({
       success: false,
       message: "Failed to add favourite",
@@ -55,9 +57,9 @@ router.post("/", authorization, checkDuplicateFavourite, async (req, res) => {
 /* ================= GET USER FAVOURITES ================= */
 router.get("/", authorization, async (req, res) => {
   try {
-    const favourites = await Favourite.find({
-      user: req.user._id,
-    }).lean();
+    const userId = req.user.id;
+
+    const favourites = await Favourite.find({ user: userId }).lean();
 
     return res.status(200).json({
       success: true,
@@ -71,12 +73,15 @@ router.get("/", authorization, async (req, res) => {
   }
 });
 
-/* ================= DELETE FAVOURITE (OWNERSHIP SAFE) ================= */
+/* ================= DELETE FAVOURITE ================= */
 router.delete("/:id", authorization, async (req, res) => {
   try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
     const deleted = await Favourite.findOneAndDelete({
-      _id: req.params.id,
-      user: req.user._id,
+      _id: id,
+      user: userId,
     });
 
     if (!deleted) {

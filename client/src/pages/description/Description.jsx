@@ -54,15 +54,29 @@ export const Description = () => {
   };
 
   /* ---------- ADD TO FAVOURITE ---------- */
-  const handleAddToFavourite = () => {
-    if (!token) {
-      setToast(toast, "Please login first", "error");
-      navigate("/auth");
-      return;
-    }
+  const handleAddToFavourite = (selectedSize) => {
+  if (!selectedSize) {
+    setToast(toast, "Please select a size", "error");
+    return;
+  }
 
-    dispatch(addToFavouriteRequest(product, token, toast));
-  };
+  if (!token) {
+    setToast(toast, "Please login first", "error");
+    navigate("/auth");
+    return;
+  }
+
+  dispatch(
+    addToFavouriteRequest(
+      {
+        productId: product._id,
+        size: selectedSize,
+      },
+      toast
+    )
+  );
+};
+
 
   return (
     <>

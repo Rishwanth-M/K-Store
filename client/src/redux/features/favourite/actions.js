@@ -5,6 +5,7 @@ import {
 } from "./actionTypes";
 
 import { setToast } from "../../../utils/extraFunctions";
+import api from "../../../utils/api"; // axios instance with interceptor
 import axios from "axios";
 
 /* ================= GET FAVOURITES ================= */
@@ -28,26 +29,16 @@ export const getFavouriteRequest = (token) => async (dispatch) => {
   }
 };
 
-/* ================= ADD TO FAVOURITE ================= */
 export const addToFavouriteRequest =
-  (product, token, toast) => async (dispatch) => {
+  (data, toast) => async (dispatch) => {
     try {
-      await axios.post(
-        "/favourite",
-        { productId: product._id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.post("/favourite", data);
 
       setToast(toast, "Added to favourites", "success");
-      dispatch(getFavouriteRequest(token));
+      dispatch(getFavouriteRequest());
     } catch (err) {
       if (err?.response?.status === 409) {
         setToast(toast, "Already in favourites", "info");
-        dispatch(getFavouriteRequest(token));
       } else {
         setToast(toast, "Something went wrong", "error");
       }
