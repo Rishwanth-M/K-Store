@@ -21,14 +21,22 @@ app.use(
 );
 
 /* ======================================================
-   BODY PARSERS
-   (NO RAW BODY NEEDED FOR NEW PHONEPE)
+   🔥 PHONEPE WEBHOOK (RAW BODY REQUIRED)
+   ⚠️ MUST COME BEFORE express.json
+====================================================== */
+app.use(
+  "/api/payment/webhook",
+  express.raw({ type: "*/*" })
+);
+
+/* ======================================================
+   BODY PARSERS (FOR ALL OTHER ROUTES)
 ====================================================== */
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
 /* ======================================================
-   RATE LIMITING (EXCLUDE PAYMENT)
+   RATE LIMITING (EXCLUDE PAYMENT ROUTES)
 ====================================================== */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
