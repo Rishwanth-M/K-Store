@@ -1,3 +1,4 @@
+import api from "../../../utils/api";
 import {
   ADD_TO_CART_SUCCESS,
   REMOVE_FROM_CART,
@@ -5,21 +6,12 @@ import {
 } from "./actionTypes";
 import { getCartTotal } from "../../../utils/getCartTotal";
 
-const API = import.meta.env.VITE_API_BASE_URL;
-
 /* ================= GET CART ================= */
 export const fetchCart = () => async (dispatch) => {
   try {
-    const res = await fetch(`${API}/cart`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const res = await api.get("/cart");
 
-    const data = await res.json();
-
-    if (!data.success) return;
-
-    const cartProducts = data.cartItems || [];
+    const cartProducts = res.data.cartItems || [];
     const orderSummary = getCartTotal(cartProducts);
 
     dispatch({
@@ -27,23 +19,15 @@ export const fetchCart = () => async (dispatch) => {
       payload: { cartProducts, orderSummary },
     });
   } catch (error) {
-    console.error("❌ Fetch cart failed:", error);
+    console.error("❌ Fetch cart failed:", error?.response?.data || error);
   }
 };
 
 /* ================= ADD TO CART ================= */
 export const addToCartDB = (payload, toast) => async (dispatch) => {
   try {
-    await fetch(`${API}/cart`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(payload),
-    });
+    await api.post("/cart", payload);
 
-    // re-fetch cart (same pattern as favourite)
     dispatch(fetchCart());
 
     toast?.({
@@ -51,17 +35,17 @@ export const addToCartDB = (payload, toast) => async (dispatch) => {
       status: "success",
     });
   } catch (error) {
-    console.error("❌ Add to cart failed:", error);
+    toast?.({
+      title: error?.response?.data?.message || "Unauthorized",
+      status: "error",
+    });
   }
 };
 
 /* ================= REMOVE FROM CART ================= */
 export const removeFromCartDB = (id, toast) => async (dispatch) => {
   try {
-    await fetch(`${API}/cart/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    await api.delete(`/cart/${id}`);
 
     dispatch(fetchCart());
 
@@ -70,6 +54,9 @@ export const removeFromCartDB = (id, toast) => async (dispatch) => {
       status: "success",
     });
   } catch (error) {
-    console.error("❌ Remove cart failed:", error);
+    toast?.({
+      title: "Unauthorized",
+      status: "error",
+    });
   }
 };
