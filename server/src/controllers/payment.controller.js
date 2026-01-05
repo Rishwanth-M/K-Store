@@ -150,8 +150,13 @@ exports.phonePeCallback = async (req, res) => {
 ====================================================== */
 exports.phonePeWebhook = async (req, res) => {
   try {
+    console.log("📥 PhonePe WEBHOOK hit");
+
     const receivedChecksum = req.headers["x-verify"];
     const payload = req.body.toString("utf8");
+
+    console.log("📦 Raw payload:", payload);
+    console.log("🔑 Received checksum:", receivedChecksum);
 
     const calculatedChecksum =
       crypto
@@ -161,37 +166,47 @@ exports.phonePeWebhook = async (req, res) => {
       "###" +
       process.env.PHONEPE_SALT_INDEX;
 
+    console.log("🔐 Calculated checksum:", calculatedChecksum);
+
     if (receivedChecksum !== calculatedChecksum) {
-      console.error("❌ Invalid PhonePe checksum");
+      console.error("❌ CHECKSUM MISMATCH");
       return res.status(400).json({ success: false });
     }
 
     const data = JSON.parse(payload);
+    console.log("✅ Parsed webhook data:", data);
+
     const transactionId = data?.data?.merchantTransactionId;
     const state = data?.data?.state;
+
+    console.log("🧾 Txn:", transactionId, "State:", state);
 
     const order = await Order.findOne({
       "paymentDetails.merchantTransactionId": transactionId,
     });
 
     if (!order) {
+      console.error("❌ Order not found");
       return res.status(404).json({ success: false });
     }
 
     if (state === "COMPLETED") {
       order.paymentDetails.paymentStatus = "SUCCESS";
       order.orderStatus = "PAID";
-      order.paymentDetails.completedAt = new Date();
     } else {
       order.paymentDetails.paymentStatus = "FAILED";
       order.orderStatus = "FAILED";
-      order.paymentDetails.completedAt = new Date();
     }
 
+    order.paymentDetails.completedAt = new Date();
     await order.save();
+
+    console.log("✅ Order updated:", order._id);
+
     return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error("❌ PhonePe WEBHOOK error:", error.message);
+  } catch (err) {
+    console.error("❌ WEBHOOK ERROR:", err);
     return res.status(500).json({ success: false });
   }
 };
+
