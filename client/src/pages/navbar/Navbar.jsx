@@ -6,9 +6,7 @@ import {
   Spacer,
   useColorMode,
 } from "@chakra-ui/react";
-
 import { keyframes } from "@emotion/react";
-
 import { RiHeartLine, RiShoppingBagLine } from "react-icons/ri";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -36,22 +34,27 @@ export const Navbar = () => {
   const { colorMode } = useColorMode();
 
   /* AUTH */
-  const { token } = useSelector(
-    (state) => state.authReducer,
+  const token = useSelector(
+    (state) => state.authReducer.token,
     shallowEqual
   );
 
-  /* 🛒 CART COUNT (Redux + LocalStorage fallback) */
-  const cartItems = useSelector(
-    (state) => state.cartReducer?.cartData,
+  /* 🛒 CART COUNT (DB ONLY) */
+  const cartCount = useSelector(
+    (state) =>
+      token ? state.cartReducer.cartProducts.length : 0,
     shallowEqual
   );
 
-  const cartCount =
-    cartItems?.length ??
-    (JSON.parse(localStorage.getItem("cartProducts"))?.length || 0);
+  /* ❤️ FAV COUNT (DB ONLY) */
+  const favCount = useSelector(
+    (state) =>
+      token ? state.favouriteReducer.favourites.length : 0,
+    shallowEqual
+  );
 
-  const displayCount = cartCount > 9 ? "9+" : cartCount;
+  const formatCount = (count) =>
+    count > 9 ? "9+" : count;
 
   const handlePath = ({ target: { name } }) => {
     if (!name) return;
@@ -75,10 +78,7 @@ export const Navbar = () => {
       bg={colorMode === "light" ? "white" : "gray.900"}
     >
       {/* ===================== TOP AUTH BAR ===================== */}
-      <Box
-        h="46px"
-        bg={colorMode === "light" ? "#f5f5f5" : "transparent"}
-      >
+      <Box h="46px" bg={colorMode === "light" ? "#f5f5f5" : "transparent"}>
         <Center h="46px" justifyContent="flex-end" px="16px" gap="8px">
           {!token ? <Auth /> : <Logout />}
           <Box display={{ base: "none", md: "block" }}>
@@ -88,31 +88,23 @@ export const Navbar = () => {
       </Box>
 
       {/* ===================== MAIN NAVBAR ===================== */}
-      <Flex
-        h={{ base: "56px", md: "72px" }}
-        px={{ base: "16px", md: "30px" }}
-        align="center"
-      >
+      <Flex h={{ base: "56px", md: "72px" }} px={{ base: "16px", md: "30px" }} align="center">
         {/* LOGO */}
         <Box w={{ base: "90px", md: "150px" }}>
           <Link to="/">
             <Image
               src={KreedentialsLogo}
               alt="Kreedentials Logo"
-              filter={
-                colorMode === "dark"
-                  ? "brightness(0) invert(1)"
-                  : "none"
-              }
+              filter={colorMode === "dark" ? "brightness(0) invert(1)" : "none"}
               h={{ base: "44px", md: "68px" }}
               objectFit="contain"
             />
           </Link>
         </Box>
 
-        {/* DESKTOP CATEGORIES */}
         <Spacer display={{ base: "none", md: "block" }} />
 
+        {/* DESKTOP CATEGORIES */}
         <Box display={{ base: "none", md: "flex" }}>
           <Category handlePath={handlePath} name="all" text="All Products" link="/allProducts" />
           <Category handlePath={handlePath} name="boys" text="Boys" link="/allProducts" />
@@ -125,19 +117,41 @@ export const Navbar = () => {
 
         {/* RIGHT ICONS */}
         <Flex align="center" gap="14px">
-          {/* ❤️ WISHLIST */}
-          <NavIcon
-            iconName={RiHeartLine}
-            onClick={() => handleProtectedNav("/favourite")}
-          />
+          {/* ❤️ FAV */}
+          <Box position="relative">
+            <NavIcon
+              iconName={RiHeartLine}
+              onClick={() => handleProtectedNav("/favourite")}
+            />
+            {favCount > 0 && (
+              <Box
+                position="absolute"
+                top="-6px"
+                right="-6px"
+                minW="18px"
+                h="18px"
+                px="5px"
+                bg="red.500"
+                color="white"
+                fontSize="11px"
+                fontWeight="800"
+                borderRadius="full"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                animation={`${pop} 0.25s ease`}
+              >
+                {formatCount(favCount)}
+              </Box>
+            )}
+          </Box>
 
-          {/* 🛒 CART WITH BADGE */}
+          {/* 🛒 CART */}
           <Box position="relative">
             <NavIcon
               iconName={RiShoppingBagLine}
               onClick={() => handleProtectedNav("/cart")}
             />
-
             {cartCount > 0 && (
               <Box
                 position="absolute"
@@ -154,19 +168,19 @@ export const Navbar = () => {
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                lineHeight="1"
                 animation={`${pop} 0.25s ease`}
               >
-                {displayCount}
+                {formatCount(cartCount)}
               </Box>
             )}
           </Box>
 
-          {/* 📱 MOBILE MENU — CART COUNT SYNCED */}
+          {/* 📱 MOBILE DRAWER */}
           <Box display={{ base: "flex", md: "none" }}>
             <SideDrawer
               handlePath={handlePath}
-              cartCount={cartCount}   
+              cartCount={cartCount}
+              favCount={favCount}
             />
           </Box>
         </Flex>

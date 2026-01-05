@@ -19,6 +19,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { logoutUser } from "../../redux/features/auth/actions";
+import { clearCartOnLogout } from "../../redux/features/cart/actions";
+import { clearFavouriteOnLogout } from "../../redux/features/favourite/actions";
+
 import { Coupon } from "../../pages/coupon/Coupon";
 
 export const Logout = () => {
@@ -31,12 +34,14 @@ export const Logout = () => {
     (state) => state.authReducer.user?.firstName || "Account"
   );
 
+  /* 🔒 LOGOUT HANDLER */
   const handleLogoutBtn = () => {
-    dispatch(logoutUser(toast));
+    dispatch(clearCartOnLogout());        // 🧹 clear cart
+    dispatch(clearFavouriteOnLogout());   // 🧹 clear favourites
+    dispatch(logoutUser(toast));           // 🔐 auth logout
     navigate("/");
   };
 
-  // ✅ Safe navigation handler for Chakra Menu
   const handleMenuNav = (path) => {
     setTimeout(() => {
       navigate(path);
@@ -45,7 +50,6 @@ export const Logout = () => {
 
   return (
     <Menu>
-      {/* ================= USER BUTTON ================= */}
       <MenuButton
         as={Button}
         size={{ base: "sm", md: "md" }}
@@ -59,7 +63,6 @@ export const Logout = () => {
         {user}
       </MenuButton>
 
-      {/* ================= DROPDOWN ================= */}
       <MenuList zIndex="1100">
         <Flex direction="column" fontSize="16px">
           <MenuItem
@@ -85,7 +88,6 @@ export const Logout = () => {
             Cart
           </MenuItem>
 
-          {/* DARK / LIGHT MODE — MOBILE ONLY */}
           <MenuItem
             display={{ base: "flex", md: "none" }}
             icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}

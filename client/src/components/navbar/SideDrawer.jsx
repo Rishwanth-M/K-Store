@@ -7,6 +7,9 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Icon,
+  Text,
+  HStack,
+  Badge,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -14,12 +17,18 @@ import { useSelector } from "react-redux";
 import { BiMenu } from "react-icons/bi";
 import { DrawerCategory } from "./CategoryAndIcon";
 
-export const SideDrawer = ({ handlePath, cartCount }) => {
+export const SideDrawer = ({
+  handlePath,
+  cartCount = 0,
+  favCount = 0,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // ✅ SAFE REDUX ACCESS
   const user = useSelector((state) => state.authReducer.user);
   const firstName = user?.firstName ?? "Guest";
+
+  const formatCount = (count) =>
+    count > 9 ? "9+" : count;
 
   return (
     <>
@@ -38,41 +47,24 @@ export const SideDrawer = ({ handlePath, cartCount }) => {
           <DrawerCloseButton />
 
           <DrawerHeader>Hi {firstName}</DrawerHeader>
-
           <Divider />
 
           <DrawerBody>
-            <VStack gap="30px" mt="40px" onClick={onClose}>
-              <DrawerCategory
-                handlePath={handlePath}
-                name="/"
-                text="Home"
-                link="/"
-              />
-              <DrawerCategory
-                handlePath={handlePath}
-                name="allProducts"
-                text="All Products"
-                link="/allProducts"
-              />
-              <DrawerCategory
-                handlePath={handlePath}
-                name="men"
-                text="Men"
-                link="/men"
-              />
-              <DrawerCategory
-                handlePath={handlePath}
-                name="women"
-                text="Women"
-                link="/women"
-              />
-              <DrawerCategory
-                handlePath={handlePath}
-                name="kids"
-                text="Kids"
-                link="/kids"
-              />
+            <VStack gap="26px" mt="24px" align="stretch" onClick={onClose}>
+              <DrawerCategory handlePath={handlePath} name="/" text="Home" link="/" />
+              <DrawerCategory handlePath={handlePath} name="allProducts" text="All Products" link="/allProducts" />
+
+              {/* ❤️ FAV */}
+              <HStack justify="space-between">
+                <DrawerCategory handlePath={handlePath} name="favourite" text="Favourites" link="/favourite" />
+                {favCount > 0 && <Badge colorScheme="red">{formatCount(favCount)}</Badge>}
+              </HStack>
+
+              {/* 🛒 CART */}
+              <HStack justify="space-between">
+                <DrawerCategory handlePath={handlePath} name="cart" text="Cart" link="/cart" />
+                {cartCount > 0 && <Badge colorScheme="red">{formatCount(cartCount)}</Badge>}
+              </HStack>
             </VStack>
           </DrawerBody>
         </DrawerContent>
