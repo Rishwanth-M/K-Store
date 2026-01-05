@@ -143,51 +143,74 @@ export const Checkout = () => {
   };
 
   /* ================= SUBMIT ================= */
-  const handleFormSubmit = async (e) => {
-    e?.preventDefault?.();
-    if (!handleFormValidation()) return;
+  /* ================= SUBMIT ================= */
+const handleFormSubmit = async (e) => {
+  e?.preventDefault?.();
+  if (!handleFormValidation()) return;
 
-    try {
-      await saveAddressIfNeeded();
+  try {
+    await saveAddressIfNeeded();
 
-      /* 🔥 NORMALIZE CART FOR BACKEND */
-      const normalizedCart = cartProducts.map((item) => ({
-        _id: item.product._id,   // ✅ REQUIRED BY BACKEND
-        quantity: item.quantity,
+    /* 🔥 DEBUG: LOG RAW CART */
+    console.log("RAW cartProducts from Redux:", cartProducts);
+
+    /* 🔥 SAFE NORMALIZATION (HANDLES ALL CASES) */
+    const normalizedCart = cartProducts.map((item, index) => {
+      const productId =
+        item._id ||                 // case 1
+        item.productId ||           // case 2
+        item.product?._id ||        // case 3
+        item.product;               // case 4 (string)
+
+      if (!productId) {
+        console.error("❌ Invalid cart item at index", index, item);
+        throw new Error("Invalid cart item structure");
+      }
+
+      return {
+        _id: productId,
+        quantity: Number(item.quantity),
         size: item.size,
-      }));
+      };
+    });
 
-      /* 1️⃣ CREATE ORDER */
-      const orderRes = await api.post("/order", {
-        cartProducts: normalizedCart,
-        shippingDetails: form,
-      });
+    console.log("✅ Normalized cart sent to backend:", normalizedCart);
 
-      const { orderId, payableAmount } = orderRes.data;
+    /* 1️⃣ CREATE ORDER */
+    const orderRes = await api.post("/order", {
+      cartProducts: normalizedCart,
+      shippingDetails: form,
+    });
 
-      if (!orderId || typeof payableAmount !== "number") {
-        throw new Error("Order creation failed");
-      }
+    console.log("✅ Order API response:", orderRes.data);
 
-      /* 2️⃣ INITIATE PAYMENT */
-      const paymentRes = await api.post("/api/payment/initiate", {
-        orderId,
-        amount: payableAmount,
-      });
+    const { orderId, payableAmount } = orderRes.data;
 
-      const redirectUrl = paymentRes.data?.redirectUrl;
-
-      if (!redirectUrl) {
-        throw new Error("PhonePe redirect URL missing");
-      }
-
-      /* 3️⃣ REDIRECT TO PHONEPE */
-      window.location.href = redirectUrl;
-    } catch (err) {
-      console.error(err);
-      setToast(toast, "Payment initiation failed", "error");
+    if (!orderId || typeof payableAmount !== "number") {
+      throw new Error("Order creation failed");
     }
-  };
+
+    /* 2️⃣ INITIATE PAYMENT */
+    const paymentRes = await api.post("/api/payment/initiate", {
+      orderId,
+      amount: payableAmount,
+    });
+
+    console.log("✅ Payment initiation response:", paymentRes.data);
+
+    const redirectUrl = paymentRes.data?.redirectUrl;
+
+    if (!redirectUrl) {
+      throw new Error("PhonePe redirect URL missing");
+    }
+
+    /* 3️⃣ REDIRECT TO PHONEPE */
+    window.location.href = redirectUrl;
+  } catch (err) {
+    console.error("❌ Checkout error:", err);
+    setToast(toast, err.message || "Payment initiation failed", "error");
+  }
+};
 
   /* ================= UI ================= */
   return (

@@ -7,7 +7,10 @@ const createOrder = async (req, res, next) => {
     const userId = req.user._id;
     const { cartProducts = [], shippingDetails = {} } = req.body;
 
+    console.log("📥 Incoming cartProducts:", cartProducts);
+
     if (!cartProducts.length) {
+      console.error("❌ Cart empty");
       return res.status(400).json({
         success: false,
         message: "Cart is empty",
@@ -16,16 +19,23 @@ const createOrder = async (req, res, next) => {
 
     /* 🔒 FETCH PRODUCTS FROM DB */
     const productIds = cartProducts.map((p) => p._id);
+
+    console.log("🔍 Product IDs extracted:", productIds);
+
     const productsFromDB = await Product.find({
       _id: { $in: productIds },
     }).lean();
 
+    console.log("📦 Products fetched from DB:", productsFromDB);
+
     if (!productsFromDB.length) {
+      console.error("❌ No matching products found in DB");
       return res.status(400).json({
         success: false,
         message: "Invalid cart products",
       });
     }
+
 
     /* ✅ BUILD cartProducts EXACTLY AS SCHEMA */
     const orderItems = cartProducts.map((cartItem) => {
