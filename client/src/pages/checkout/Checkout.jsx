@@ -144,41 +144,50 @@ export const Checkout = () => {
 
   /* ================= SUBMIT ================= */
   const handleFormSubmit = async (e) => {
-  e?.preventDefault?.();
-  if (!handleFormValidation()) return;
+    e?.preventDefault?.();
+    if (!handleFormValidation()) return;
 
-  try {
-    await saveAddressIfNeeded();
+    try {
+      await saveAddressIfNeeded();
 
-    const orderRes = await api.post("/order", {
-      cartProducts,
-      shippingDetails: form,
-    });
+      /* 🔥 NORMALIZE CART FOR BACKEND */
+      const normalizedCart = cartProducts.map((item) => ({
+        _id: item.product._id,   // ✅ REQUIRED BY BACKEND
+        quantity: item.quantity,
+        size: item.size,
+      }));
 
-    const { orderId, payableAmount } = orderRes.data;
+      /* 1️⃣ CREATE ORDER */
+      const orderRes = await api.post("/order", {
+        cartProducts: normalizedCart,
+        shippingDetails: form,
+      });
 
-    if (!orderId || typeof payableAmount !== "number") {
-      throw new Error("Invalid order response");
+      const { orderId, payableAmount } = orderRes.data;
+
+      if (!orderId || typeof payableAmount !== "number") {
+        throw new Error("Order creation failed");
+      }
+
+      /* 2️⃣ INITIATE PAYMENT */
+      const paymentRes = await api.post("/api/payment/initiate", {
+        orderId,
+        amount: payableAmount,
+      });
+
+      const redirectUrl = paymentRes.data?.redirectUrl;
+
+      if (!redirectUrl) {
+        throw new Error("PhonePe redirect URL missing");
+      }
+
+      /* 3️⃣ REDIRECT TO PHONEPE */
+      window.location.href = redirectUrl;
+    } catch (err) {
+      console.error(err);
+      setToast(toast, "Payment initiation failed", "error");
     }
-
-    const paymentRes = await api.post("/api/payment/initiate", {
-      orderId,
-      amount: payableAmount,
-    });
-
-    const redirectUrl = paymentRes.data?.redirectUrl;
-    if (!redirectUrl) {
-      throw new Error("PhonePe redirect URL missing");
-    }
-
-    window.location.href = redirectUrl;
-  } catch (err) {
-    console.error(err);
-    setToast(toast, "Payment initiation failed", "error");
-  }
-};
-
-
+  };
 
   /* ================= UI ================= */
   return (
