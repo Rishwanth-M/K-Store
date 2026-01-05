@@ -1,125 +1,113 @@
-const crypto = require("crypto");
 const axios = require("axios");
 const Order = require("../models/order.model");
 
 /* ======================================================
-   INITIATE PAYMENT
+   GET PHONEPE ACCESS TOKEN
+====================================================== */
+const getPhonePeToken = async () => {
+  const response = await axios.post(
+    `${process.env.PHONEPE_BASE_URL}/oauth/token`,
+    {
+      clientId: process.env.PHONEPE_CLIENT_ID,
+      clientSecret: process.env.PHONEPE_CLIENT_SECRET,
+      grantType: "client_credentials",
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "X-Client-Version": process.env.PHONEPE_CLIENT_VERSION,
+      },
+    }
+  );
+
+  return response.data.access_token;
+};
+
+/* ======================================================
+   INITIATE PAYMENT (TEST MODE)
 ====================================================== */
 exports.initiatePayment = async (req, res) => {
   try {
     const { orderId, amount } = req.body;
 
     if (!orderId || !amount) {
-      return res.status(400).json({
-        success: false,
-        message: "orderId and amount are required",
-      });
+      return res.status(400).json({ success: false, message: "Missing data" });
     }
 
     const order = await Order.findById(orderId);
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
+      return res.status(404).json({ success: false, message: "Order not found" });
     }
 
     const merchantTransactionId = "MT" + Date.now();
 
-    order.paymentDetails.merchantTransactionId = merchantTransactionId;
-    order.paymentDetails.paymentStatus = "INITIATED";
+    order.paymentDetails = {
+      merchantTransactionId,
+      paymentStatus: "INITIATED",
+    };
     await order.save();
 
-    const payload = {
-      merchantId: process.env.PHONEPE_MERCHANT_ID,
-      merchantTransactionId,
-      merchantUserId: req.user._id.toString(),
-      amount: amount * 100,
+    const accessToken = await getPhonePeToken();
 
-      // ✅ FRONTEND redirect (user)
+    const payload = {
+      merchantTransactionId,
+      amount: amount * 100, // paise
       redirectUrl: `${process.env.FRONTEND_URL}/payment-success`,
       redirectMode: "GET",
-
-      // ✅ BACKEND webhook (server-to-server)
-      callbackUrl: `${process.env.BACKEND_URL}/api/payment/webhook`,
-
+      callbackUrl: `${process.env.BACKEND_URL}/api/payment/callback`,
       paymentInstrument: {
         type: "PAY_PAGE",
       },
     };
 
-    const base64Payload = Buffer.from(
-      JSON.stringify(payload)
-    ).toString("base64");
-
-    const checksum =
-      crypto
-        .createHash("sha256")
-        .update(
-          base64Payload +
-            "/pg/v1/pay" +
-            process.env.PHONEPE_SALT_KEY
-        )
-        .digest("hex") +
-      "###" +
-      process.env.PHONEPE_SALT_INDEX;
-
     const response = await axios.post(
       `${process.env.PHONEPE_BASE_URL}/pg/v1/pay`,
-      { request: base64Payload },
+      payload,
       {
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
-          "X-VERIFY": checksum,
+          "X-Client-Version": process.env.PHONEPE_CLIENT_VERSION,
         },
       }
     );
 
     return res.status(200).json({
       success: true,
-      redirectUrl:
-        response.data.data.instrumentResponse.redirectInfo.url,
+      redirectUrl: response.data.data.instrumentResponse.redirectInfo.url,
     });
   } catch (error) {
-    console.error("❌ Payment Initiation Error:", error.response?.data || error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Payment initiation failed",
-    });
+    console.error("❌ PhonePe INIT error:", error.response?.data || error.message);
+    return res.status(500).json({ success: false, message: "Payment failed" });
   }
 };
 
 /* ======================================================
-   PHONEPE WEBHOOK
+   PAYMENT STATUS CHECK (CALLBACK)
 ====================================================== */
-exports.phonePeWebhook = async (req, res) => {
+exports.phonePeCallback = async (req, res) => {
   try {
-    const receivedChecksum = req.headers["x-verify"];
-    const payload = req.body.toString("utf8");
-
-    const calculatedChecksum =
-      crypto
-        .createHash("sha256")
-        .update(payload + process.env.PHONEPE_SALT_KEY)
-        .digest("hex") +
-      "###" +
-      process.env.PHONEPE_SALT_INDEX;
-
-    if (receivedChecksum !== calculatedChecksum) {
-      return res.status(400).json({ success: false });
-    }
-
-    const data = JSON.parse(payload);
-    const transactionId = data.data.merchantTransactionId;
-    const status = data.data.state;
+    const { transactionId } = req.query;
 
     const order = await Order.findOne({
       "paymentDetails.merchantTransactionId": transactionId,
     });
 
-    if (!order) return res.status(404).json({ success: false });
+    if (!order) return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
 
-    if (status === "COMPLETED") {
+    const accessToken = await getPhonePeToken();
+
+    const response = await axios.get(
+      `${process.env.PHONEPE_BASE_URL}/pg/v1/status/${transactionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-Client-Version": process.env.PHONEPE_CLIENT_VERSION,
+        },
+      }
+    );
+
+    if (response.data.data.state === "COMPLETED") {
       order.paymentDetails.paymentStatus = "SUCCESS";
       order.orderStatus = "PAID";
     } else {
@@ -127,15 +115,11 @@ exports.phonePeWebhook = async (req, res) => {
       order.orderStatus = "FAILED";
     }
 
-    order.paymentDetails.phonepeTransactionId =
-      data.data.transactionId || null;
-    order.paymentDetails.checksumVerified = true;
-
     await order.save();
 
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error("❌ Webhook Error:", error.message);
-    return res.status(500).json({ success: false });
+    res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
+  } catch (err) {
+    console.error("❌ PhonePe CALLBACK error:", err.message);
+    res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
   }
 };

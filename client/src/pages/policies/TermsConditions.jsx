@@ -8,12 +8,15 @@ const TermsConditions = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
+      {/* Page Title */}
       <Heading mb="10px">Terms and Conditions</Heading>
 
+      {/* Static Date */}
       <Text fontSize="sm" color="gray.500" mb="30px">
-        Last updated: {new Date().toLocaleDateString()}
+        Last updated: 01 January 2026
       </Text>
 
+      {/* Intro */}
       <Text mb="20px">
         This document is an electronic record in terms of the Information
         Technology Act, 2000 and rules thereunder as applicable and the amended
@@ -27,119 +30,137 @@ const TermsConditions = () => {
         This document is published in accordance with the provisions of Rule 3
         (1) of the Information Technology (Intermediaries Guidelines) Rules, 2011
         that require publishing the rules and regulations, privacy policy and
-        Terms of Use for access or usage of domain name
-        https://www.kreedentials.com ("Website"), including the related mobile
-        site and mobile application (hereinafter referred to as the "Platform").
+        Terms of Use for access or usage of domain name{" "}
+        <b>https://www.kreedentials.com</b> ("Website"), including the related
+        mobile site and mobile application (hereinafter referred to as the
+        "Platform").
       </Text>
 
       <Text mb="20px">
         The Platform is owned by <b>AVYAYPRATYAY SPORTS LLP</b>, a company
         incorporated under the Companies Act, 1956 with its registered office at
         Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad Viman Nagar Road,
-        Hyderabad, India (hereinafter referred to as the "Platform Owner", "we",
-        "us", "our").
+        Hyderabad, Telangana, India (hereinafter referred to as the "Platform
+        Owner", "we", "us", "our").
       </Text>
 
       <Divider my="30px" />
 
+      {/* Acceptance */}
       <Heading size="md" mb="15px">
         Acceptance of Terms
       </Heading>
 
       <Text mb="20px">
-        Your use of the Platform and services and tools are governed by the
-        following terms and conditions ("Terms of Use"). If you transact on the
-        Platform, you shall be subject to the policies applicable to such
-        transactions. By mere use of the Platform, you shall be contracting with
-        the Platform Owner, and these Terms constitute your binding obligations.
+        By accessing, browsing, or using the Platform, you agree to be bound by
+        these Terms and Conditions ("Terms of Use"). If you do not agree with any
+        part of these Terms, you must not use the Platform or Services.
       </Text>
 
       <Text mb="20px">
-        These Terms of Use can be modified at any time without assigning any
-        reason. It is your responsibility to periodically review these Terms to
-        stay informed of updates.
+        These Terms of Use may be updated or modified at any time without prior
+        notice. It is your responsibility to review these Terms periodically.
       </Text>
 
       <Divider my="30px" />
 
+      {/* User Responsibilities */}
       <Heading size="md" mb="15px">
         User Responsibilities
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          You agree to provide true, accurate, and complete information during
-          registration and are responsible for all activities under your
-          account.
+          You agree to provide accurate, current, and complete information during
+          registration and are solely responsible for maintaining the
+          confidentiality of your account.
         </ListItem>
         <ListItem>
-          Your use of the Platform and Services is at your sole risk and
-          discretion.
+          You shall not use the Platform for any unlawful, fraudulent, or
+          prohibited activities under applicable Indian laws.
         </ListItem>
         <ListItem>
-          You agree not to use the Platform or Services for any unlawful or
-          prohibited purpose under Indian or applicable local laws.
+          You agree to pay all charges and fees associated with products or
+          services purchased through the Platform.
         </ListItem>
         <ListItem>
-          You agree to pay all charges associated with availing the Services.
+          Your use of the Platform and Services is at your sole discretion and
+          risk.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Payments */}
       <Heading size="md" mb="15px">
-        Intellectual Property
+        Payments
       </Heading>
 
       <Text mb="20px">
-        The contents of the Platform and the Services are proprietary and
-        licensed to the Platform Owner. You shall have no authority to claim any
-        intellectual property rights, title, or interest in the content,
-        including but not limited to design, layout, look, and graphics.
+        All payments made on the Platform are processed through authorized and
+        secure third-party payment gateway partners. The Platform does not store
+        or process any card or payment-related information directly.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Intellectual Property */}
+      <Heading size="md" mb="15px">
+        Intellectual Property Rights
+      </Heading>
+
+      <Text mb="20px">
+        All content available on the Platform, including but not limited to
+        text, graphics, logos, images, and software, is the property of the
+        Platform Owner and is protected by applicable intellectual property
+        laws.
+      </Text>
+
+      <Divider my="30px" />
+
+      {/* Third Party */}
       <Heading size="md" mb="15px">
         Third-Party Links
       </Heading>
 
       <Text mb="20px">
-        The Platform may contain links to third-party websites. Upon accessing
-        these links, you will be governed by the terms, privacy policies, and
-        practices of such third parties. These links are provided solely for
-        your convenience.
+        The Platform may contain links to third-party websites or services. The
+        Platform Owner is not responsible for the content, privacy practices, or
+        policies of such third-party websites.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Indemnity */}
       <Heading size="md" mb="15px">
         Indemnification
       </Heading>
 
       <Text mb="20px">
         You agree to indemnify and hold harmless the Platform Owner, its
-        affiliates, officers, directors, agents, and employees from any claim,
-        demand, or penalty arising out of your breach of these Terms, applicable
-        laws, or third-party rights.
+        affiliates, directors, officers, and employees from any claims,
+        liabilities, damages, or expenses arising from your use of the Platform
+        or violation of these Terms.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Force Majeure */}
       <Heading size="md" mb="15px">
         Force Majeure
       </Heading>
 
       <Text mb="20px">
-        The Platform Owner shall not be liable for any failure or delay in
-        performance due to events beyond reasonable control, including natural
-        disasters, government actions, or technical failures.
+        The Platform Owner shall not be liable for failure to perform obligations
+        due to events beyond reasonable control, including natural disasters,
+        government actions, or technical failures.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Law */}
       <Heading size="md" mb="15px">
-        Governing Law & Jurisdiction
+        Governing Law and Jurisdiction
       </Heading>
 
       <Text mb="20px">
@@ -150,14 +171,21 @@ const TermsConditions = () => {
 
       <Divider my="30px" />
 
+      {/* Contact */}
       <Heading size="md" mb="15px">
-        Contact
+        Contact Information
       </Heading>
 
       <Text>
-        All concerns or communications relating to these Terms must be
-        communicated to us using the contact information provided on this
-        website.
+        For any questions, concerns, or grievances regarding these Terms and
+        Conditions, please contact us at:
+      </Text>
+
+      <Text mt="10px">
+        <b>Email:</b> support@kreedentials.com <br />
+        <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
+        <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
+        Viman Nagar Road, Hyderabad, Telangana, India
       </Text>
     </Box>
   );

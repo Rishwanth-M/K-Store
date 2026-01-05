@@ -8,190 +8,188 @@ const PrivacyPolicy = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
+      {/* Page Title */}
       <Heading mb="10px">Privacy Policy</Heading>
 
+      {/* Static Date */}
       <Text fontSize="sm" color="gray.500" mb="30px">
-        Last updated: {new Date().toLocaleDateString()}
+        Last updated: 01 January 2026
       </Text>
 
+      {/* Introduction */}
       <Heading size="md" mb="15px">
         Introduction
       </Heading>
 
       <Text mb="20px">
-        This Privacy Policy describes how <b>AVYAYPRATYAY SPORTS LLP</b> and its
-        affiliates (“we”, “our”, “us”) collect, use, share, protect, or otherwise
-        process your personal data through our website
-        https://www.kreedentials.com (the “Platform”).
+        This Privacy Policy describes how <b>AVYAYPRATYAY SPORTS LLP</b> ("we",
+        "our", "us") collects, uses, stores, shares, and protects your personal
+        data through its website <b>https://www.kreedentials.com</b> (the
+        "Platform").
       </Text>
 
       <Text mb="20px">
-        You may browse certain sections of the Platform without registering.
-        Please note that we do not offer any products or services outside India,
-        and your personal data will primarily be stored and processed in India.
-        By accessing or using the Platform, you agree to be bound by this Privacy
-        Policy, the Terms of Use, and applicable laws of India.
+        By accessing or using the Platform, you agree to the collection and use
+        of information in accordance with this Privacy Policy, the Terms and
+        Conditions, and applicable laws of India. The Platform operates solely
+        within India, and all data is stored and processed in India.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Data Collection */}
       <Heading size="md" mb="15px">
-        Collection of Information
+        Information We Collect
       </Heading>
 
       <Text mb="20px">
-        We collect personal data when you use our Platform, services, or interact
-        with us. This may include information provided during registration or
-        usage, such as:
+        We collect personal and non-personal information when you interact with
+        the Platform, including but not limited to:
       </Text>
 
       <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>Name, date of birth, address</ListItem>
-        <ListItem>Telephone/mobile number and email ID</ListItem>
-        <ListItem>Proof of identity or address</ListItem>
+        <ListItem>Name, gender, date of birth, and address</ListItem>
+        <ListItem>Email address and mobile number</ListItem>
+        <ListItem>Account login credentials</ListItem>
         <ListItem>
-          Sensitive personal data (with your consent), such as payment
-          information or biometric data for enabled features
+          Transaction-related information, including order and payment details
+        </ListItem>
+        <ListItem>
+          Technical data such as IP address, browser type, and device
+          information
         </ListItem>
       </List>
 
       <Text mt="20px">
-        You may choose not to provide certain information by opting not to use
-        specific features. We may also collect information related to your
-        transactions and interactions on the Platform.
+        We do not store any credit/debit card details or sensitive payment
+        information. All payments are processed through secure, authorized
+        third-party payment gateway providers.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Use */}
       <Heading size="md" mb="15px">
         Use of Information
       </Heading>
 
       <Text mb="20px">
-        We use your personal data to:
+        We use the collected information for the following purposes:
       </Text>
 
       <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>Provide and improve our services</ListItem>
-        <ListItem>Process orders and transactions</ListItem>
-        <ListItem>Enhance customer experience</ListItem>
-        <ListItem>Resolve disputes and troubleshoot issues</ListItem>
-        <ListItem>
-          Inform you about offers, products, services, and updates
-        </ListItem>
-        <ListItem>
-          Prevent fraud and enforce our terms and conditions
-        </ListItem>
+        <ListItem>To provide, operate, and improve our services</ListItem>
+        <ListItem>To process transactions and fulfill orders</ListItem>
+        <ListItem>To communicate order updates and service-related notices</ListItem>
+        <ListItem>To enhance user experience and platform security</ListItem>
+        <ListItem>To comply with legal and regulatory requirements</ListItem>
+        <ListItem>To prevent fraud and misuse of the Platform</ListItem>
       </List>
-
-      <Text mt="20px">
-        Where required, we will provide you with an option to opt out of
-        marketing communications.
-      </Text>
 
       <Divider my="30px" />
 
+      {/* Sharing */}
       <Heading size="md" mb="15px">
         Sharing of Information
       </Heading>
 
       <Text mb="20px">
-        We may share your personal data with our affiliates, group entities,
-        sellers, logistics partners, payment service providers, and third-party
-        service providers as necessary to deliver our services.
+        We may share your information with logistics partners, payment gateway
+        providers, technology service providers, and affiliates strictly for
+        service delivery and legal compliance.
       </Text>
 
       <Text mb="20px">
-        We may also disclose information to government or law enforcement
-        agencies when required by law or to protect rights, safety, and prevent
-        fraud.
+        Information may also be disclosed to government authorities if required
+        by law or in response to valid legal processes.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Security */}
       <Heading size="md" mb="15px">
-        Security Precautions
+        Security Measures
       </Heading>
 
       <Text mb="20px">
-        We adopt reasonable security practices to protect your personal data.
-        While we use secure servers and safeguards, data transmission over the
-        internet cannot be guaranteed to be completely secure. Users are
-        responsible for safeguarding their login credentials.
+        We implement reasonable technical and organizational security measures
+        to protect your personal data against unauthorized access, misuse, or
+        loss. However, no method of transmission over the internet is completely
+        secure, and users are responsible for safeguarding their login
+        credentials.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Retention */}
       <Heading size="md" mb="15px">
-        Data Retention & Deletion
+        Data Retention and Deletion
       </Heading>
 
       <Text mb="20px">
-        You may request deletion of your account through your profile settings
-        or by contacting us. Account deletion may be delayed in case of pending
-        transactions, grievances, or legal obligations.
-      </Text>
-
-      <Text mb="20px">
-        We retain personal data only as long as required for lawful purposes or
-        as mandated by applicable laws. Data may be retained in anonymised form
-        for research and analytical purposes.
+        Personal data is retained only for as long as necessary to fulfill the
+        purposes outlined in this Privacy Policy or as required under
+        applicable laws. You may request account deletion by contacting us at
+        the email address provided below.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Rights */}
       <Heading size="md" mb="15px">
         Your Rights
       </Heading>
 
       <Text mb="20px">
-        You may access, rectify, and update your personal data directly through
-        the Platform’s available features.
+        You have the right to access, update, correct, or request deletion of
+        your personal data, subject to legal and contractual restrictions.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Consent */}
       <Heading size="md" mb="15px">
         Consent
       </Heading>
 
       <Text mb="20px">
-        By using the Platform or providing your information, you consent to the
-        collection, use, storage, and processing of your personal data in
+        By using the Platform, you provide your consent to the collection,
+        storage, processing, and transfer of your personal information in
         accordance with this Privacy Policy.
-      </Text>
-
-      <Text mb="20px">
-        You may withdraw your consent by contacting the Grievance Officer.
-        Withdrawal of consent will not be retrospective and may affect access
-        to certain services.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Updates */}
       <Heading size="md" mb="15px">
         Changes to this Privacy Policy
       </Heading>
 
       <Text mb="20px">
-        We may update this Privacy Policy from time to time. Please review it
-        periodically for any changes. Significant updates will be communicated
-        as required by applicable law.
+        We may update this Privacy Policy periodically. Any changes will be
+        posted on this page with a revised "Last updated" date.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Contact */}
       <Heading size="md" mb="15px">
-        Grievance Officer
+        Contact and Grievance Redressal
       </Heading>
 
-      <Text mb="10px">Name: To be updated</Text>
-      <Text mb="10px">Designation: To be updated</Text>
       <Text mb="10px">
-        Company: AVYAYPRATYAY SPORTS LLP
+        If you have any questions, concerns, or grievances regarding this
+        Privacy Policy or the handling of your personal data, you may contact
+        us using the details below:
       </Text>
-      <Text mb="10px">Contact details: To be updated</Text>
-      <Text>Working hours: Monday – Friday (09:00 – 18:00)</Text>
+
+      <Text>
+        <b>Email:</b> support@kreedentials.com <br />
+        <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
+        <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
+        Viman Nagar Road, Hyderabad, Telangana, India <br />
+        <b>Working Hours:</b> Monday – Friday (09:00 – 18:00 IST)
+      </Text>
     </Box>
   );
 };

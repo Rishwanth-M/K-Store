@@ -8,107 +8,142 @@ const RefundPolicy = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
-      <Heading mb="10px">Refund & Cancellation Policy</Heading>
+      {/* Page Title */}
+      <Heading mb="10px">Refund and Cancellation Policy</Heading>
 
+      {/* Static Date */}
       <Text fontSize="sm" color="gray.500" mb="30px">
-        Last updated: {new Date().toLocaleDateString()}
+        Last updated: 01 January 2026
+      </Text>
+
+      {/* Intro */}
+      <Text mb="20px">
+        This Refund and Cancellation Policy governs the circumstances under which
+        refunds, returns, or cancellations may be requested for products or
+        services purchased through <b>https://www.kreedentials.com</b> (the
+        "Platform").
       </Text>
 
       <Text mb="20px">
-        This refund and cancellation policy outlines how you can cancel or seek a
-        refund for a product or service that you have purchased through the
-        Platform. Under this policy:
+        The Platform is owned and operated by <b>AVYAYPRATYAY SPORTS LLP</b>,
+        having its registered office at Plot No. 10, 2nd Floor, Viman Nagar
+        Colony, Secunderabad Viman Nagar Road, Hyderabad, Telangana, India.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Cancellation */}
       <Heading size="md" mb="15px">
         Cancellation Policy
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          Cancellation requests will only be considered if the request is made
-          within <b>5 days</b> of placing the order.
+          Cancellation requests will be accepted only if raised within{" "}
+          <b>5 days</b> of placing the order.
         </ListItem>
 
         <ListItem>
           Cancellation requests may not be entertained if the order has already
-          been communicated to the seller or merchant and the shipping process
-          has been initiated or the product is out for delivery. In such cases,
-          you may choose to reject the product at the time of delivery.
+          been processed, shipped, or is out for delivery. In such cases,
+          customers may choose to reject the shipment at the time of delivery,
+          subject to seller policies.
         </ListItem>
 
         <ListItem>
-          AVYAYPRATYAY SPORTS LLP does not accept cancellation requests for
-          perishable items such as flowers, eatables, or similar products.
+          Orders for perishable goods or customized products are not eligible
+          for cancellation once confirmed.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Refunds */}
       <Heading size="md" mb="15px">
-        Refund & Replacement Policy
+        Refund and Replacement Policy
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          Refunds or replacements for perishable items may be considered only if
-          the user establishes that the quality of the product delivered is not
-          satisfactory.
+          Refunds or replacements will be considered only in cases where the
+          product received is damaged, defective, or materially different from
+          the description provided on the Platform.
         </ListItem>
 
         <ListItem>
-          In case of damaged or defective items, please report the issue to our
-          customer service team within <b>5 days</b> of receiving the product.
+          Any such issues must be reported within <b>5 days</b> of receiving the
+          product, along with supporting evidence such as images or videos.
         </ListItem>
 
         <ListItem>
-          The request will be processed only after the seller or merchant listed
-          on the Platform verifies and confirms the issue at their end.
+          All refund or replacement requests are subject to verification and
+          approval by the seller or merchant associated with the order.
         </ListItem>
 
         <ListItem>
-          If you believe that the product received is not as shown on the
-          Platform or does not meet your expectations, you must notify our
-          customer service team within <b>5 days</b> of delivery. After reviewing
-          the complaint, an appropriate decision will be taken.
+          If approved, refunds will be processed to the original payment method
+          used at the time of purchase.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Warranty */}
       <Heading size="md" mb="15px">
         Manufacturer Warranty
       </Heading>
 
       <Text mb="20px">
-        For products that come with a manufacturer’s warranty, any complaints or
-        issues should be addressed directly with the manufacturer in accordance
-        with their warranty terms.
+        Products that are covered under a manufacturer’s warranty must be
+        handled directly by the manufacturer in accordance with their warranty
+        terms. The Platform Owner does not provide independent warranties unless
+        explicitly stated.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Refund Processing */}
       <Heading size="md" mb="15px">
-        Refund Processing
+        Refund Processing Timeline
       </Heading>
 
       <Text mb="20px">
-        In case a refund is approved by AVYAYPRATYAY SPORTS LLP, the refund will
-        be processed within <b>3 days</b> from the date of approval.
+        Once a refund request is approved, the refund will be initiated within{" "}
+        <b>3 business days</b>. The time taken for the refund to reflect in the
+        customer’s account may vary depending on the payment method and the
+        policies of the respective payment service provider.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Payment Gateways */}
       <Heading size="md" mb="15px">
-        Contact
+        Payment Gateway Handling
       </Heading>
 
+      <Text mb="20px">
+        All payments on the Platform are processed through secure and authorized
+        third-party payment gateways. The Platform does not store or process
+        sensitive payment information such as card details or UPI credentials.
+      </Text>
+
+      <Divider my="30px" />
+
+      {/* Contact */}
+      <Heading size="md" mb="15px">
+        Contact Information
+      </Heading>
+
+      <Text mb="10px">
+        For any questions, concerns, or assistance related to refunds or
+        cancellations, please contact us using the details below:
+      </Text>
+
       <Text>
-        For any questions or concerns regarding refunds or cancellations, please
-        contact our customer support team using the contact details provided on
-        this website.
+        <b>Email:</b> support@kreedentials.com <br />
+        <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
+        <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
+        Viman Nagar Road, Hyderabad, Telangana, India
       </Text>
     </Box>
   );

@@ -12,7 +12,7 @@ app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
 /* ======================================================
-   HELMET (PAYMENT SAFE)
+   HELMET (SAFE FOR PAYMENTS)
 ====================================================== */
 app.use(
   helmet({
@@ -21,15 +21,8 @@ app.use(
 );
 
 /* ======================================================
-   PHONEPE RAW BODY (MUST COME FIRST)
-====================================================== */
-app.use(
-  "/api/payment/webhook",
-  express.raw({ type: "*/*" })
-);
-
-/* ======================================================
    BODY PARSERS
+   (NO RAW BODY NEEDED FOR NEW PHONEPE)
 ====================================================== */
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -58,7 +51,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       "http://localhost:3000",
       "http://localhost:5173",
       "https://kreedentialsstoredev.vercel.app",
-      "https://www.kreedentials.com"
+      "https://www.kreedentials.com",
     ];
 
 app.use(
@@ -66,7 +59,6 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
-
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -86,7 +78,7 @@ app.get("/", (req, res) => {
 });
 
 /* ======================================================
-   AUTH ROUTES (NAMESPACED)
+   AUTH ROUTES
 ====================================================== */
 const authController = require("./controllers/auth.controller");
 app.post("/api/auth/signup", authController.signup);
@@ -100,6 +92,8 @@ app.use("/favourite", require("./routes/favourite.route"));
 app.use("/cart", require("./routes/cart.routes"));
 app.use("/order", require("./routes/order.routes"));
 app.use("/users/addresses", require("./routes/address.routes"));
+
+/* ================= PAYMENT ROUTES ================= */
 app.use("/api/payment", require("./routes/payment.routes"));
 
 /* ======================================================

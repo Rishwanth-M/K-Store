@@ -8,80 +8,132 @@ const ShippingPolicy = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
+      {/* Page Title */}
       <Heading mb="10px">Shipping Policy</Heading>
 
+      {/* Static Date */}
       <Text fontSize="sm" color="gray.500" mb="30px">
-        Last updated: {new Date().toLocaleDateString()}
+        Last updated: 01 January 2026
+      </Text>
+
+      {/* Intro */}
+      <Text mb="20px">
+        This Shipping Policy outlines the terms and conditions governing the
+        shipment and delivery of products purchased from{" "}
+        <b>https://www.kreedentials.com</b> (the "Platform").
       </Text>
 
       <Text mb="20px">
-        Orders placed on the Platform are shipped through registered domestic
-        courier companies and/or speed post only.
+        The Platform is owned and operated by <b>AVYAYPRATYAY SPORTS LLP</b>,
+        having its registered office at Plot No. 10, 2nd Floor, Viman Nagar
+        Colony, Secunderabad Viman Nagar Road, Hyderabad, Telangana, India.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Shipping Method */}
+      <Heading size="md" mb="15px">
+        Shipping Method
+      </Heading>
+
+      <Text mb="20px">
+        Orders placed on the Platform are shipped through registered domestic
+        courier companies and/or India Post (Speed Post) to ensure safe and
+        reliable delivery.
+      </Text>
+
+      <Divider my="30px" />
+
+      {/* Shipping Timeline */}
       <Heading size="md" mb="15px">
         Shipping Timeline
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          Orders are generally shipped within <b>3 days</b> from the date of
-          order and/or payment.
+          Orders are generally processed and shipped within <b>3 business
+          days</b> from the date of order confirmation and successful payment.
         </ListItem>
 
         <ListItem>
-          Shipping timelines may vary based on the delivery date agreed upon at
-          the time of order confirmation and are subject to courier company or
-          postal authority norms.
+          Estimated delivery timelines may vary depending on the shipping
+          address, courier partner, and external factors beyond our control.
         </ListItem>
 
         <ListItem>
-          The Platform Owner shall not be liable for any delays in delivery
-          caused by the courier company or postal authority.
+          The Platform Owner shall not be held liable for delays caused by
+          courier partners, postal authorities, natural events, or unforeseen
+          circumstances.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Delivery Info */}
       <Heading size="md" mb="15px">
         Delivery Information
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          All orders will be delivered to the address provided by the buyer at
-          the time of purchase.
+          Products will be delivered to the shipping address provided by the
+          customer at the time of placing the order.
         </ListItem>
 
         <ListItem>
-          Delivery of services and shipment confirmation will be sent to the
-          registered email ID provided during account registration.
+          Shipment confirmation and tracking details (if available) will be
+          shared via the registered email address.
+        </ListItem>
+
+        <ListItem>
+          Customers are responsible for ensuring that the provided delivery
+          address is accurate and complete.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Shipping Charges */}
       <Heading size="md" mb="15px">
         Shipping Charges
       </Heading>
 
       <Text mb="20px">
-        If any shipping charges are levied by the seller or the Platform Owner,
-        such charges shall be <b>non-refundable</b>.
+        Shipping charges, if applicable, will be clearly displayed at the time
+        of checkout. Any shipping fees paid are <b>non-refundable</b>, except as
+        required under applicable law or explicitly stated otherwise.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Refund Reference */}
       <Heading size="md" mb="15px">
-        Contact
+        Returns and Refunds
+      </Heading>
+
+      <Text mb="20px">
+        Any returns, cancellations, or refunds related to shipped products are
+        governed by our <b>Refund and Cancellation Policy</b>, available on the
+        Platform.
+      </Text>
+
+      <Divider my="30px" />
+
+      {/* Contact */}
+      <Heading size="md" mb="15px">
+        Contact Information
       </Heading>
 
       <Text>
-        For any questions or concerns related to shipping or delivery, please
-        contact our customer support team using the contact details provided on
-        this website.
+        For any questions, concerns, or assistance related to shipping or
+        delivery, please contact us using the details below:
+      </Text>
+
+      <Text mt="10px">
+        <b>Email:</b> support@kreedentials.com <br />
+        <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
+        <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
+        Viman Nagar Road, Hyderabad, Telangana, India
       </Text>
     </Box>
   );

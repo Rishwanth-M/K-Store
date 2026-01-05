@@ -8,84 +8,113 @@ const ReturnPolicy = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
-      <Heading mb="10px">Return & Exchange Policy</Heading>
+      {/* Page Title */}
+      <Heading mb="10px">Return and Exchange Policy</Heading>
 
+      {/* Static Date */}
       <Text fontSize="sm" color="gray.500" mb="30px">
-        Last updated: {new Date().toLocaleDateString()}
+        Last updated: 01 January 2026
+      </Text>
+
+      {/* Intro */}
+      <Text mb="20px">
+        This Return and Exchange Policy explains the conditions under which
+        products purchased from <b>https://www.kreedentials.com</b> (the
+        "Platform") may be returned or exchanged.
       </Text>
 
       <Text mb="20px">
-        We offer refunds or exchanges within the first <b>3 days</b> from the
-        date of your purchase. If more than 3 days have passed since your
-        purchase, you will not be eligible for a return, exchange, or refund of
-        any kind.
+        The Platform is owned and operated by <b>AVYAYPRATYAY SPORTS LLP</b>,
+        having its registered office at Plot No. 10, 2nd Floor, Viman Nagar
+        Colony, Secunderabad Viman Nagar Road, Hyderabad, Telangana, India.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Eligibility */}
       <Heading size="md" mb="15px">
         Eligibility for Return or Exchange
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          The item must be unused and in the same condition as it was received.
+          Return or exchange requests must be raised within <b>3 days</b> from
+          the date of delivery.
         </ListItem>
 
         <ListItem>
-          The item must be returned in its original packaging.
+          The product must be unused, unwashed, and in the same condition as
+          received.
         </ListItem>
 
         <ListItem>
-          Items purchased during a sale or promotional offer may not be eligible
-          for return or exchange.
+          The product must be returned in its original packaging along with all
+          tags, labels, and accessories.
         </ListItem>
 
         <ListItem>
-          Only items found to be defective or damaged will be considered for
-          replacement based on an approved exchange request.
+          Products purchased during sales, discounts, or promotional offers may
+          not be eligible for return or exchange unless damaged or defective.
+        </ListItem>
+
+        <ListItem>
+          Only products that are damaged, defective, or incorrect at the time
+          of delivery are eligible for replacement.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Exemptions */}
       <Heading size="md" mb="15px">
-        Exempted Products
+        Non-Returnable Products
       </Heading>
 
       <Text mb="20px">
-        Certain categories of products may be exempt from returns or refunds.
-        Such categories will be clearly communicated to you at the time of
-        purchase.
+        Certain products or categories may be non-returnable or non-exchangeable
+        due to hygiene, customization, or other reasons. Such exclusions will be
+        clearly communicated at the time of purchase.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Process */}
       <Heading size="md" mb="15px">
-        Return & Exchange Process
+        Return and Exchange Process
       </Heading>
 
       <Text mb="20px">
-        Once your return or exchange request is accepted, and the returned item
-        is received and inspected by us, we will notify you via email regarding
-        the receipt of the product.
+        Once a return or exchange request is approved, the customer must ship
+        the product back as per the instructions provided by our support team.
       </Text>
 
       <Text mb="20px">
-        If the returned product passes the quality check, your return or exchange
-        request will be processed in accordance with our policies.
+        Upon receipt and inspection of the returned product, we will notify you
+        regarding approval or rejection of the return or exchange request.
+      </Text>
+
+      <Text mb="20px">
+        If approved, the exchange or refund (where applicable) will be processed
+        in accordance with our <b>Refund and Cancellation Policy</b>.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Contact */}
       <Heading size="md" mb="15px">
-        Contact
+        Contact Information
       </Heading>
+
+      <Text mb="10px">
+        For any questions, concerns, or assistance related to returns or
+        exchanges, please contact us using the details below:
+      </Text>
 
       <Text>
-        For any questions or concerns related to returns or exchanges, please
-        contact our customer support team using the contact information provided
-        on this website.
+        <b>Email:</b> support@kreedentials.com <br />
+        <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
+        <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
+        Viman Nagar Road, Hyderabad, Telangana, India
       </Text>
     </Box>
   );
