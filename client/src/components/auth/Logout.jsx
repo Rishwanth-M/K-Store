@@ -19,8 +19,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { logoutUser } from "../../redux/features/auth/actions";
-import { clearCartOnLogout } from "../../redux/features/cart/actions";
 import { clearFavouriteOnLogout } from "../../redux/features/favourite/actions";
+import { clearCartOnLogout } from "../../redux/features/cart/actions";
+
 
 import { Coupon } from "../../pages/coupon/Coupon";
 

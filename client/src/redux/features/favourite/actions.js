@@ -2,6 +2,7 @@ import {
   GET_FAVOURITE_ERROR,
   GET_FAVOURITE_LOADING,
   GET_FAVOURITE_SUCCESS,
+  CLEAR_FAVOURITE_ON_LOGOUT,
 } from "./actionTypes";
 
 import { setToast } from "../../../utils/extraFunctions";
@@ -28,7 +29,6 @@ export const addToFavouriteRequest =
   (data, toast) => async (dispatch) => {
     try {
       await api.post("/favourite", data);
-
       setToast(toast, "Added to favourites", "success");
       dispatch(getFavouriteRequest());
     } catch (err) {
@@ -49,10 +49,14 @@ export const deleteFavouriteRequest =
   (id, toast) => async (dispatch) => {
     try {
       await api.delete(`/favourite/${id}`);
-
       setToast(toast, "Removed from favourites", "success");
       dispatch(getFavouriteRequest());
     } catch {
       setToast(toast, "Unauthorized", "error");
     }
   };
+
+/* ================= CLEAR ON LOGOUT ================= */
+export const clearFavouriteOnLogout = () => ({
+  type: CLEAR_FAVOURITE_ON_LOGOUT,
+});
