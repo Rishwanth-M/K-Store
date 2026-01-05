@@ -121,11 +121,19 @@ export const Router = () => {
         />
 
         {/* ================= POLICIES (PUBLIC) ================= */}
-        <Route path="/terms" element={<TermsConditions />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/refund-policy" element={<RefundPolicy />} />
-        <Route path="/return-policy" element={<ReturnPolicy />} />
-        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        {/* ================= POLICIES (PUBLIC) ================= */}
+<Route path="/terms-and-conditions" element={<TermsConditions />} />
+<Route path="/privacy-policy" element={<PrivacyPolicy />} />
+<Route
+  path="/refund-and-cancellation-policy"
+  element={<RefundPolicy />}
+/>
+<Route
+  path="/return-and-exchange-policy"
+  element={<ReturnPolicy />}
+/>
+<Route path="/shipping-policy" element={<ShippingPolicy />} />
+
       </Routes>
 
       <Footer />
