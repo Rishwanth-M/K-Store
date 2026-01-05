@@ -26,13 +26,10 @@ const orderSchema = new Schema(
           ref: "Product",
           required: true,
         },
-
         name: { type: String, required: true },
         price: { type: Number, required: true },
-
         size: { type: String, required: true },
         quantity: { type: Number, required: true },
-
         images: { type: [String], default: [] },
         category: { type: String },
         productType: { type: String },
@@ -69,11 +66,15 @@ const orderSchema = new Schema(
         type: String,
         enum: ["INITIATED", "SUCCESS", "FAILED"],
         default: "INITIATED",
+        index: true,
       },
 
-      checksumVerified: {
-        type: Boolean,
-        default: false,
+      initiatedAt: {
+        type: Date,
+      },
+
+      completedAt: {
+        type: Date,
       },
     },
 

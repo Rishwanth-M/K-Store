@@ -4,18 +4,21 @@ const router = express.Router();
 const authorization = require("../middlewares/authorization");
 const {
   initiatePayment,
-  phonePeWebhook,
+  phonePeCallback,
 } = require("../controllers/payment.controller");
 
 /* ======================================================
-   INITIATE PAYMENT (CLIENT → SERVER)
+   INITIATE PAYMENT
+   CLIENT → SERVER
+   🔐 AUTH REQUIRED
 ====================================================== */
 router.post("/initiate", authorization, initiatePayment);
 
 /* ======================================================
-   PHONEPE WEBHOOK (SERVER → SERVER)
-   ❌ DO NOT ADD AUTH HERE
+   PHONEPE CALLBACK (REDIRECT)
+   PHONEPE / BROWSER → SERVER
+   ❌ NO AUTH
 ====================================================== */
-router.post("/webhook", phonePeWebhook);
+router.get("/callback", phonePeCallback);
 
 module.exports = router;

@@ -144,13 +144,12 @@ export const Checkout = () => {
 
   /* ================= SUBMIT ================= */
   const handleFormSubmit = async (e) => {
-  e.preventDefault();
+  e?.preventDefault?.();
   if (!handleFormValidation()) return;
 
-  await saveAddressIfNeeded();
-
   try {
-    /* 1️⃣ CREATE ORDER */
+    await saveAddressIfNeeded();
+
     const orderRes = await api.post("/order", {
       cartProducts,
       shippingDetails: form,
@@ -158,28 +157,27 @@ export const Checkout = () => {
 
     const { orderId, payableAmount } = orderRes.data;
 
-    if (!orderId || !payableAmount) {
-      throw new Error("Order creation failed");
+    if (!orderId || typeof payableAmount !== "number") {
+      throw new Error("Invalid order response");
     }
 
-    /* 2️⃣ INITIATE PAYMENT (SEND orderId + amount) */
     const paymentRes = await api.post("/api/payment/initiate", {
       orderId,
       amount: payableAmount,
     });
 
     const redirectUrl = paymentRes.data?.redirectUrl;
-
     if (!redirectUrl) {
       throw new Error("PhonePe redirect URL missing");
     }
 
-    /* 3️⃣ REDIRECT TO PHONEPE */
     window.location.href = redirectUrl;
   } catch (err) {
+    console.error(err);
     setToast(toast, "Payment initiation failed", "error");
   }
 };
+
 
 
   /* ================= UI ================= */
