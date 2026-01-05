@@ -8,25 +8,13 @@ const {
   phonePeWebhook,
 } = require("../controllers/payment.controller");
 
-/* ======================================================
-   INITIATE PAYMENT
-   CLIENT → SERVER
-   🔐 AUTH REQUIRED
-====================================================== */
+/* INITIATE PAYMENT */
 router.post("/initiate", authorization, initiatePayment);
 
-/* ======================================================
-   PHONEPE REDIRECT CALLBACK
-   PHONEPE / BROWSER → SERVER
-   ❌ NO AUTH
-====================================================== */
-router.get("/callback", phonePeCallback);
+/* PHONEPE REDIRECT CALLBACK (POST + GET SAFE) */
+router.all("/callback", phonePeCallback);
 
-/* ======================================================
-   PHONEPE WEBHOOK
-   PHONEPE → SERVER (POST)
-   ❌ NO AUTH
-====================================================== */
+/* PHONEPE WEBHOOK */
 router.post("/webhook", phonePeWebhook);
 
 module.exports = router;

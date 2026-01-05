@@ -109,12 +109,18 @@ exports.initiatePayment = async (req, res) => {
 ====================================================== */
 exports.phonePeCallback = async (req, res) => {
   try {
-    const { transactionId } = req.query;
+    console.log("📥 PhonePe CALLBACK hit");
+    console.log("Query:", req.query);
+    console.log("Body:", req.body);
+
+    const transactionId =
+      req.query.transactionId ||
+      req.body?.transactionId ||
+      req.body?.merchantTransactionId;
 
     if (!transactionId) {
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/payment-failed`
-      );
+      console.error("❌ No transactionId from PhonePe");
+      return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
     }
 
     const order = await Order.findOne({
@@ -122,27 +128,22 @@ exports.phonePeCallback = async (req, res) => {
     });
 
     if (!order) {
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/payment-failed`
-      );
+      console.error("❌ Order not found for transactionId:", transactionId);
+      return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
     }
 
+    // 🔥 Webhook is the source of truth
     if (order.paymentDetails.paymentStatus === "SUCCESS") {
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/payment-success`
-      );
+      return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
     }
 
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/payment-failed`
-    );
-  } catch (error) {
-    console.error("❌ PhonePe CALLBACK error:", error.message);
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/payment-failed`
-    );
+    return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
+  } catch (err) {
+    console.error("❌ CALLBACK ERROR:", err);
+    return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
   }
 };
+
 
 /* ======================================================
    PHONEPE WEBHOOK (SERVER → SERVER)

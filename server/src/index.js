@@ -60,6 +60,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       "http://localhost:5173",
       "https://kreedentialsstoredev.vercel.app",
       "https://www.kreedentials.com",
+      "https://mercury-uat.phonepe.com",
     ];
 
 app.use(
