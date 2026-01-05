@@ -154,25 +154,25 @@ const handleFormSubmit = async (e) => {
     /* 🔥 DEBUG: LOG RAW CART */
     console.log("RAW cartProducts from Redux:", cartProducts);
 
-    /* 🔥 SAFE NORMALIZATION (HANDLES ALL CASES) */
     const normalizedCart = cartProducts.map((item, index) => {
-      const productId =
-        item._id ||                 // case 1
-        item.productId ||           // case 2
-        item.product?._id ||        // case 3
-        item.product;               // case 4 (string)
+  // ✅ ALWAYS PRIORITIZE PRODUCT ID
+  const productId =
+    item.product ||            // case 1: product is string (your DB)
+    item.product?._id ||       // case 2: populated product
+    item.productId;            // case 3: alternate naming
 
-      if (!productId) {
-        console.error("❌ Invalid cart item at index", index, item);
-        throw new Error("Invalid cart item structure");
-      }
+  if (!productId) {
+    console.error("❌ Invalid cart item at index", index, item);
+    throw new Error("Invalid cart item structure");
+  }
 
-      return {
-        _id: productId,
-        quantity: Number(item.quantity),
-        size: item.size,
-      };
-    });
+  return {
+    _id: productId,            // ✅ REAL PRODUCT ID
+    quantity: Number(item.quantity),
+    size: item.size,
+  };
+});
+
 
     console.log("✅ Normalized cart sent to backend:", normalizedCart);
 

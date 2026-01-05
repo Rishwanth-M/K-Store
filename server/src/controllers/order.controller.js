@@ -10,16 +10,14 @@ const createOrder = async (req, res, next) => {
     console.log("📥 Incoming cartProducts:", cartProducts);
 
     if (!cartProducts.length) {
-      console.error("❌ Cart empty");
       return res.status(400).json({
         success: false,
         message: "Cart is empty",
       });
     }
 
-    /* 🔒 FETCH PRODUCTS FROM DB */
+    // ✅ ENSURE product IDs are used
     const productIds = cartProducts.map((p) => p._id);
-
     console.log("🔍 Product IDs extracted:", productIds);
 
     const productsFromDB = await Product.find({
@@ -29,12 +27,12 @@ const createOrder = async (req, res, next) => {
     console.log("📦 Products fetched from DB:", productsFromDB);
 
     if (!productsFromDB.length) {
-      console.error("❌ No matching products found in DB");
       return res.status(400).json({
         success: false,
         message: "Invalid cart products",
       });
     }
+
 
 
     /* ✅ BUILD cartProducts EXACTLY AS SCHEMA */
