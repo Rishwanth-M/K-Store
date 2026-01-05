@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { BiMenu } from "react-icons/bi";
 import { DrawerCategory } from "./CategoryAndIcon";
 
-export const SideDrawer = ({ handlePath }) => {
+export const SideDrawer = ({ handlePath, cartCount }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // ✅ SAFE REDUX ACCESS

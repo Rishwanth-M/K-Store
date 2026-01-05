@@ -9,8 +9,8 @@ import {
   useColorMode,
   useToast,
   useBreakpointValue,
+  Badge,
 } from "@chakra-ui/react";
-
 import { useEffect, useRef, useState } from "react";
 import { IoOptionsOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,73 +28,59 @@ import {
   setItemSession,
 } from "../../utils/sessionStorage";
 
-import { RESET_FILTERS } from "../../redux/features/products/actionTypes";
-
 export const Products = () => {
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const [showFilter, setShowFilter] = useState(false);
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
   const touchStartX = useRef(null);
 
   const dispatch = useDispatch();
   const toast = useToast();
   const navigate = useNavigate();
 
-  const { products = [], isLoading, isError } = useSelector(
-    (state) => state.prodReducer
-  );
+  const { products = [], isLoading, isError, appliedFiltersCount = 0 } =
+    useSelector((state) => state.prodReducer);
 
-  /* ✅ SAFE PATH FALLBACK */
-  const sessionPath = getItemSession("path");
-  const path = sessionPath || "all";
+  /* PATH */
+  const path = getItemSession("path") || "all";
 
   useEffect(() => {
     dispatch(getRequest(path));
     setItemSession("path", path);
   }, [path, dispatch]);
 
-  /* 🔒 Lock scroll when mobile filter open */
+  /* 🔒 LOCK PAGE SCROLL ON DESKTOP */
   useEffect(() => {
-    document.body.style.overflow =
-      isMobile && showFilter ? "hidden" : "auto";
-
-    return () => (document.body.style.overflow = "auto");
-  }, [isMobile, showFilter]);
+    if (!isMobile) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMobile]);
 
   const handleSingleProduct = (product) => {
     setItemSession("singleProduct", product);
     navigate("/description");
   };
 
-  const handleReset = () => {
-    dispatch({ type: RESET_FILTERS });
-    setShowFilter(false);
-    toast({
-      title: "Filters reset",
-      status: "success",
-      duration: 1500,
-    });
-  };
-
-  const handleApplyClose = () => setShowFilter(false);
-
   const getHeading = () => {
     switch (path) {
       case "boys":
-        return "Boys Products";
+        return "Boys";
       case "girls":
-        return "Girls Products";
+        return "Girls";
       case "unisex":
-        return "Unisex Products";
+        return "Unisex";
       case "combo":
-        return "Combo Packs";
+        return "Combos";
       default:
         return "All Products";
     }
   };
 
-  /* 📱 Swipe to close mobile filter */
+  /* MOBILE SWIPE CLOSE */
   const onTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -102,127 +88,184 @@ export const Products = () => {
   const onTouchEnd = (e) => {
     if (!touchStartX.current) return;
     const diff = e.changedTouches[0].clientX - touchStartX.current;
-    if (diff > 80) setShowFilter(false);
+    if (diff > 80) setShowMobileFilter(false);
     touchStartX.current = null;
   };
-
-  console.log("🟢 PRODUCTS FROM REDUX:", products);
-
 
   return (
     <>
       {/* ================= TOP BAR ================= */}
-      <Flex
-        direction={{ base: "column", md: "row" }}
-        h={{ base: "100px", md: "60px" }}
-        position="sticky"
-        top="0"
-        bg={colorMode === "light" ? "white" : "#1a202c"}
-        zIndex={10}
-      >
-        <Center>
-          <Text
-            ml={{ base: "20px", md: "50px" }}
-            fontSize={{ base: "20px", md: "25px" }}
-            fontWeight={500}
-          >
-            {getHeading()} [{products.length}]
-          </Text>
-        </Center>
+      {/* ================= DESKTOP TOP BAR ONLY ================= */}
+{!isMobile && (
+  <Flex
+    direction="row"
+    h="64px"
+    position="sticky"
+    top="0"
+    bg={colorMode === "light" ? "white" : "#1a202c"}
+    zIndex={10}
+    px={8}
+    borderBottom="1px solid"
+    borderColor="gray.200"
+  >
+    <Center>
+      <Text fontSize="22px" fontWeight="600">
+        {getHeading()}{" "}
+        <Text as="span" fontSize="14px" color="gray.500">
+          ({products.length})
+        </Text>
+      </Text>
+    </Center>
+  </Flex>
+)}
 
-        <Spacer />
 
-        <Center>
-          <Flex gap="8px" px={{ base: "10px", md: "20px" }}>
-            <Button
-              fontSize={{ base: "13px", md: "16px" }}
-              rightIcon={<IoOptionsOutline />}
-              onClick={() => setShowFilter((p) => !p)}
-            >
-              {showFilter ? "Hide Filter" : "Show Filter"}
-            </Button>
+      
 
-            <SortFilters />
-          </Flex>
-        </Center>
-      </Flex>
-
-      {/* ================= DESKTOP ================= */}
+      {/* ================= DESKTOP: SPLIT SCROLL LAYOUT ================= */}
       {!isMobile && (
-        <Grid
-          gap="2%"
-          templateColumns={showFilter ? "260px 1fr" : "1fr"}
-          px="20px"
+        <Flex
+          h="calc(100vh - 64px)" /* subtract navbar height */
+          px={{ base: 4, md: 10 }}
+          pt={6}
+          gap={12}
         >
-          {showFilter && (
-            <Box position="sticky" top="80px">
-              <LeftSideFilter onApplyClose={handleApplyClose} />
-            </Box>
-          )}
+          {/* 🔒 LEFT FILTER — COMPLETELY LOCKED */}
+          <Box
+            w="380px"
+            flexShrink={0}
+            overflow="hidden"
+          >
+            <LeftSideFilter />
+          </Box>
 
-          <Box>
+          {/* 👉 RIGHT PRODUCTS — ONLY SCROLLABLE AREA */}
+          <Box
+            flex="1"
+            overflowY="auto"
+            pr={2}
+            sx={{
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                background:
+                  colorMode === "light"
+                    ? "rgba(0,0,0,0.25)"
+                    : "rgba(255,255,255,0.25)",
+                borderRadius: "full",
+              },
+            }}
+          >
             {isLoading ? (
               <Loading />
             ) : isError ? (
               <Error />
             ) : (
               <Grid
-                gap={4}
-                templateColumns={{
-                  base: "1fr",
-                  md: "repeat(2, 1fr)",
-                  xl: "repeat(4, 1fr)",
-                }}
+                templateColumns="repeat(3, 1fr)"
+                gap={6}
               >
                 {products.map((product) => (
                   <ProductDisplayBox
                     key={product._id}
                     {...product}
-                    onClick={() => handleSingleProduct(product)}
+                    onClick={() =>
+                      handleSingleProduct(product)
+                    }
                   />
                 ))}
               </Grid>
             )}
           </Box>
-        </Grid>
+        </Flex>
       )}
 
-      {/* ================= MOBILE ================= */}
       {isMobile && (
-        <Box px="0" w="100%" overflowX="hidden" pb="120px">
-          {isLoading ? (
-            <Loading />
-          ) : isError ? (
-            <Error />
-          ) : (
-            <Grid gap={4} templateColumns="1fr">
-              {products.map((product) => (
-                <ProductDisplayBox
-                  key={product._id}
-                  {...product}
-                  onClick={() => handleSingleProduct(product)}
-                />
-              ))}
-            </Grid>
-          )}
-        </Box>
-      )}
+  <Box
+    position="sticky"
+    top="0"
+    zIndex={10}
+    bg={colorMode === "light" ? "white" : "#1a202c"}
+    borderBottom="1px solid"
+    borderColor="gray.200"
+    px={4}
+    py={2}
+  >
+    {/* ROW 1: FILTER */}
+    <Flex align="center" justify="space-between">
+      <Flex
+        align="center"
+        gap={2}
+        cursor="pointer"
+        onClick={() => setShowMobileFilter(true)}
+      >
+        <Text fontSize="16px" fontWeight="500">
+          Filter
+        </Text>
+        <Text fontSize="20px" lineHeight="1">
+          +
+        </Text>
+      </Flex>
+    </Flex>
 
-      {/* ================= MOBILE FILTER ================= */}
+    {/* ROW 2: COUNT + SORT */}
+    <Flex
+      mt={2}
+      align="center"
+      justify="space-between"
+    >
+      <Text fontSize="14px" color="gray.500">
+        {products.length} items
+      </Text>
+
+      <Flex align="center" gap={1}>
+        <SortFilters />
+      </Flex>
+    </Flex>
+  </Box>
+)}
+
+
+      {/* ================= MOBILE PRODUCTS ================= */}
+      {isMobile && (
+  <Box px={4} pb="120px">
+    {isLoading ? (
+      <Loading />
+    ) : isError ? (
+      <Error />
+    ) : (
+      <Grid templateColumns="1fr" gap={5}>
+        {products.map((product) => (
+          <ProductDisplayBox
+            key={product._id}
+            {...product}
+            onClick={() => handleSingleProduct(product)}
+          />
+        ))}
+      </Grid>
+    )}
+  </Box>
+)}
+
+
+      {/* ================= MOBILE FILTER DRAWER ================= */}
       {isMobile && (
         <>
+          {/* OVERLAY */}
           <Box
             position="fixed"
             inset="0"
             bg="rgba(0,0,0,0.45)"
             backdropFilter="blur(6px)"
             zIndex={1999}
-            opacity={showFilter ? 1 : 0}
-            pointerEvents={showFilter ? "auto" : "none"}
+            opacity={showMobileFilter ? 1 : 0}
+            pointerEvents={showMobileFilter ? "auto" : "none"}
             transition="opacity 0.25s ease"
-            onClick={() => setShowFilter(false)}
+            onClick={() => setShowMobileFilter(false)}
           />
 
+          {/* DRAWER */}
           <Box
             position="fixed"
             top="0"
@@ -234,7 +277,9 @@ export const Products = () => {
             zIndex={2000}
             boxShadow="2xl"
             transform={
-              showFilter ? "translateX(0)" : "translateX(100%)"
+              showMobileFilter
+                ? "translateX(0)"
+                : "translateX(100%)"
             }
             transition="transform 0.35s cubic-bezier(0.4,0,0.2,1)"
             overflowY="auto"
@@ -242,22 +287,25 @@ export const Products = () => {
             onTouchEnd={onTouchEnd}
           >
             <Flex
-              p="16px"
+              p={4}
               borderBottom="1px solid"
               borderColor="gray.200"
               justify="space-between"
               align="center"
             >
-              <Text fontSize="18px" fontWeight={600}>
-                Filters
+              <Text fontSize="18px" fontWeight="600">
+                
               </Text>
-              <Button size="sm" onClick={handleReset}>
-                Reset
+              <Button
+                size="sm"
+                onClick={() => setShowMobileFilter(false)}
+              >
+                Done
               </Button>
             </Flex>
 
-            <Box p="16px">
-              <LeftSideFilter onApplyClose={handleApplyClose} />
+            <Box p={4}>
+              <LeftSideFilter />
             </Box>
           </Box>
         </>
