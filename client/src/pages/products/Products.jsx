@@ -132,7 +132,7 @@ export const Products = () => {
         >
           {/* 🔒 LEFT FILTER — COMPLETELY LOCKED */}
           <Box
-            w="380px"
+            w="340px"
             flexShrink={0}
             overflow="hidden"
           >
