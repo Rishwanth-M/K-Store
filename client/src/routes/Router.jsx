@@ -13,6 +13,7 @@ import { Navbar } from "../pages/navbar/Navbar";
 import { Order } from "../pages/orders/Order";
 import { Products } from "../pages/products/Products";
 import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
+import { PaymentFailed } from "../pages/payment/PaymentFailed";
 
 /* ================= POLICY PAGES ================= */
 import TermsConditions from "../pages/policies/TermsConditions";
@@ -44,6 +45,7 @@ export const Router = () => {
         <Route path="/kids" element={<Products />} />
         <Route path="/description" element={<Description />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
 
         {/* ================= AUTH (PUBLIC) ================= */}
         <Route

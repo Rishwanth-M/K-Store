@@ -3,7 +3,8 @@ const axios = require("axios");
 const Order = require("../models/order.model");
 
 /* ======================================================
-   INITIATE PHONEPE PAYMENT (PG - SANDBOX / TEST)
+   INITIATE PHONEPE PAYMENT (PG - SANDBOX / PROD)
+   CLIENT → SERVER
 ====================================================== */
 exports.initiatePayment = async (req, res) => {
   try {
@@ -24,9 +25,9 @@ exports.initiatePayment = async (req, res) => {
       });
     }
 
+    /* ================= CREATE TRANSACTION ID ================= */
     const merchantTransactionId = "MT" + Date.now();
 
-    // ✅ update payment details safely
     order.paymentDetails = {
       ...order.paymentDetails,
       merchantTransactionId,
@@ -42,7 +43,7 @@ exports.initiatePayment = async (req, res) => {
       merchantTransactionId,
       merchantUserId: req.user._id.toString(),
       amount: Math.round(amount * 100), // paise
-      redirectUrl: `${process.env.FRONTEND_URL}/payment-success`,
+      redirectUrl: `${process.env.BACKEND_URL}/api/payment/callback`,
       redirectMode: "GET",
       callbackUrl: `${process.env.BACKEND_URL}/api/payment/webhook`,
       paymentInstrument: {
@@ -59,7 +60,10 @@ exports.initiatePayment = async (req, res) => {
       base64Payload + "/pg/v1/pay" + process.env.PHONEPE_SALT_KEY;
 
     const checksum =
-      crypto.createHash("sha256").update(stringToSign).digest("hex") +
+      crypto
+        .createHash("sha256")
+        .update(stringToSign)
+        .digest("hex") +
       "###" +
       process.env.PHONEPE_SALT_INDEX;
 
@@ -101,6 +105,46 @@ exports.initiatePayment = async (req, res) => {
 };
 
 /* ======================================================
+   PHONEPE REDIRECT CALLBACK (BROWSER → SERVER)
+====================================================== */
+exports.phonePeCallback = async (req, res) => {
+  try {
+    const { transactionId } = req.query;
+
+    if (!transactionId) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment-failed`
+      );
+    }
+
+    const order = await Order.findOne({
+      "paymentDetails.merchantTransactionId": transactionId,
+    });
+
+    if (!order) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment-failed`
+      );
+    }
+
+    if (order.paymentDetails.paymentStatus === "SUCCESS") {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment-success`
+      );
+    }
+
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/payment-failed`
+    );
+  } catch (error) {
+    console.error("❌ PhonePe CALLBACK error:", error.message);
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/payment-failed`
+    );
+  }
+};
+
+/* ======================================================
    PHONEPE WEBHOOK (SERVER → SERVER)
 ====================================================== */
 exports.phonePeWebhook = async (req, res) => {
@@ -135,14 +179,12 @@ exports.phonePeWebhook = async (req, res) => {
 
     if (state === "COMPLETED") {
       order.paymentDetails.paymentStatus = "SUCCESS";
-      order.paymentDetails.phonepeTransactionId =
-        data.data.transactionId || null;
-      order.paymentDetails.completedAt = new Date();
       order.orderStatus = "PAID";
+      order.paymentDetails.completedAt = new Date();
     } else {
       order.paymentDetails.paymentStatus = "FAILED";
-      order.paymentDetails.completedAt = new Date();
       order.orderStatus = "FAILED";
+      order.paymentDetails.completedAt = new Date();
     }
 
     await order.save();
