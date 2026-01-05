@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import ScrollToTop from "../components/ScrollToTop";
 
+/* ================= PAGES ================= */
 import { AuthPage } from "../pages/auth/AuthPage";
 import { Cart } from "../pages/cart/Cart";
 import { Checkout } from "../pages/checkout/Checkout";
@@ -13,10 +14,18 @@ import { Order } from "../pages/orders/Order";
 import { Products } from "../pages/products/Products";
 import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
 
+/* ================= POLICY PAGES ================= */
+import TermsConditions from "../pages/policies/TermsConditions";
+import PrivacyPolicy from "../pages/policies/PrivacyPolicy";
+import RefundPolicy from "../pages/policies/RefundPolicy";
+import ReturnPolicy from "../pages/policies/ReturnPolicy";
+import ShippingPolicy from "../pages/policies/ShippingPolicy";
+
+/* ================= ROUTE GUARDS ================= */
 import { Private } from "./Private";
 import { Public } from "./Public";
 
-/* 🔐 ADMIN */
+/* ================= ADMIN ================= */
 import { AdminProducts } from "../pages/admin/AdminProducts";
 import ProductForm from "../pages/admin/ProductForm";
 
@@ -36,7 +45,7 @@ export const Router = () => {
         <Route path="/description" element={<Description />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
 
-        {/* 🔑 AUTH (PUBLIC ROUTE) */}
+        {/* ================= AUTH (PUBLIC) ================= */}
         <Route
           path="/auth"
           element={
@@ -83,7 +92,7 @@ export const Router = () => {
           }
         />
 
-        {/* ================= ADMIN (TEMP PROTECTED) ================= */}
+        {/* ================= ADMIN ================= */}
         <Route
           path="/admin/products"
           element={
@@ -110,6 +119,13 @@ export const Router = () => {
             </Private>
           }
         />
+
+        {/* ================= POLICIES (PUBLIC) ================= */}
+        <Route path="/terms" element={<TermsConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/return-policy" element={<ReturnPolicy />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
       </Routes>
 
       <Footer />

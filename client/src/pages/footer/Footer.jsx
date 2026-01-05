@@ -1,11 +1,10 @@
-import { Box, Center, Flex, Grid, Icon, Link, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Grid, Text } from "@chakra-ui/react";
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { MdOutlinePersonPin } from 'react-icons/md';
-import { FcLike } from "react-icons/fc";
 import { IconLink } from "../../components/footer/IconLink";
+import { Link as RouterLink } from "react-router-dom";
 
 export const Footer = () => {
-
     return (
         <Box h={'300px'} bg={'black'} color={'white'} mt={'40px'}>
 
@@ -18,9 +17,10 @@ export const Footer = () => {
                 p={'10px'}
                 templateColumns={['100%', '48% 2% 50%', '48% 2% 50%', '25% 25% 50%']}
             >
+                {/* LEFT SECTION */}
                 <Center>
                     <Flex
-                        fontSize={["11px", '13px', '14px', '14px', '14px']}
+                        fontSize={["11px", '13px', '14px']}
                         gap={'10px'}
                         fontWeight={600}
                         flexDirection={'column'}
@@ -33,41 +33,44 @@ export const Footer = () => {
                     </Flex>
                 </Center>
 
+                {/* POLICIES SECTION */}
                 <Center>
                     <Flex
-                        display={['none', 'none', 'none', 'flex', 'flex']}
                         fontSize={'14px'}
-                        gap={'10px'}
+                        gap={'8px'}
                         flexDirection={'column'}
                         color={'gray'}
                     >
-                        <Text color={'white'} fontWeight={600}>GET HELP</Text>
-                        <Text>Order Status</Text>
-                        <Text>Delivery</Text>
-                        <Text>Returns</Text>
-                        <Text>Payment Options</Text>
+                        <Text color={'white'} fontWeight={600}>POLICIES</Text>
+
+                        <Text as={RouterLink} to="/terms">Terms & Conditions</Text>
+                        <Text as={RouterLink} to="/privacy-policy">Privacy Policy</Text>
+                        <Text as={RouterLink} to="/refund-policy">Refund Policy</Text>
+                        <Text as={RouterLink} to="/return-policy">Return Policy</Text>
+                        <Text as={RouterLink} to="/shipping-policy">Shipping Policy</Text>
                     </Flex>
                 </Center>
 
+                {/* SOCIAL ICONS */}
                 <Flex
                     mt={'20px'}
                     gap={'15px'}
                     flexDirection={'row-reverse'}
-                    justifyContent={['center', 'right', 'right', 'right', 'right']}
+                    justifyContent={['center', 'right']}
                     color={'gray'}
-                    mr={['0px', '30px', '80px', '80px', '80px']}
+                    mr={['0px', '30px', '80px']}
                 >
                     <IconLink
                         icon={MdOutlinePersonPin}
-                        link={"https://mohit-portfolio.vercel.app/"}
+                        link="https://mohit-portfolio.vercel.app/"
                     />
                     <IconLink
                         icon={FaGithub}
-                        link={"https://github.com/m-sehrawat/"}
+                        link="https://github.com/m-sehrawat/"
                     />
                     <IconLink
                         icon={FaLinkedin}
-                        link={"https://www.linkedin.com/in/mohitsehrawat/"}
+                        link="https://www.linkedin.com/in/mohitsehrawat/"
                     />
                 </Flex>
 
@@ -75,7 +78,3 @@ export const Footer = () => {
         </Box>
     );
 };
-
-
-
-
