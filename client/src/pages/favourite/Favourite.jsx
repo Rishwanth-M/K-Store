@@ -13,10 +13,12 @@ export const Favourite = () => {
   const navigate = useNavigate();
 
   const token = useSelector((state) => state.authReducer.token);
+
+  // ✅ CORRECT STATE KEYS
   const {
     isLoading,
     isError,
-    favourite = [],
+    favourites = [],
   } = useSelector((state) => state.favouriteReducer);
 
   /* 🔒 AUTH GUARD + FETCH */
@@ -25,8 +27,7 @@ export const Favourite = () => {
       navigate("/auth");
       return;
     }
-
-    dispatch(getFavouriteRequest(token));
+    dispatch(getFavouriteRequest());
   }, [token, dispatch, navigate]);
 
   if (isLoading) return <Loading />;
@@ -38,7 +39,7 @@ export const Favourite = () => {
         Favourites
       </Text>
 
-      {!favourite.length ? (
+      {!favourites.length ? (
         <Center h="30vh">
           <Text fontSize="20px">
             Your favourite items will be displayed here.
@@ -50,16 +51,17 @@ export const Favourite = () => {
           gap={{ base: "20px", lg: "40px" }}
           mt="40px"
           gridTemplateColumns={{
-            base: "repeat(2, 1fr)",
+            base: "repeat(1, 1fr)",
+            sm: "repeat(2, 1fr)",
             md: "repeat(3, 1fr)",
             lg: "repeat(4, 1fr)",
           }}
         >
-          {favourite.map((item) => (
+          {favourites.map((item) => (
             <FavouriteItemBox
               key={item._id}
-              _id={item._id}   // favourite document id (for delete)
-              data={item}     // ✅ PASS THE ACTUAL PRODUCT DATA
+              _id={item._id}   // favourite document id
+              data={item}     // full snapshot
             />
           ))}
         </Box>

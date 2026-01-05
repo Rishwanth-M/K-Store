@@ -33,22 +33,45 @@ export const FavouriteItemBox = ({ data, _id }) => {
     dispatch(deleteFavouriteRequest(_id, toast));
   };
 
-  const handleDisplayProduct = () => {
-    setItemSession("singleProduct", data);
+  const handleDisplayProduct = async () => {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/products/${data.product}`
+    );
+
+    const result = await res.json();
+
+    if (!result?.product) {
+      throw new Error("Product not found");
+    }
+
+    setItemSession("singleProduct", result.product);
     navigate("/description");
-  };
+  } catch (err) {
+    setToast(toast, "Failed to load product", "error");
+  }
+};
+
 
   return (
     <Flex flexDirection="column" mb="30px">
       {/* IMAGE */}
-      <Box overflow="hidden">
-        <Image
-          src={imageUrl}
-          onClick={handleDisplayProduct}
-          cursor="pointer"
-          className="imgAnimation"
-        />
-      </Box>
+      <Box
+  overflow="hidden"
+  borderRadius="16px"
+ 
+>
+  <Image
+    src={imageUrl}
+    onClick={handleDisplayProduct}
+    cursor="pointer"
+    objectFit="contain"
+    w="100%"
+    h="280px"
+    p="16px"
+  />
+</Box>
+
 
       {/* DETAILS */}
       <Box mt="15px">
