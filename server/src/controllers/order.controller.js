@@ -43,7 +43,6 @@ export const Checkout = () => {
   /* ================= AUTH ================= */
   const { token, user } = useSelector((state) => state.authReducer);
 
-  if (!token) return <Navigate to="/auth" replace />;
 
   /* ================= CART ================= */
   const { orderSummary, cartProducts = [] } = useSelector(
