@@ -96,7 +96,7 @@ app.post("/api/auth/login", authController.login);
 ====================================================== */
 app.use("/products", require("./routes/product.routes"));
 app.use("/favourite", require("./routes/favourite.route"));
-app.use("/cart", require("./routes/cart.route"));
+app.use("/cart", require("./routes/cart.routes"));
 app.use("/order", require("./routes/order.routes"));
 app.use("/users/addresses", require("./routes/address.routes"));
 app.use("/api/payment", require("./routes/payment.routes"));
