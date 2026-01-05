@@ -6,27 +6,17 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: true,
-      index: true,
     },
-
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "product",
       required: true,
     },
 
-    size: {
-      type: String,
-      required: true,
-    },
+    size: { type: String, required: true },
+    quantity: { type: Number, default: 1 },
 
-    quantity: {
-      type: Number,
-      default: 1,
-      min: 1,
-    },
-
-    /* snapshot (safe subset) */
+    /* snapshot */
     name: String,
     price: Number,
     images: [String],
@@ -36,10 +26,6 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* prevent duplicate same product + size per user */
-cartSchema.index(
-  { user: 1, product: 1, size: 1 },
-  { unique: true }
-);
+cartSchema.index({ user: 1, product: 1, size: 1 }, { unique: true });
 
 module.exports = mongoose.model("cart", cartSchema);
