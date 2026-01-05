@@ -29,29 +29,29 @@ export const Description = () => {
   }
 
   /* ---------- ADD TO CART ---------- */
-  const handleAddToCart = (selectedSize) => {
-    if (!selectedSize) {
-      setToast(toast, "Please select a size", "error");
-      return;
-    }
+const handleAddToCart = (selectedSize) => {
+  if (!selectedSize) {
+    setToast(toast, "Please select a size", "error");
+    return;
+  }
 
-    // Backend has single stock, not per-size
-    if (Number(product.stock) <= 0) {
-      setToast(toast, "Product is out of stock", "error");
-      return;
-    }
+  if (Number(product.stock) <= 0) {
+    setToast(toast, "Product is out of stock", "error");
+    return;
+  }
 
-    const cartPayload = {
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      size: selectedSize,
-      quantity: 1,
-      images: product.images || [],
-    };
+  dispatch(
+    addToCartDB(
+      {
+        productId: product._id,
+        size: selectedSize,
+        quantity: 1,
+      },
+      toast
+    )
+  );
+};
 
-    dispatch(addToCartRequest(cartPayload, toast));
-  };
 
   /* ---------- ADD TO FAVOURITE ---------- */
   const handleAddToFavourite = (selectedSize) => {

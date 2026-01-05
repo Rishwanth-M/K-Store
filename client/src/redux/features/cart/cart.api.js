@@ -26,7 +26,7 @@ export const fetchCart = () => async (dispatch) => {
 /* ================= ADD TO CART ================= */
 export const addToCartDB = (payload, toast) => async (dispatch) => {
   try {
-    await api.post("/cart", payload);
+    await api.post("/cart", payload);   // 🔥 THIS IS THE FIX
 
     dispatch(fetchCart());
 
@@ -35,8 +35,9 @@ export const addToCartDB = (payload, toast) => async (dispatch) => {
       status: "success",
     });
   } catch (error) {
+    console.error("❌ Add to cart failed:", error);
     toast?.({
-      title: error?.response?.data?.message || "Unauthorized",
+      title: error?.response?.data?.message || "Failed to add to cart",
       status: "error",
     });
   }

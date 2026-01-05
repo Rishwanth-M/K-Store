@@ -4,75 +4,98 @@ import {
   Flex,
   Image,
   Text,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCartRequest,
-  removeFromCartRequest
-} from "../../redux/features/cart/actions";
+import { useNavigate } from "react-router-dom";
+
 import { numberWithCommas, setToast } from "../../utils/extraFunctions";
 import { BagItemBtn, QuantityBtn } from "./BagItemBtn";
-import { useNavigate } from "react-router-dom";
 import { addToFavouriteRequest } from "../../redux/features/favourite/actions";
+import {
+  addToCartDB,
+  removeFromCartDB,
+} from "../../redux/features/cart/cart.api";
+
 import noImage from "../../assets/no-image.png";
 
-export const ItemBox = ({ data, index }) => {
+export const ItemBox = ({ data }) => {
   const dispatch = useDispatch();
   const toast = useToast();
   const navigate = useNavigate();
+
   const token = useSelector((state) => state.authReducer.token);
 
-  /* ================= DESTRUCTURE DATA ================= */
+  /* ================= DATA ================= */
   const {
+    _id,              // cart item id
+    product,          // product id
     name,
     description,
     price,
     quantity,
-    size,            // ✅ SIZE ADDED
-    images = []
+    size,
+    images = [],
   } = data;
 
-  const imageUrl = images.length > 0 ? images[0] : noImage;
+  const imageUrl = images.length ? images[0] : noImage;
 
-  /* ================= HANDLERS ================= */
+  /* ================= REMOVE ================= */
   const handleRemoveItem = () => {
-    dispatch(removeFromCartRequest(index, toast));
+    dispatch(removeFromCartDB(_id, toast));
   };
 
+  /* ================= QUANTITY ================= */
+  const handleQuantityChange = ({ target: { name } }) => {
+    if (name === "reduce" && quantity === 1) {
+      dispatch(removeFromCartDB(_id, toast));
+      return;
+    }
+
+    dispatch(
+      addToCartDB(
+        {
+          productId: product,
+          size,
+          operation: name, // "add" | "reduce"
+        },
+        toast
+      )
+    );
+  };
+
+  /* ================= FAVOURITE ================= */
   const handleAddToFavourite = () => {
     if (!token) {
       setToast(toast, "Please login first", "error");
       navigate("/auth");
-    } else {
-      dispatch(addToFavouriteRequest(data, token, toast));
+      return;
     }
-  };
 
-  const handleQuantityChange = ({ target: { name } }) => {
-    if (quantity === 1 && name === "reduce") {
-      return dispatch(removeFromCartRequest(index, toast));
-    }
-    return dispatch(addToCartRequest(data, toast, name));
+    dispatch(
+      addToFavouriteRequest(
+        {
+          productId: product,
+          size,
+        },
+        toast
+      )
+    );
   };
 
   /* ================= UI ================= */
   return (
     <>
-      <Box
-        my="15px"
-        minH="150px"
-        display="flex"
-        gap={["5px", "20px"]}
-      >
+      <Box my="20px" display="flex" gap={["12px", "24px"]}>
         {/* IMAGE */}
-        <Box w="150px" h="150px">
+        <Box w="150px" h="150px" flexShrink={0}>
           <Image
             h="100%"
             w="100%"
             objectFit="cover"
             src={imageUrl}
             alt={name}
+            borderRadius="md"
           />
         </Box>
 
@@ -80,22 +103,27 @@ export const ItemBox = ({ data, index }) => {
         <Box
           w="100%"
           display="grid"
-          gap="2%"
-          gridTemplateColumns={["67% 30%", "80% 18%"]}
+          gap="12px"
+          gridTemplateColumns={["1fr", "80% 18%"]}
         >
           <Box>
-            <Text fontWeight={600}>{name}</Text>
+            <Text fontWeight={600} fontSize="16px">
+              {name}
+            </Text>
 
-            {/* ✅ SIZE DISPLAY */}
             <Text fontSize="14px" color="gray.600">
               Size: <strong>{size}</strong>
             </Text>
 
-            <Text color="gray">{description}</Text>
+            {description && (
+              <Text fontSize="14px" color="gray.500">
+                {description}
+              </Text>
+            )}
 
             {/* QUANTITY */}
-            <Flex alignItems="center" gap="10px" my="8px">
-              <Text>Quantity:</Text>
+            <Flex align="center" gap="10px" mt="8px">
+              <Text fontSize="14px">Quantity:</Text>
 
               <QuantityBtn
                 text="-"
@@ -112,23 +140,22 @@ export const ItemBox = ({ data, index }) => {
               />
             </Flex>
 
-            {/* ACTION BUTTONS */}
-            <Box display="flex" gap="10px">
+            {/* ACTIONS */}
+            <Flex gap="12px" mt="10px">
               <BagItemBtn
                 title="Favourites"
                 onClick={handleAddToFavourite}
               />
-
               <BagItemBtn
                 title="Remove"
                 onClick={handleRemoveItem}
               />
-            </Box>
+            </Flex>
           </Box>
 
           {/* PRICE */}
-          <Box>
-            <Text fontSize="18px" fontWeight={600} textAlign="end">
+          <Box textAlign="right">
+            <Text fontSize="18px" fontWeight={600}>
               ₹{numberWithCommas(price)}
             </Text>
           </Box>

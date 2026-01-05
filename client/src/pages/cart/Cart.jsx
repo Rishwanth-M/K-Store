@@ -4,19 +4,20 @@ import {
   Center,
   Text,
 } from "@chakra-ui/react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import { BagItems } from "../../components/cart/BagItems";
 import { OrderSummary } from "../../components/cart/OrderSummary";
+import { fetchCart } from "../../redux/features/cart/cart.api";
 
 export const Cart = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // ✅ TOKEN MUST BE DEFINED FIRST
   const token = useSelector((state) => state.authReducer.token);
 
-  // ✅ MEMOIZED SELECTOR (NO WARNING)
   const cartItems =
     useSelector(
       (state) => state.cartReducer.cartProducts,
@@ -27,6 +28,11 @@ export const Cart = () => {
   if (!token) {
     return <Navigate to="/auth" replace />;
   }
+
+  /* 🔥 FETCH CART FROM DB ON LOAD */
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
 
   /* 🛒 EMPTY CART UI */
   if (!cartItems.length) {
@@ -53,7 +59,6 @@ export const Cart = () => {
     );
   }
 
-  /* 🛍 CART WITH ITEMS */
   return (
     <Box
       display="grid"
