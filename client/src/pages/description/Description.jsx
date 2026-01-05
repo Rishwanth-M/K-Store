@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { getItemSession } from "../../utils/sessionStorage";
 import { setToast } from "../../utils/extraFunctions";
 
-import { addToCartRequest } from "../../redux/features/cart/actions";
+import { addToCartDB } from "../../redux/features/cart/cart.api";
+
 import { addToFavouriteRequest } from "../../redux/features/favourite/actions";
 
 import { ProductImageGallery } from "../../components/description/ProductImageGallery";
