@@ -45,9 +45,9 @@ export const ItemBox = ({ data }) => {
     dispatch(removeFromCartDB(_id, toast));
   };
 
-  /* ================= QUANTITY ================= */
-  const handleQuantityChange = ({ target: { name } }) => {
-    if (name === "reduce" && quantity === 1) {
+  /* ================= QUANTITY (FIXED) ================= */
+  const handleQuantityChange = (operation) => {
+    if (operation === "reduce" && quantity === 1) {
       dispatch(removeFromCartDB(_id, toast));
       return;
     }
@@ -57,7 +57,7 @@ export const ItemBox = ({ data }) => {
         {
           productId: product,
           size,
-          operation: name, // "add" | "reduce"
+          operation, // "add" | "reduce"
         },
         toast
       )
@@ -127,16 +127,14 @@ export const ItemBox = ({ data }) => {
 
               <QuantityBtn
                 text="-"
-                name="reduce"
-                onClick={handleQuantityChange}
+                onClick={() => handleQuantityChange("reduce")}
               />
 
               <Text fontWeight={600}>{quantity}</Text>
 
               <QuantityBtn
                 text="+"
-                name="add"
-                onClick={handleQuantityChange}
+                onClick={() => handleQuantityChange("add")}
               />
             </Flex>
 
