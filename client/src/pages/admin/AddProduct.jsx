@@ -15,8 +15,9 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-const CLOUD_NAME = "dafoanpxr";
-const UPLOAD_PRESET = "kreedentials_store";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
 
 const emptyProduct = {
   name: "",
@@ -42,7 +43,7 @@ export const AddProduct = () => {
 
   /* ================= FETCH PRODUCTS ================= */
   const loadProducts = async () => {
-    const res = await fetch("http://localhost:8080/products");
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/products`);
     const data = await res.json();
     setProducts(data.products || []);
   };
@@ -134,7 +135,7 @@ export const AddProduct = () => {
 
     const url =
       mode === "add"
-        ? "http://localhost:8080/products"
+        ? `${import.meta.env.VITE_BACKEND_URL}/products`
         : `http://localhost:8080/products/${editingId}`;
 
     const method = mode === "add" ? "POST" : "PUT";

@@ -15,8 +15,9 @@ import {
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const CLOUD_NAME = "dafoanpxr";
-const UPLOAD_PRESET = "kreedentials_store";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
 
 export const EditProduct = () => {
   const { id } = useParams();
@@ -42,7 +43,7 @@ export const EditProduct = () => {
 
   /* ================= FETCH PRODUCT ================= */
   useEffect(() => {
-    fetch(`http://localhost:8080/products/${id}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`)
       .then((res) => res.json())
       .then(({ product }) => {
         setProduct({
@@ -119,7 +120,7 @@ export const EditProduct = () => {
     };
 
     const res = await fetch(
-      `http://localhost:8080/products/${id}`,
+      `${import.meta.env.VITE_BACKEND_URL}/products/${id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

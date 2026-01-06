@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 
-const CLOUD_NAME = "dafoanpxr";
-const UPLOAD_PRESET = "kreedentials_store";
-const API_BASE = "http://localhost:8080/products";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
+const API_BASE = `${import.meta.env.VITE_BACKEND_URL}/products`;
 
 const EMPTY_PRODUCT = {
   name: "",
