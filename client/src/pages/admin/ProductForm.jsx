@@ -1,6 +1,3 @@
-// src/pages/admin/ProductForm.jsx
-import { useNavigate } from "react-router-dom";
-
 import {
   Box,
   Button,
@@ -26,10 +23,9 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import "./productForm.css";
-
 import { useProductFormLogic } from "./product.logic";
 
 const PRODUCT_TYPES = [
@@ -46,7 +42,6 @@ const PRODUCT_TYPES = [
 
 const SIZES = ["S", "M", "L", "XL", "Free"];
 
-
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,24 +54,19 @@ export default function ProductForm() {
     isSubmitting,
     isUploading,
     imageCount,
+    hasUnsavedChanges,
 
     handleChange,
     handleImageUpload,
     handleImageRemove,
-
     addVariant,
     updateVariant,
     removeVariant,
-
     handleSubmit,
-
     registerFieldRef,
-    hasUnsavedChanges,
   } = useProductFormLogic(id);
 
-
-
-  /* Unsaved changes warning */
+  /* ===== UNSAVED CHANGES WARNING ===== */
   useEffect(() => {
     const handler = (e) => {
       if (!hasUnsavedChanges) return;
@@ -87,23 +77,23 @@ export default function ProductForm() {
     return () => window.removeEventListener("beforeunload", handler);
   }, [hasUnsavedChanges]);
 
+  const handleBack = () => {
+    if (hasUnsavedChanges && !window.confirm("Discard changes?")) return;
+    navigate("/admin/products");
+  };
+
   return (
     <Box className="product-form-page">
       <Box className="product-form-card">
-        <Button
-  variant="ghost"
-  size="sm"
-  mb="4"
-  onClick={() => navigate("/admin/products")}
->
-  ← Back to Products
-</Button>
+        <Button variant="ghost" size="sm" mb="4" onClick={handleBack}>
+          ← Back to Products
+        </Button>
 
         <Heading size="lg" mb="6">
           {isEditMode ? "Edit Product" : "Add Product"}
         </Heading>
 
-        {/* ===== BASIC INFO ===== */}
+        {/* BASIC INFO */}
         <Stack spacing="4">
           <FormControl isInvalid={errors.name} isRequired>
             <FormLabel>Product Name</FormLabel>
@@ -116,20 +106,19 @@ export default function ProductForm() {
           </FormControl>
 
           <FormControl isInvalid={errors.category} isRequired>
-  <FormLabel>Category</FormLabel>
-  <Select
-    ref={registerFieldRef("category")}
-    value={product.category}
-    onChange={(e) => handleChange("category", e.target.value)}
-  >
-    <option value="">Select category</option>
-    <option value="boys">Boys</option>
-    <option value="girls">Girls</option>
-    <option value="unisex">Unisex</option>
-  </Select>
-  <FormErrorMessage>{errors.category}</FormErrorMessage>
-</FormControl>
-
+            <FormLabel>Category</FormLabel>
+            <Select
+              ref={registerFieldRef("category")}
+              value={product.category}
+              onChange={(e) => handleChange("category", e.target.value)}
+            >
+              <option value="">Select category</option>
+              <option value="boys">Boys</option>
+              <option value="girls">Girls</option>
+              <option value="unisex">Unisex</option>
+            </Select>
+            <FormErrorMessage>{errors.category}</FormErrorMessage>
+          </FormControl>
 
           <FormControl isInvalid={errors.color} isRequired>
             <FormLabel>Color</FormLabel>
@@ -180,7 +169,7 @@ export default function ProductForm() {
 
         <Divider my="6" />
 
-        {/* ===== STATUS ===== */}
+        {/* STATUS */}
         <FormControl display="flex" alignItems="center">
           <FormLabel mb="0">Product Status</FormLabel>
           <Switch
@@ -196,7 +185,7 @@ export default function ProductForm() {
 
         <Divider my="6" />
 
-        {/* ===== IMAGES ===== */}
+        {/* IMAGES */}
         <Heading size="md" mb="3">
           Images ({imageCount}/4)
         </Heading>
@@ -233,7 +222,7 @@ export default function ProductForm() {
 
         <Divider my="6" />
 
-        {/* ===== VARIANTS (SIZE + STOCK) ===== */}
+        {/* VARIANTS */}
         <Heading size="md" mb="3">
           Sizes & Stock
         </Heading>
@@ -275,7 +264,7 @@ export default function ProductForm() {
 
         <Divider my="6" />
 
-        {/* ===== EXTRA DETAILS ===== */}
+        {/* EXTRA DETAILS */}
         <Accordion allowToggle>
           {[
             ["Product Details", "details"],
@@ -302,7 +291,7 @@ export default function ProductForm() {
 
         <Divider my="8" />
 
-        {/* ===== ACTION ===== */}
+        {/* ACTION */}
         <Button
           colorScheme="blue"
           size="lg"

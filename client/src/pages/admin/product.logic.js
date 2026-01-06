@@ -1,5 +1,3 @@
-// src/pages/admin/product.logic.js
-
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 
@@ -16,7 +14,6 @@ const EMPTY_PRODUCT = {
   description: "",
   images: [],
   status: "draft",
-
   details: "",
   material: "",
   sizeGuide: "",
@@ -38,36 +35,44 @@ export function useProductFormLogic(productId) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const fieldRefs = useRef({});
+  const isFirstLoad = useRef(true);
 
-  /* Fetch product (edit mode) */
+  /* ================= FETCH (EDIT MODE) ================= */
   useEffect(() => {
     if (!isEditMode) return;
 
     fetch(`${API_BASE}/${productId}`)
       .then((r) => r.json())
-      .then((data) => {
+      .then(({ product }) => {
+        if (!product) return;
+
         setProduct({
           ...EMPTY_PRODUCT,
-          ...data,
-          price: String(data.price),
+          ...product,
+          price: String(product.price ?? ""),
         });
+
         setVariants(
-          data.variants?.length ? data.variants : [EMPTY_VARIANT]
+          product.variants?.length
+            ? product.variants.map((v) => ({
+                size: v.size,
+                stock: String(v.stock),
+              }))
+            : [EMPTY_VARIANT]
         );
       });
   }, [productId, isEditMode]);
 
-const isFirstLoad = useRef(true);
+  /* ================= UNSAVED CHANGES ================= */
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+    setHasUnsavedChanges(true);
+  }, [product, variants]);
 
-useEffect(() => {
-  if (isFirstLoad.current) {
-    isFirstLoad.current = false;
-    return;
-  }
-  setHasUnsavedChanges(true);
-}, [product, variants]);
-
-
+  /* ================= HELPERS ================= */
   const handleChange = (field, value) => {
     setProduct((p) => ({ ...p, [field]: value }));
   };
@@ -76,7 +81,7 @@ useEffect(() => {
     if (el) fieldRefs.current[field] = el;
   };
 
-  /* Variants */
+  /* ================= VARIANTS ================= */
   const addVariant = () => setVariants((v) => [...v, EMPTY_VARIANT]);
 
   const updateVariant = (i, field, value) => {
@@ -86,10 +91,10 @@ useEffect(() => {
   };
 
   const removeVariant = (i) => {
-    setVariants((v) => v.filter((_, idx) => idx !== i));
+    setVariants((v) => (v.length === 1 ? v : v.filter((_, idx) => idx !== i)));
   };
 
-  /* Images */
+  /* ================= IMAGES ================= */
   const handleImageUpload = async (file) => {
     if (!file || isUploading || product.images.length >= 4) return;
 
@@ -121,31 +126,31 @@ useEffect(() => {
     }));
   };
 
-  /* Validation */
+  /* ================= VALIDATION ================= */
   const validate = () => {
     const e = {};
+    const seenSizes = new Set();
 
     if (!product.name.trim()) e.name = "Product name required";
     if (!product.category) e.category = "Category required";
     if (!product.color.trim()) e.color = "Color required";
     if (!product.productType) e.productType = "Product type required";
-    if (!product.price || product.price <= 0)
-      e.price = "Price must be greater than 0";
-    if (!product.images.length) e.images = "At least 1 image required";
+    if (!product.price || Number(product.price) <= 0)
+      e.price = "Invalid price";
+    if (!product.images.length) e.images = "At least one image required";
 
-    const seenSizes = new Set();
     variants.forEach((v, i) => {
-  if (!v.size && !v.stock) return;
+      if (!v.size && !v.stock) return;
 
-  if (!v.size) e[`variant-${i}`] = "Size required";
-  if (v.stock < 0) e[`variant-${i}`] = "Invalid stock";
+      if (!v.size) return (e[`variant-${i}`] = "Size required");
+      if (Number(v.stock) < 0)
+        return (e[`variant-${i}`] = "Invalid stock");
 
-  if (seenSizes.has(v.size))
-    e[`variant-${i}`] = "Duplicate size";
+      if (seenSizes.has(v.size))
+        return (e[`variant-${i}`] = "Duplicate size");
 
-  seenSizes.add(v.size);
-});
-
+      seenSizes.add(v.size);
+    });
 
     setErrors(e);
 
@@ -157,7 +162,7 @@ useEffect(() => {
     return Object.keys(e).length === 0;
   };
 
-  /* Submit */
+  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     if (!validate() || isSubmitting || isUploading) return;
 
@@ -171,10 +176,12 @@ useEffect(() => {
     const payload = {
       ...product,
       price: Number(product.price),
-      variants: variants.map((v) => ({
-        size: v.size,
-        stock: Number(v.stock),
-      })),
+      variants: variants
+        .filter((v) => v.size)
+        .map((v) => ({
+          size: v.size,
+          stock: Number(v.stock),
+        })),
       stock,
     };
 
@@ -201,13 +208,12 @@ useEffect(() => {
       title: isEditMode ? "Product updated" : "Product added",
       status: "success",
     });
-    setHasUnsavedChanges(false);
 
+    setHasUnsavedChanges(false);
 
     if (!isEditMode) {
       setProduct(EMPTY_PRODUCT);
       setVariants([EMPTY_VARIANT]);
-      setHasUnsavedChanges(false);
     }
   };
 
@@ -220,6 +226,7 @@ useEffect(() => {
     isSubmitting,
     isUploading,
     imageCount: product.images.length,
+    hasUnsavedChanges,
 
     handleChange,
     handleImageUpload,
@@ -230,8 +237,6 @@ useEffect(() => {
     removeVariant,
 
     handleSubmit,
-
     registerFieldRef,
-    hasUnsavedChanges,
   };
 }

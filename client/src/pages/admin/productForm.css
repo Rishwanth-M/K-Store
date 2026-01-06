@@ -6,6 +6,7 @@
   padding: 40px 16px;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 }
 
 .product-form-card {
@@ -19,6 +20,7 @@
 
 /* ================== HEADINGS ================== */
 
+.product-form-card h1,
 .product-form-card h2,
 .product-form-card h3 {
   font-weight: 600;
@@ -37,6 +39,7 @@
 .product-form-card select {
   border-radius: 10px;
   border-color: #e5e7eb;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .product-form-card input:focus,
@@ -46,7 +49,18 @@
   box-shadow: 0 0 0 1px rgba(49, 130, 206, 0.4);
 }
 
-/* ================== SECTIONS ================== */
+/* Disable number input arrows (cleaner UI) */
+.product-form-card input[type="number"]::-webkit-inner-spin-button,
+.product-form-card input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.product-form-card input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ================== SECTION SPACING ================== */
 
 .product-form-card > .chakra-stack {
   margin-bottom: 24px;
@@ -57,6 +71,14 @@
 .product-form-card img {
   object-fit: cover;
   height: 120px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* Image delete button */
+.product-form-card button[aria-label="Delete"] {
+  border-radius: 50%;
+  padding: 4px;
 }
 
 /* ================== VARIANTS ================== */
@@ -65,8 +87,9 @@
   align-items: center;
 }
 
-.product-form-card button[aria-label="Delete"] {
-  border-radius: 50%;
+.product-form-card .chakra-simplegrid select,
+.product-form-card .chakra-simplegrid input {
+  min-height: 40px;
 }
 
 /* ================== ACCORDION ================== */
@@ -75,15 +98,21 @@
   background: #f9fafb;
   border-radius: 10px;
   margin-bottom: 8px;
+  padding: 12px 14px;
+  transition: background 0.15s ease;
 }
 
 .chakra-accordion__button:hover {
   background: #eef2ff;
 }
 
+.chakra-accordion__button[aria-expanded="true"] {
+  background: #e0e7ff;
+}
+
 .chakra-accordion__panel {
   background: #ffffff;
-  padding: 16px 4px 24px;
+  padding: 16px 6px 24px;
 }
 
 /* ================== STATUS SWITCH ================== */
@@ -103,6 +132,23 @@
   font-weight: 600;
 }
 
+.product-form-card button.chakra-button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ================== BACK BUTTON ================== */
+
+.product-form-card button[variant="ghost"] {
+  padding-left: 0;
+  color: #4b5563;
+}
+
+.product-form-card button[variant="ghost"]:hover {
+  background: transparent;
+  color: #1f2937;
+}
+
 /* ================== RESPONSIVE ================== */
 
 @media (max-width: 768px) {
@@ -112,5 +158,16 @@
 
   .product-form-card img {
     height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-form-page {
+    padding: 24px 12px;
+  }
+
+  .product-form-card {
+    padding: 20px 14px;
+    border-radius: 12px;
   }
 }

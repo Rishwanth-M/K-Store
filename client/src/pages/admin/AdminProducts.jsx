@@ -23,18 +23,16 @@ export const AdminProducts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { products, isLoading } = useSelector(
+  const { products = [], isLoading } = useSelector(
     (state) => state.prodReducer
   );
 
-  /* Fetch all products */
   useEffect(() => {
     dispatch(getRequest());
   }, [dispatch]);
 
   return (
     <Box maxW="1200px" mx="auto" px="24px" py="40px">
-      {/* HEADER */}
       <Flex justify="space-between" align="center" mb="30px">
         <Heading size="lg">Products</Heading>
 
@@ -46,19 +44,13 @@ export const AdminProducts = () => {
         </Button>
       </Flex>
 
-      {/* LOADING */}
       {isLoading ? (
         <Flex justify="center" py="60px">
           <Spinner size="lg" />
         </Flex>
       ) : (
-        <Box
-          border="1px solid #e5e5e5"
-          borderRadius="12px"
-          overflow="hidden"
-          bg="white"
-        >
-          <Table variant="simple">
+        <Box border="1px solid #e5e5e5" borderRadius="12px" bg="white">
+          <Table>
             <Thead bg="#f7f7f7">
               <Tr>
                 <Th>Product</Th>
@@ -71,9 +63,8 @@ export const AdminProducts = () => {
             </Thead>
 
             <Tbody>
-              {products?.map((product) => (
+              {products.map((product) => (
                 <Tr key={product._id}>
-                  {/* PRODUCT */}
                   <Td>
                     <Flex align="center" gap="12px">
                       <Image
@@ -84,9 +75,7 @@ export const AdminProducts = () => {
                         bg="#f7f7f7"
                       />
                       <Box>
-                        <Heading size="sm" fontWeight="600">
-                          {product.name}
-                        </Heading>
+                        <Heading size="sm">{product.name}</Heading>
                         <Box fontSize="13px" color="gray.500">
                           {product.color}
                         </Box>
@@ -94,18 +83,14 @@ export const AdminProducts = () => {
                     </Flex>
                   </Td>
 
-                  {/* CATEGORY */}
                   <Td textTransform="capitalize">
                     {product.category}
                   </Td>
 
-                  {/* TYPE */}
                   <Td>{product.productType}</Td>
 
-                  {/* PRICE */}
                   <Td>₹ {product.price}</Td>
 
-                  {/* STATUS */}
                   <Td>
                     <Badge
                       colorScheme={
@@ -118,15 +103,12 @@ export const AdminProducts = () => {
                     </Badge>
                   </Td>
 
-                  {/* ACTION */}
                   <Td textAlign="right">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() =>
-                        navigate(
-                          `/admin/products/edit/${product._id}`
-                        )
+                        navigate(`/admin/products/edit/${product._id}`)
                       }
                     >
                       Edit
