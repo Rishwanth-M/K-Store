@@ -192,11 +192,17 @@ export function useProductFormLogic(productId) {
 
     const method = isEditMode ? "PUT" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const token = localStorage.getItem("token");
+
+const res = await fetch(url, {
+  method,
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(payload),
+});
+
 
     setIsSubmitting(false);
 
