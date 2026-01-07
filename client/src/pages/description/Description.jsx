@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getItemSession } from "../../utils/sessionStorage";
 import { setToast } from "../../utils/extraFunctions";
 
-import { addToCartDB } from "../../redux/features/cart/cart.api";
+import { updateCartDB } from "../../redux/features/cart/cart.api";
 
 import { addToFavouriteRequest } from "../../redux/features/favourite/actions";
 
@@ -42,16 +42,17 @@ const handleAddToCart = (selectedSize) => {
   }
 
   dispatch(
-    addToCartDB(
+    updateCartDB(
       {
         productId: product._id,
         size: selectedSize,
-        quantity: 1,
+        operation: "add", // ✅ REQUIRED
       },
       toast
     )
   );
 };
+
 
 
   /* ---------- ADD TO FAVOURITE ---------- */

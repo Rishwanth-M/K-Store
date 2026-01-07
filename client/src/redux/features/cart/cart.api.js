@@ -1,9 +1,5 @@
 import api from "../../../utils/api";
-import {
-  ADD_TO_CART_SUCCESS,
-  REMOVE_FROM_CART,
-  UPDATE_CART_DETAILS,
-} from "./actionTypes";
+import { UPDATE_CART_DETAILS } from "./actionTypes";
 import { getCartTotal } from "../../../utils/getCartTotal";
 
 /* ================= GET CART ================= */
@@ -19,25 +15,19 @@ export const fetchCart = () => async (dispatch) => {
       payload: { cartProducts, orderSummary },
     });
   } catch (error) {
-    console.error("❌ Fetch cart failed:", error?.response?.data || error);
+    console.error("❌ Fetch cart failed:", error);
   }
 };
 
-/* ================= ADD TO CART ================= */
-export const addToCartDB = (payload, toast) => async (dispatch) => {
+/* ================= UPDATE CART (ADD / REDUCE) ================= */
+export const updateCartDB = (payload, toast) => async (dispatch) => {
   try {
-    await api.post("/cart", payload);   // 🔥 THIS IS THE FIX
+    await api.post("/cart", payload); // backend uses operation field
 
     dispatch(fetchCart());
-
-    toast?.({
-      title: "Added to cart",
-      status: "success",
-    });
   } catch (error) {
-    console.error("❌ Add to cart failed:", error);
     toast?.({
-      title: error?.response?.data?.message || "Failed to add to cart",
+      title: error?.response?.data?.message || "Cart update failed",
       status: "error",
     });
   }
@@ -49,14 +39,9 @@ export const removeFromCartDB = (id, toast) => async (dispatch) => {
     await api.delete(`/cart/${id}`);
 
     dispatch(fetchCart());
-
-    toast?.({
-      title: "Removed from cart",
-      status: "success",
-    });
   } catch (error) {
     toast?.({
-      title: "Unauthorized",
+      title: "Failed to remove item",
       status: "error",
     });
   }
