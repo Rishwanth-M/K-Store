@@ -1,110 +1,91 @@
-import { Box, Divider, Flex, Text } from "@chakra-ui/react";
+import { Badge, Box, Divider, Flex, Text } from "@chakra-ui/react";
 import { dateFormator } from "../../utils/dateFormator";
 import { numberWithCommas } from "../../utils/extraFunctions";
-import { OrderPageText } from "./OrderPageText";
 
 export const Summary = ({
   createdAt,
-
-  /* ===== OLD ORDER FIELDS ===== */
   subTotal,
   discount,
   quantity,
   total,
   shipping,
-
-  /* ===== NEW PHONEPE FIELDS ===== */
   amount,
   paymentStatus,
   merchantTransactionId,
-  razorpayPaymentId,
 }) => {
   const { date, time } = createdAt
     ? dateFormator(createdAt)
     : { date: "-", time: "-" };
 
-  // ✅ Final amount resolution (old + new compatible)
-  const finalTotal =
-    total ??
-    amount ??
-    0;
+  const finalTotal = total ?? amount ?? 0;
+
+  const statusColor =
+    paymentStatus === "SUCCESS"
+      ? "green"
+      : paymentStatus === "FAILED"
+      ? "red"
+      : "orange";
 
   return (
-    <Box py="15px" px="25px">
-      <Text fontSize="20px" fontWeight={600}>
-        Summary
-      </Text>
-
-      <Divider />
-
-      <Flex flexDirection="column" gap="8px" my="20px" fontSize="16px">
-        <OrderPageText name="Order Date" value={date} />
-        <OrderPageText name="Order Time" value={time} />
-
-        <Divider my="10px" />
-
-        {/* ✅ Payment / Transaction IDs */}
-        {merchantTransactionId && (
-          <OrderPageText
-            name="Transaction ID"
-            value={merchantTransactionId}
-          />
-        )}
-
-        {razorpayPaymentId && (
-          <OrderPageText
-            name="Payment ID"
-            value={razorpayPaymentId}
-          />
-        )}
+    <Box
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="12px"
+      p="20px"
+    >
+      <Flex justify="space-between" align="center">
+        <Text fontSize="lg" fontWeight={600}>
+          Order Summary
+        </Text>
 
         {paymentStatus && (
-          <OrderPageText
-            name="Payment Status"
-            value={paymentStatus}
-          />
+          <Badge colorScheme={statusColor}>
+            {paymentStatus}
+          </Badge>
+        )}
+      </Flex>
+
+      <Divider my="12px" />
+
+      <Flex direction="column" gap="8px" fontSize="sm">
+        <Text>Date: {date}</Text>
+        <Text>Time: {time}</Text>
+
+        {merchantTransactionId && (
+          <Text>
+            Transaction ID: {merchantTransactionId}
+          </Text>
         )}
 
-        <Divider my="10px" />
+        <Divider my="8px" />
 
-        {/* ===== OLD ORDERS ONLY ===== */}
         {subTotal !== undefined && (
-          <OrderPageText
-            name="Subtotal"
-            value={`₹${numberWithCommas(subTotal)}`}
-          />
-        )}
-
-        {quantity !== undefined && (
-          <OrderPageText
-            name="Quantity"
-            value={quantity}
-          />
+          <Flex justify="space-between">
+            <Text>Subtotal</Text>
+            <Text>₹{numberWithCommas(subTotal)}</Text>
+          </Flex>
         )}
 
         {shipping !== undefined && (
-          <Flex justifyContent="space-between">
+          <Flex justify="space-between">
             <Text>Shipping</Text>
-            <Text>
-              ₹{numberWithCommas(shipping)}
-            </Text>
+            <Text>₹{numberWithCommas(shipping)}</Text>
           </Flex>
         )}
 
         {discount !== undefined && (
-          <OrderPageText
-            name="Discount"
-            value={`₹${numberWithCommas(discount)}`}
-          />
+          <Flex justify="space-between">
+            <Text>Discount</Text>
+            <Text>- ₹{numberWithCommas(discount)}</Text>
+          </Flex>
         )}
 
-        <Divider my="10px" />
+        <Divider my="8px" />
 
-        {/* ✅ FINAL TOTAL (OLD + NEW) */}
-        <OrderPageText
-          name="Total"
-          value={`₹${numberWithCommas(finalTotal)}`}
-        />
+        <Flex justify="space-between" fontWeight={700}>
+          <Text>Total</Text>
+          <Text>₹{numberWithCommas(finalTotal)}</Text>
+        </Flex>
       </Flex>
     </Box>
   );

@@ -1,57 +1,57 @@
-import { Box, Center, Grid, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { numberWithCommas, shortString } from "../../utils/extraFunctions";
 import noImage from "../../assets/no-image.png";
 
 export const OrderBox = ({
   name,
-  title,        // ✅ backend uses `title`
+  title,
   price,
   quantity,
-  size,         // ✅ show selected size
-  img = [],     // ✅ backend uses `img`
-  images = [],  // ✅ frontend fallback
+  size,
+  img = [],
+  images = [],
 }) => {
-  // ✅ Image compatibility (old + new orders)
   const imageList = img.length ? img : images;
-  const imageUrl =
-    imageList.length > 0 ? imageList[0] : noImage;
-
-  // ✅ Name compatibility
+  const imageUrl = imageList[0] || noImage;
   const productName = name || title || "Product";
 
   return (
-    <Grid templateColumns="100px 1fr" p="5px" gap="10px">
-      <Box w="100px" overflow="hidden">
-        <Image
-          src={imageUrl}
-          w="100%"
-          h="100px"
-          objectFit="cover"
-          borderRadius="6px"
-        />
-      </Box>
+    <Flex
+      gap="15px"
+      py="12px"
+      borderBottom="1px solid"
+      borderColor="gray.100"
+    >
+      <Image
+        src={imageUrl}
+        w="90px"
+        h="90px"
+        objectFit="cover"
+        borderRadius="8px"
+      />
 
-      <Center alignItems="flex-start">
-        <Box px="10px" w="100%">
+      <Box flex="1">
+        <Text fontWeight={600}>
+          {shortString(productName)}
+        </Text>
+
+        {size && (
+          <Text fontSize="sm" color="gray.600">
+            Size: {size}
+          </Text>
+        )}
+
+        <Flex
+          justify="space-between"
+          mt="6px"
+          fontSize="sm"
+        >
+          <Text>Qty: {quantity}</Text>
           <Text fontWeight={600}>
-            {shortString(productName)}
+            ₹{numberWithCommas(price)}
           </Text>
-
-          {size && (
-            <Text fontSize="14px" color="gray.600">
-              Size: {size}
-            </Text>
-          )}
-
-          <Text>
-            Price: ₹ {numberWithCommas(price)}
-          </Text>
-
-          <Text>
-            Quantity: {quantity}
-          </Text>
-        </Box>
-      </Center>
-    </Grid>
+        </Flex>
+      </Box>
+    </Flex>
   );
 };

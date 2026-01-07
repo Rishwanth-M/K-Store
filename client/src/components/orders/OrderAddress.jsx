@@ -1,40 +1,46 @@
-import { Box, Divider, Flex, Text } from "@chakra-ui/react";
-import { OrderPageText } from "./OrderPageText";
+import { Box, Divider, Text, VStack } from "@chakra-ui/react";
 
+export const OrderAddress = ({
+  firstName,
+  lastName,
+  email,
+  mobile,
+  addressLine1,
+  addressLine2,
+  locality,
+  state,
+  pinCode,
+  country,
+}) => {
+  return (
+    <Box
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="12px"
+      p="20px"
+    >
+      <Text fontSize="lg" fontWeight={600}>
+        Shipping Address
+      </Text>
 
-export const OrderAddress = ({ firstName, lastName, email, mobile, addressLine1, addressLine2, locality, state, pinCode, country }) => {
-    return (
-        <Box py={'15px'} px={'25px'}>
+      <Divider my="12px" />
 
-            <Text fontSize={'20px'} fontWeight={600}>Shipping Address</Text>
+      <VStack align="start" spacing="6px" fontSize="sm">
+        <Text fontWeight={600}>
+          {firstName} {lastName}
+        </Text>
+        <Text>+91 {mobile}</Text>
+        <Text>{email}</Text>
 
-            <Divider mb={'20px'} />
+        <Divider my="8px" />
 
-            <Flex flexDirection={'column'} gap={'5px'} my={'20px'} fontSize={'18px'}>
-
-                <OrderPageText name={'Full Name'} value={`${firstName} ${lastName}`} />
-
-                <OrderPageText name={'Mobile'} value={`+91 ${mobile}`} />
-
-                <OrderPageText name={'Email'} value={email} />
-
-                <Divider my={'10px'} />
-
-                <OrderPageText name={'Address'} value={addressLine1} />
-
-                {addressLine2 && <OrderPageText name={'Address(2)'} value={addressLine2} />}
-
-                <OrderPageText name={'City'} value={locality} />
-
-                <OrderPageText name={'State'} value={state} />
-
-                <OrderPageText name={'Pincode'} value={pinCode} />
-
-                <OrderPageText name={'Country'} value={country} />
-
-                <Divider my={'10px'} />
-
-            </Flex>
-        </Box>
-    );
+        <Text>{addressLine1}</Text>
+        {addressLine2 && <Text>{addressLine2}</Text>}
+        <Text>
+          {locality}, {state} - {pinCode}
+        </Text>
+        <Text>{country}</Text>
+      </VStack>
+    </Box>
+  );
 };

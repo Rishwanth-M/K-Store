@@ -5,6 +5,7 @@ import {
   Divider,
   Flex,
   Grid,
+  Heading,
   Text,
 } from "@chakra-ui/react";
 
@@ -19,7 +20,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import api from "../../utils/api";
-
 import { dateFormator } from "../../utils/dateFormator";
 
 export const Order = () => {
@@ -41,11 +41,8 @@ export const Order = () => {
         setIsError(false);
 
         const res = await api.get("/order");
-
-        // ✅ FIX: use res.data.orders
         const orders = res.data.orders || [];
         setData([...orders].reverse());
-
       } catch (error) {
         console.error(error);
         setIsError(true);
@@ -62,70 +59,112 @@ export const Order = () => {
 
   if (!data.length) {
     return (
-      <Center h="40vh">
-        <Text fontSize="20px">
-          Your orders will be displayed here.
-        </Text>
+      <Center h="50vh">
+        <Box textAlign="center">
+          <Heading size="md" mb="10px">
+            No orders yet
+          </Heading>
+          <Text color="gray.600">
+            Your orders will appear here once you make a purchase.
+          </Text>
+        </Box>
       </Center>
     );
   }
 
   return (
-    <Box px="20px" mb="150px">
-      <Flex justify="space-between" maxW={1200} m="20px auto">
-        <Text fontWeight={600} fontSize="24px">
-          Orders ({data.length})
+    <Box bg="gray.50" minH="100vh" py="40px">
+      {/* PAGE HEADER */}
+      <Box maxW="1200px" mx="auto" px="20px" mb="30px">
+        <Heading size="lg">My Orders</Heading>
+        <Text color="gray.600" mt="5px">
+          View your order history, payment status and details
         </Text>
-      </Flex>
+      </Box>
 
-      <Accordion allowMultiple>
-        <Box maxW={1200} m="40px auto">
-          {data.map((item) => {
-            const { date, time } = item.createdAt
-              ? dateFormator(item.createdAt)
-              : { date: "-", time: "-" };
+      {/* ORDERS CONTAINER */}
+      <Box
+        maxW="1200px"
+        mx="auto"
+        px="20px"
+      >
+        <Box
+          bg="white"
+          borderRadius="16px"
+          boxShadow="sm"
+          p={{ base: "15px", md: "25px" }}
+        >
+          <Flex
+            justify="space-between"
+            align="center"
+            mb="20px"
+            flexWrap="wrap"
+            gap="10px"
+          >
+            <Text fontWeight={600} fontSize="lg">
+              Orders ({data.length})
+            </Text>
+          </Flex>
 
-            return (
-              <OrderSection key={item._id} date={date} time={time}>
-                <Grid
-                  templateColumns={{
-                    base: "100%",
-                    md: "48% 48%",
-                    lg: "32% 31% 33%",
-                  }}
-                  gap="20px"
+          <Divider mb="20px" />
+
+          <Accordion allowMultiple>
+            {data.map((item) => {
+              const { date, time } = item.createdAt
+                ? dateFormator(item.createdAt)
+                : { date: "-", time: "-" };
+
+              return (
+                <OrderSection
+                  key={item._id}
+                  date={date}
+                  time={time}
+                  paymentStatus={item.paymentDetails?.paymentStatus}
                 >
-                  {/* ORDER ITEMS */}
-                  <Box py="15px" px="25px">
-                    <Text fontSize="20px" fontWeight={600}>
-                      Ordered Items
-                    </Text>
+                  <Grid
+                    templateColumns={{
+                      base: "100%",
+                      md: "100%",
+                      lg: "1.3fr 1fr 1fr",
+                    }}
+                    gap="24px"
+                  >
+                    {/* ORDER ITEMS */}
+                    <Box>
+                      <Text
+                        fontSize="lg"
+                        fontWeight={600}
+                        mb="12px"
+                      >
+                        Ordered Items
+                      </Text>
 
-                    <Divider mb="20px" />
+                      <Divider mb="12px" />
 
-                    {item.cartProducts?.map((product, idx) => (
-                      <OrderBox key={idx} {...product} />
-                    ))}
-                  </Box>
+                      {item.cartProducts?.map((product, idx) => (
+                        <OrderBox key={idx} {...product} />
+                      ))}
+                    </Box>
 
-                  {/* ADDRESS */}
-                  <OrderAddress {...item.shippingDetails} />
+                    {/* ADDRESS */}
+                    <OrderAddress {...item.shippingDetails} />
 
-                  {/* SUMMARY */}
-                  <Summary
-                    createdAt={item.createdAt}
-                    {...item.orderSummary}
-                    paymentStatus={item.paymentDetails?.paymentStatus}
-                    merchantTransactionId={
-                      item.paymentDetails?.merchantTransactionId
-                    }
-                  />
-                </Grid>
-              </OrderSection>
-            );
-          })}
+                    {/* SUMMARY */}
+                    <Summary
+                      createdAt={item.createdAt}
+                      {...item.orderSummary}
+                      paymentStatus={item.paymentDetails?.paymentStatus}
+                      merchantTransactionId={
+                        item.paymentDetails?.merchantTransactionId
+                      }
+                    />
+                  </Grid>
+                </OrderSection>
+              );
+            })}
+          </Accordion>
         </Box>
-      </Accordion>
+      </Box>
     </Box>
   );
 };
