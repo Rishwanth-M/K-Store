@@ -8,82 +8,64 @@ const PrivacyPolicy = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
-      {/* Page Title */}
       <Heading mb="10px">Privacy Policy</Heading>
 
-      {/* Static Date */}
       <Text fontSize="sm" color="gray.500" mb="30px">
         Last updated: 01 January 2026
       </Text>
 
       {/* Introduction */}
-      <Heading size="md" mb="15px">
-        Introduction
-      </Heading>
-
       <Text mb="20px">
-        This Privacy Policy describes how <b>AVYAYPRATYAY SPORTS LLP</b> ("we",
-        "our", "us") collects, uses, stores, shares, and protects your personal
-        data through its website <b>https://www.kreedentials.com</b> (the
-        "Platform").
+        This Privacy Policy describes how <b>AVYAYPRATYAY SPORTS LLP</b> (“Company”,
+        “we”, “our”, “us”) collects, uses, stores, shares, and protects personal
+        information of users (“you”, “your”) who access or use{" "}
+        <b>https://www.kreedentials.com</b> (“Website”).
       </Text>
 
       <Text mb="20px">
-        By accessing or using the Platform, you agree to the collection and use
-        of information in accordance with this Privacy Policy, the Terms and
-        Conditions, and applicable laws of India. The Platform operates solely
-        within India, and all data is stored and processed in India.
+        This Privacy Policy is published in accordance with the Information
+        Technology Act, 2000 and the Information Technology (Reasonable Security
+        Practices and Procedures and Sensitive Personal Data or Information)
+        Rules, 2011.
       </Text>
 
       <Divider my="30px" />
 
-      {/* Data Collection */}
+      {/* Information Collected */}
       <Heading size="md" mb="15px">
         Information We Collect
       </Heading>
 
-      <Text mb="20px">
-        We collect personal and non-personal information when you interact with
-        the Platform, including but not limited to:
-      </Text>
-
       <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>Name, gender, date of birth, and address</ListItem>
+        <ListItem>Name, gender, date of birth</ListItem>
         <ListItem>Email address and mobile number</ListItem>
-        <ListItem>Account login credentials</ListItem>
+        <ListItem>Billing and shipping address</ListItem>
+        <ListItem>Order, transaction, and purchase history</ListItem>
         <ListItem>
-          Transaction-related information, including order and payment details
-        </ListItem>
-        <ListItem>
-          Technical data such as IP address, browser type, and device
-          information
+          Technical data such as IP address, browser type, device identifiers
         </ListItem>
       </List>
 
       <Text mt="20px">
-        We do not store any credit/debit card details or sensitive payment
-        information. All payments are processed through secure, authorized
-        third-party payment gateway providers.
+        <b>Payment Information:</b> We do not store or process any card, UPI, or
+        banking credentials. All payments are securely processed by authorized
+        third-party payment gateways in compliance with PCI-DSS standards.
       </Text>
 
       <Divider my="30px" />
 
-      {/* Use */}
+      {/* Usage */}
       <Heading size="md" mb="15px">
         Use of Information
       </Heading>
 
-      <Text mb="20px">
-        We use the collected information for the following purposes:
-      </Text>
-
       <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>To provide, operate, and improve our services</ListItem>
-        <ListItem>To process transactions and fulfill orders</ListItem>
-        <ListItem>To communicate order updates and service-related notices</ListItem>
-        <ListItem>To enhance user experience and platform security</ListItem>
-        <ListItem>To comply with legal and regulatory requirements</ListItem>
-        <ListItem>To prevent fraud and misuse of the Platform</ListItem>
+        <ListItem>To process orders and deliver products</ListItem>
+        <ListItem>To manage payments, refunds, and cancellations</ListItem>
+        <ListItem>To communicate order updates and support requests</ListItem>
+        <ListItem>To improve website functionality and user experience</ListItem>
+        <ListItem>To comply with legal and regulatory obligations</ListItem>
+        <ListItem>To prevent fraud and misuse</ListItem>
       </List>
 
       <Divider my="30px" />
@@ -94,101 +76,94 @@ const PrivacyPolicy = () => {
       </Heading>
 
       <Text mb="20px">
-        We may share your information with logistics partners, payment gateway
-        providers, technology service providers, and affiliates strictly for
-        service delivery and legal compliance.
-      </Text>
-
-      <Text mb="20px">
-        Information may also be disclosed to government authorities if required
-        by law or in response to valid legal processes.
+        We may share your information with payment gateway partners, logistics
+        partners, technology service providers, and government authorities where
+        required by law.
       </Text>
 
       <Divider my="30px" />
 
       {/* Security */}
       <Heading size="md" mb="15px">
-        Security Measures
+        Data Security
       </Heading>
 
       <Text mb="20px">
-        We implement reasonable technical and organizational security measures
-        to protect your personal data against unauthorized access, misuse, or
-        loss. However, no method of transmission over the internet is completely
-        secure, and users are responsible for safeguarding their login
-        credentials.
+        We implement reasonable security practices and procedures to protect
+        personal data from unauthorized access, alteration, disclosure, or
+        destruction. However, no method of transmission over the internet is
+        completely secure.
       </Text>
 
       <Divider my="30px" />
 
       {/* Retention */}
       <Heading size="md" mb="15px">
-        Data Retention and Deletion
+        Data Retention
       </Heading>
 
       <Text mb="20px">
         Personal data is retained only for as long as necessary to fulfill the
-        purposes outlined in this Privacy Policy or as required under
-        applicable laws. You may request account deletion by contacting us at
-        the email address provided below.
+        purposes outlined in this policy or as required under applicable Indian
+        laws.
       </Text>
 
       <Divider my="30px" />
 
-      {/* Rights */}
+      {/* User Rights */}
       <Heading size="md" mb="15px">
         Your Rights
       </Heading>
 
       <Text mb="20px">
-        You have the right to access, update, correct, or request deletion of
-        your personal data, subject to legal and contractual restrictions.
+        You may request access, correction, or deletion of your personal data by
+        contacting us, subject to applicable legal and regulatory requirements.
       </Text>
 
       <Divider my="30px" />
 
       {/* Consent */}
       <Heading size="md" mb="15px">
-        Consent
+        User Consent
       </Heading>
 
       <Text mb="20px">
-        By using the Platform, you provide your consent to the collection,
-        storage, processing, and transfer of your personal information in
-        accordance with this Privacy Policy.
+        By using the Website, you consent to the collection, storage, processing,
+        and transfer of information in accordance with this Privacy Policy.
       </Text>
 
       <Divider my="30px" />
 
-      {/* Updates */}
+      {/* Grievance */}
       <Heading size="md" mb="15px">
-        Changes to this Privacy Policy
-      </Heading>
-
-      <Text mb="20px">
-        We may update this Privacy Policy periodically. Any changes will be
-        posted on this page with a revised "Last updated" date.
-      </Text>
-
-      <Divider my="30px" />
-
-      {/* Contact */}
-      <Heading size="md" mb="15px">
-        Contact and Grievance Redressal
+        Grievance Officer
       </Heading>
 
       <Text mb="10px">
-        If you have any questions, concerns, or grievances regarding this
-        Privacy Policy or the handling of your personal data, you may contact
-        us using the details below:
+        In accordance with the Information Technology Act, 2000, the details of
+        the Grievance Officer are provided below:
       </Text>
 
       <Text>
-        <b>Email:</b> support@kreedentials.com <br />
-        <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
+        <b>Name:</b> Aman Goyal <br />
+        <b>Email:</b> amangoyal@kreedentials.com <br />
+        <b>Phone:</b> +91 7330645588 <br />
         <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
-        Viman Nagar Road, Hyderabad, Telangana, India <br />
+        Viman Nagar Road, Hyderabad, Telangana, India – 500016 <br />
         <b>Working Hours:</b> Monday – Friday (09:00 – 18:00 IST)
+      </Text>
+
+      <Divider my="30px" />
+
+      {/* Governing Law */}
+      <Heading size="md" mb="15px">
+        Governing Law and Jurisdiction
+      </Heading>
+
+      <Text mb="20px">
+        This Privacy Policy shall be governed by and construed in accordance
+        with the laws of India. Any disputes shall be subject to the exclusive
+        jurisdiction of courts in Hyderabad, Telangana.
       </Text>
     </Box>
   );
