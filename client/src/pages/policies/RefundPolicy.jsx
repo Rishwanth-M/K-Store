@@ -8,117 +8,131 @@ const RefundPolicy = () => {
       px={{ base: "20px", md: "40px" }}
       py={{ base: "30px", md: "50px" }}
     >
+      {/* Title */}
       <Heading mb="10px">Refund and Cancellation Policy</Heading>
 
+      {/* Last Updated */}
       <Text fontSize="sm" color="gray.500" mb="30px">
         Last updated: 01 January 2026
       </Text>
 
+      {/* Introduction */}
       <Text mb="20px">
-        This Refund and Cancellation Policy (“Policy”) governs the terms under
-        which refunds, cancellations, and replacements may be requested for
-        products purchased from <b>https://www.kreedentials.com</b> (“Website”).
+        This Cancellation and Refund Policy outlines how you can cancel an order
+        or seek a refund for products purchased through{" "}
+        <b>https://www.kreedentials.com</b> (the “Website”).
       </Text>
 
       <Text mb="20px">
-        The Website is owned and operated by <b>AVYAYPRATYAY SPORTS LLP</b>,
-        having its registered office at Plot No. 10, 2nd Floor, Viman Nagar
-        Colony, Secunderabad Viman Nagar Road, Hyderabad, Telangana, India –
-        500016.
+        The Website is owned and operated by <b>AVYAYPRATYAY SPORTS LLP</b>, having
+        its registered office at Plot No. 10, 2nd Floor, Viman Nagar Colony,
+        Secunderabad Viman Nagar Road, Hyderabad, Telangana, India – 500016.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Cancellation */}
       <Heading size="md" mb="15px">
         Cancellation Policy
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          Orders may be cancelled within <b>5 (five) days</b> from the date of
-          order placement, provided the order has not been shipped.
+          Cancellation requests will be considered only if the request is made
+          within <b>5 (five) days</b> of placing the order.
         </ListItem>
+
         <ListItem>
-          Orders that have been shipped or are out for delivery cannot be
-          cancelled.
+          Cancellation requests may not be entertained if the order has already
+          been communicated to the seller or merchant and the shipping process
+          has been initiated, or if the product is out for delivery.
         </ListItem>
+
+        <ListItem>
+          In such cases, customers may choose to reject the product at the time
+          of delivery, subject to verification and seller policies.
+        </ListItem>
+
         <ListItem>
           Customized, made-to-order, or personalized products are not eligible
-          for cancellation once the order is confirmed.
+          for cancellation once the order has been confirmed.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Refunds */}
       <Heading size="md" mb="15px">
-        Refund and Replacement Policy
+        Refunds and Replacements
       </Heading>
 
       <List spacing={3} pl="20px" styleType="disc">
         <ListItem>
-          Refunds or replacements are applicable only if the product delivered
-          is damaged, defective, or materially different from the description
-          provided on the Website.
+          In case of receipt of damaged or defective products, customers must
+          report the issue to our customer support team within{" "}
+          <b>5 (five) days</b> of receiving the product.
         </ListItem>
+
         <ListItem>
-          Issues must be reported within <b>5 (five) days</b> of delivery along
-          with photographic or video evidence.
+          Refund or replacement requests will be entertained only after the
+          seller or merchant listed on the Platform has verified and confirmed
+          the issue at their end.
         </ListItem>
+
         <ListItem>
-          All requests are subject to verification and approval by
-          AVYAYPRATYAY SPORTS LLP.
+          If the product received is materially different from what is shown on
+          the Website or does not match the description, the customer must notify
+          customer support within <b>5 (five) days</b> of receipt.
         </ListItem>
+
         <ListItem>
-          Approved refunds will be processed to the <b>original mode of
-          payment</b>.
+          The customer support team will review the complaint and take an
+          appropriate decision based on verification.
         </ListItem>
       </List>
 
       <Divider my="30px" />
 
+      {/* Warranty */}
+      <Heading size="md" mb="15px">
+        Manufacturer Warranty
+      </Heading>
+
+      <Text mb="20px">
+        For products that are covered under a manufacturer’s warranty,
+        customers are advised to directly contact the manufacturer in accordance
+        with their warranty terms.
+      </Text>
+
+      <Divider my="30px" />
+
+      {/* Refund Timeline */}
       <Heading size="md" mb="15px">
         Refund Processing Timeline
       </Heading>
 
       <Text mb="20px">
-        Approved refunds shall be initiated within{" "}
-        <b>3 (three) business days</b>. The time taken for the amount to reflect
-        may vary depending on the payment method or issuing bank.
+        In case of any refunds approved by <b>AVYAYPRATYAY SPORTS LLP</b>, the
+        refund shall be processed to the original mode of payment within{" "}
+        <b>3 (three) business days</b> from the date of approval.
       </Text>
-
-      <Divider my="30px" />
-
-      <Heading size="md" mb="15px">
-        Payment Gateway Handling
-      </Heading>
 
       <Text mb="20px">
-        Payments are processed through secure third-party payment gateways.
-        AVYAYPRATYAY SPORTS LLP does not store or process sensitive payment
-        information such as card details, CVV, or UPI credentials.
+        The time taken for the refund amount to reflect in the customer’s
+        account may vary depending on the payment method, bank, or payment
+        service provider.
       </Text>
 
       <Divider my="30px" />
 
+      {/* Contact */}
       <Heading size="md" mb="15px">
-        Governing Law and Jurisdiction
-      </Heading>
-
-      <Text mb="20px">
-        This Policy shall be governed by and construed in accordance with the
-        laws of India. Any disputes shall be subject to the exclusive
-        jurisdiction of courts in Hyderabad, Telangana.
-      </Text>
-
-      <Divider my="30px" />
-
-      <Heading size="md" mb="15px">
-        Contact and Grievance Redressal
+        Contact Information
       </Heading>
 
       <Text mb="10px">
-        For any queries, concerns, or grievances related to refunds or
-        cancellations, customers may contact:
+        For any questions, concerns, or assistance related to cancellations or
+        refunds, customers may contact us using the details below:
       </Text>
 
       <Text>
@@ -126,8 +140,7 @@ const RefundPolicy = () => {
         <b>Phone:</b> +91 7330645588 <br />
         <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
         <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
-        Viman Nagar Road, Hyderabad, Telangana, India – 500016 <br />
-        <b>Working Hours:</b> Monday – Friday (09:00 – 18:00 IST)
+        Viman Nagar Road, Hyderabad, Telangana, India – 500016
       </Text>
     </Box>
   );

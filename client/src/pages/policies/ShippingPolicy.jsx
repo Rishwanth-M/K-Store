@@ -1,4 +1,4 @@
-import { Box, Heading, Text, List, ListItem, Divider } from "@chakra-ui/react";
+import { Box, Heading, Text, Divider } from "@chakra-ui/react";
 
 const ShippingPolicy = () => {
   return (
@@ -18,28 +18,15 @@ const ShippingPolicy = () => {
 
       {/* Introduction */}
       <Text mb="20px">
-        This Shipping Policy outlines the terms and conditions governing the
+        This Shipping Policy describes the terms and conditions governing the
         shipment and delivery of products purchased from{" "}
-        <b>https://www.kreedentials.com</b> (“Website”).
+        <b>https://www.kreedentials.com</b> (the “Website”).
       </Text>
 
       <Text mb="20px">
-        The Website is owned and operated by{" "}
-        <b>AVYAYPRATYAY SPORTS LLP</b>, having its registered office at Plot No. 10,
-        2nd Floor, Viman Nagar Colony, Secunderabad Viman Nagar Road, Hyderabad,
-        Telangana, India – 500016.
-      </Text>
-
-      <Divider my="30px" />
-
-      {/* Shipping Coverage */}
-      <Heading size="md" mb="15px">
-        Shipping Coverage
-      </Heading>
-
-      <Text mb="20px">
-        Currently, we deliver products only within India. International shipping
-        is not supported at this time.
+        The Website is owned and operated by <b>AVYAYPRATYAY SPORTS LLP</b>, having
+        its registered office at Plot No. 10, 2nd Floor, Viman Nagar Colony,
+        Secunderabad Viman Nagar Road, Hyderabad, Telangana, India – 500016.
       </Text>
 
       <Divider my="30px" />
@@ -51,68 +38,45 @@ const ShippingPolicy = () => {
 
       <Text mb="20px">
         Orders placed on the Website are shipped through registered domestic
-        courier partners and/or India Post to ensure safe and reliable delivery.
+        courier companies and/or India Post (Speed Post) only.
       </Text>
 
       <Divider my="30px" />
 
-      {/* Processing & Delivery Timeline */}
+      {/* Shipping Timeline */}
       <Heading size="md" mb="15px">
-        Order Processing and Delivery Timeline
+        Shipping Timeline
       </Heading>
 
-      <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>
-          Orders are processed within <b>2–3 business days</b> after successful
-          payment confirmation.
-        </ListItem>
+      <Text mb="20px">
+        Orders are generally shipped within <b>3 (three) to 7 (seven) days</b>{" "}
+        from the date of order placement and/or successful payment, or as per
+        the delivery date agreed at the time of order confirmation, subject to
+        courier company or postal authority norms.
+      </Text>
 
-        <ListItem>
-          Delivery typically takes <b>4–7 business days</b> from the date of
-          dispatch, depending on the delivery location.
-        </ListItem>
-
-        <ListItem>
-          Delivery timelines may vary due to factors beyond our control,
-          including courier delays, weather conditions, or regional restrictions.
-        </ListItem>
-      </List>
+      <Text mb="20px">
+        AVYAYPRATYAY SPORTS LLP shall not be liable for any delay in delivery
+        caused by the courier company, postal authority, natural events, or
+        unforeseen circumstances beyond its control.
+      </Text>
 
       <Divider my="30px" />
 
-      {/* Delivery Information */}
+      {/* Delivery */}
       <Heading size="md" mb="15px">
         Delivery Information
       </Heading>
 
-      <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>
-          Products will be delivered to the address provided by the customer at
-          checkout.
-        </ListItem>
-
-        <ListItem>
-          Shipment tracking details, if available, will be shared via registered
-          email or SMS.
-        </ListItem>
-
-        <ListItem>
-          Customers are responsible for ensuring the accuracy of the delivery
-          address. Incorrect addresses may result in delivery failure.
-        </ListItem>
-      </List>
-
-      <Divider my="30px" />
-
-      {/* Failed Delivery */}
-      <Heading size="md" mb="15px">
-        Failed or Delayed Delivery
-      </Heading>
+      <Text mb="20px">
+        Delivery of all orders will be made to the shipping address provided by
+        the buyer at the time of purchase.
+      </Text>
 
       <Text mb="20px">
-        If a delivery attempt fails due to incorrect address, unavailability of
-        the recipient, or refusal to accept the package, re-shipping charges (if
-        applicable) may be borne by the customer.
+        Delivery confirmation of services and order-related communications will
+        be sent to the registered email address provided at the time of account
+        creation or checkout.
       </Text>
 
       <Divider my="30px" />
@@ -123,34 +87,9 @@ const ShippingPolicy = () => {
       </Heading>
 
       <Text mb="20px">
-        Shipping charges, if applicable, are clearly displayed at checkout
-        before payment. Any shipping fees paid are non-refundable unless
-        otherwise required by applicable law.
-      </Text>
-
-      <Divider my="30px" />
-
-      {/* COD */}
-      <Heading size="md" mb="15px">
-        Cash on Delivery
-      </Heading>
-
-      <Text mb="20px">
-        Currently, Cash on Delivery (COD) is <b>not available</b>. All orders
-        must be prepaid using the available online payment methods.
-      </Text>
-
-      <Divider my="30px" />
-
-      {/* Returns */}
-      <Heading size="md" mb="15px">
-        Returns and Refunds
-      </Heading>
-
-      <Text mb="20px">
-        Returns, cancellations, and refunds are governed by our{" "}
-        <b>Refund and Cancellation Policy</b> and{" "}
-        <b>Return and Exchange Policy</b>, available on the Website.
+        If any shipping costs are levied by the seller or the Platform Owner, the
+        same shall be clearly communicated at the time of checkout. All shipping
+        charges paid are <b>non-refundable</b>.
       </Text>
 
       <Divider my="30px" />
@@ -161,8 +100,8 @@ const ShippingPolicy = () => {
       </Heading>
 
       <Text mb="10px">
-        For any questions or assistance related to shipping or delivery, please
-        contact us at:
+        For any issues related to shipping, delivery, or use of our services,
+        customers may contact our helpdesk at:
       </Text>
 
       <Text>
@@ -170,8 +109,7 @@ const ShippingPolicy = () => {
         <b>Phone:</b> +91 7330645588 <br />
         <b>Business Name:</b> AVYAYPRATYAY SPORTS LLP <br />
         <b>Address:</b> Plot No. 10, 2nd Floor, Viman Nagar Colony, Secunderabad
-        Viman Nagar Road, Hyderabad, Telangana, India – 500016 <br />
-        <b>Working Hours:</b> Monday – Friday (09:00 – 18:00 IST)
+        Viman Nagar Road, Hyderabad, Telangana, India – 500016
       </Text>
     </Box>
   );
