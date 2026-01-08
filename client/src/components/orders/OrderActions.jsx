@@ -1,21 +1,50 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Button, Box, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { OrderTrackingModal } from "./OrderTrackingModal";
 
-export const OrderActions = ({ logistics }) => {
+export const OrderActions = ({ orderId, logistics }) => {
+  const [open, setOpen] = useState(false);
+
+  const hasShipment = !!logistics?.awbNumber;
+
   return (
-    <Box bg="white" borderRadius="14px" p="20px" boxShadow="sm">
-      <Text fontWeight="600" mb="10px">
-        Order Actions
+    <Box>
+      <Text fontSize="13px" color="gray.500" mb="2">
+        Shipment
       </Text>
 
-      {logistics?.awbNumber ? (
-        <Button colorScheme="blue" w="100%">
-          Track Order (Blue Dart)
-        </Button>
+      {hasShipment ? (
+        <>
+          <Text fontSize="14px" fontWeight="600">
+            Blue Dart • AWB: {logistics.awbNumber}
+          </Text>
+
+          <Button
+            size="sm"
+            mt="3"
+            colorScheme="blue"
+            onClick={() => setOpen(true)}
+          >
+            Track Shipment
+          </Button>
+        </>
       ) : (
-        <Text fontSize="13px" color="gray.500">
-          Shipment will be created shortly
-        </Text>
+        <>
+          <Text fontSize="14px" color="gray.500">
+            Shipment pending
+          </Text>
+
+          <Button size="sm" mt="3" isDisabled>
+            Track Shipment
+          </Button>
+        </>
       )}
+
+      <OrderTrackingModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        orderId={orderId}
+      />
     </Box>
   );
 };

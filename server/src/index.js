@@ -1,3 +1,4 @@
+const shipmentRoutes = require("./routes/shipment.routes");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -28,6 +29,9 @@ app.use(
   "/api/payment/webhook",
   express.raw({ type: "*/*" })
 );
+
+app.use("/shipment", shipmentRoutes);
+
 
 /* ======================================================
    BODY PARSERS (FOR ALL OTHER ROUTES)

@@ -9,52 +9,67 @@ const OrderSkeleton = () => {
   return (
     <Box maxW="1100px" mx="auto" px="20px" py="40px">
       {[1, 2].map((_, orderIdx) => (
-        <Box key={orderIdx} mb="40px">
-          {/* Order header */}
-          <Skeleton height="14px" width="250px" mb="12px" />
+        <Box
+          key={orderIdx}
+          mb="56px"
+          bg="white"
+          borderRadius="22px"
+          p={{ base: "18px", md: "26px" }}
+          boxShadow="0 14px 40px rgba(0,0,0,0.06)"
+          border="1px solid"
+          borderColor="gray.100"
+        >
+          {/* ================= ORDER HEADER ================= */}
+          <Flex
+            justify="space-between"
+            align="center"
+            mb="24px"
+            flexWrap="wrap"
+            gap="12px"
+          >
+            <Box>
+              <Skeleton height="10px" width="90px" mb="6px" />
+              <Skeleton height="14px" width="220px" />
+            </Box>
 
-          {/* Item cards */}
+            <Skeleton height="24px" width="90px" borderRadius="full" />
+          </Flex>
+
+          {/* ================= ORDER ITEMS ================= */}
           {[1, 2].map((_, itemIdx) => (
             <Flex
               key={itemIdx}
-              bg="white"
-              borderRadius="14px"
-              p="16px"
+              gap="16px"
               align="center"
-              justify="space-between"
-              boxShadow="sm"
-              mb="12px"
+              mb="16px"
             >
-              <Flex gap="16px" align="center">
-                <Skeleton boxSize="80px" borderRadius="10px" />
+              <Skeleton boxSize="80px" borderRadius="12px" />
 
-                <Box>
-                  <Skeleton height="14px" width="220px" mb="8px" />
-                  <Skeleton height="12px" width="120px" mb="6px" />
-                  <Skeleton height="12px" width="80px" />
-                </Box>
-              </Flex>
+              <Box flex="1">
+                <Skeleton height="14px" width="70%" mb="8px" />
+                <Skeleton height="12px" width="40%" mb="6px" />
+                <Skeleton height="12px" width="30%" />
+              </Box>
 
-              <Skeleton height="16px" width="60px" />
+              <Skeleton height="14px" width="50px" />
             </Flex>
           ))}
 
-          {/* Meta section */}
+          {/* ================= META SECTION ================= */}
           <Flex
-            gap="16px"
-            mt="16px"
+            gap="20px"
+            mt="28px"
             direction={{ base: "column", md: "row" }}
           >
             {[1, 2, 3].map((_, metaIdx) => (
               <Box
                 key={metaIdx}
-                bg="white"
-                borderRadius="14px"
-                p="20px"
-                boxShadow="sm"
                 flex="1"
+                bg="gray.50"
+                borderRadius="16px"
+                p="20px"
               >
-                <SkeletonText noOfLines={4} spacing="3" />
+                <SkeletonText noOfLines={4} spacing="4" />
               </Box>
             ))}
           </Flex>

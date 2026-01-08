@@ -26,4 +26,6 @@ const createCODOrder = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+  const { initiateShipmentForOrder } = require("../services/shipment.service");
+
 };
