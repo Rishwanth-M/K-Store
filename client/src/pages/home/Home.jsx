@@ -3,7 +3,6 @@ import React from "react";
 // ✅ import from homecomponents (NOT components)
 import Hero from "../../homecomponents/Hero";
 import Featured from "../../homecomponents/Featured";
-import ShopByIcons from "../../homecomponents/ShopByIcons";
 import MiniHelmetsSection from "../../homecomponents/MiniHelmetsSection";
 import MarqueeGrid from "../../homecomponents/MarqueeGrid";
 import MovementDataSection from "../../homecomponents/MovementDataSection";
@@ -24,7 +23,6 @@ export const Home = () => {
         <MiniHelmetsSection />
         <HomeCombo />
         <MarqueeGrid />
-        <ShopByIcons />
         <MovementDataSection />
       </main>
     </div>

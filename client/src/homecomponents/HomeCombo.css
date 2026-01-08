@@ -1,14 +1,20 @@
-/* ===== SECTION ===== */
+/* ================================
+   COMBO SECTION (3D ENABLED)
+================================ */
 .combo-section {
   width: 100%;
   padding: 0 32px;
-  margin: 80px auto;
+  margin: 120px auto;
+  perspective: 1200px;               /* 🔥 enables 3D depth */
+  transform-style: preserve-3d;
 }
 
-/* ===== HEADER ===== */
+/* ================================
+   HEADER
+================================ */
 .combo-header {
   max-width: 1440px;
-  margin: 0 auto 32px;
+  margin: 0 auto 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -18,15 +24,20 @@
   font-size: 28px;
   font-weight: 600;
   color: #111;
+  letter-spacing: -0.02em;
 }
 
-/* ===== GRID ===== */
+/* ================================
+   GRID (STACK-FRIENDLY)
+================================ */
 .combo-grid {
   max-width: 1440px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
+  position: relative;
+  transform-style: preserve-3d;     /* 🔥 allows z-movement */
 }
 
 /* Tablet */
@@ -43,15 +54,34 @@
   }
 }
 
-/* ===== CARD ===== */
+/* ================================
+   CARD (3D READY)
+================================ */
 .combo-card {
-  width: 100%;           /* 🔥 KEY FIX */
+  width: 100%;
   cursor: pointer;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
 }
 
-/* ===== INFO ===== */
+/* Subtle premium hover (GSAP-safe) */
+.combo-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* ================================
+   INFO
+================================ */
 .combo-info {
   padding-top: 12px;
+  transform: translateZ(20px); /* 🔥 text floats slightly */
 }
 
 .combo-title {
@@ -84,4 +114,29 @@
   font-size: 13px;
   color: #666;
   line-height: 1.45;
+}
+
+/* ================================
+   SCROLL-LOCK VISUAL POLISH
+================================ */
+
+/* Slight blur for depth separation (GSAP can animate this) */
+.combo-card.is-background {
+  filter: blur(2px);
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+
+/* ================================
+   MOBILE SAFETY
+================================ */
+@media (max-width: 768px) {
+  .combo-section {
+    perspective: none;   /* 🔥 disable 3D strain on mobile */
+  }
+
+  .combo-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }

@@ -1,90 +1,109 @@
-/* ================================
-   MARQUEE SECTION (CHAKRA AWARE)
-   ================================ */
-
-/* LIGHT MODE */
-.chakra-ui-light .marquee-section {
-  width: 100%;
-  height: 100vh;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 40px;
+/* ===============================
+   SECTION (CINEMATIC ENERGY)
+================================ */
+.marquee-section {
+  position: relative;
   overflow: hidden;
+  padding: 120px 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(198, 255, 0, 0.12), transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(0, 200, 255, 0.12), transparent 40%),
+    linear-gradient(180deg, #050505, #0b0b0b);
 }
 
-/* DARK MODE */
-.chakra-ui-dark .marquee-section {
-  width: 100%;
-  height: 100vh;
-  background: #8be066;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 40px;
-  overflow: hidden;
+/* Floating glow layer */
+.marquee-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(198, 255, 0, 0.15), transparent 45%),
+    radial-gradient(circle at 80% 50%, rgba(0, 180, 255, 0.12), transparent 45%);
+  mix-blend-mode: screen;
 }
 
-/* ================================
-   EACH ROW
-   ================================ */
+/* ===============================
+   ROWS
+================================ */
 .marquee-row {
   width: 100%;
   overflow: hidden;
+  transform-style: preserve-3d;
+  margin-bottom: 48px;
 }
 
-/* ================================
+.marquee-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Speed variants */
+.marquee-row.fast .marquee-track {
+  animation-duration: 18s;
+}
+
+.marquee-row.slow .marquee-track {
+  animation-duration: 28s;
+}
+
+/* ===============================
    TRACK
-   ================================ */
+================================ */
 .marquee-track {
   display: flex;
   gap: 24px;
   width: max-content;
+  will-change: transform;
 }
 
-/* ================================
-   CARD
-   ================================ */
-
-/* LIGHT MODE CARD */
-.chakra-ui-light .marquee-card {
-  width: 28vw;
-  height: 32vh;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #f1f1f1;
-  flex-shrink: 0;
+/* Direction + speed */
+.marquee-row.left .marquee-track {
+  animation: marquee-left 18s linear infinite;
 }
 
-/* DARK MODE CARD */
-.chakra-ui-dark .marquee-card {
-  width: 28vw;
-  height: 32vh;
-  border-radius: 20px;
+.marquee-row.right .marquee-track {
+  animation: marquee-right 28s linear infinite;
+}
+
+
+/* ===============================
+   CARD (DEPTH + ENERGY)
+================================ */
+.marquee-card {
+  flex: 0 0 auto;
+  width: 260px;
+  height: 160px;
+  border-radius: 18px;
   overflow: hidden;
-  background: #1a1a1a;
-  flex-shrink: 0;
+  background: #000;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
 }
 
 .marquee-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
+ /* 🔥 THIS FIXES IT */
+  transform: translateZ(20px);
 }
 
-/* ================================
-   ANIMATIONS
-   ================================ */
-.marquee-row.left .marquee-track {
-  animation: scrollLeft 40s linear infinite;
+
+/* Hover punch */
+.marquee-card:hover {
+  transform: translateY(-12px) scale(1.08) rotateZ(-1deg);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.4),
+    0 10px 20px rgba(0, 0, 0, 0.25);
 }
 
-.marquee-row.right .marquee-track {
-  animation: scrollRight 40s linear infinite;
-}
-
-@keyframes scrollLeft {
+/* ===============================
+   KEYFRAMES
+================================ */
+@keyframes marquee-left {
   from {
     transform: translateX(0);
   }
@@ -93,7 +112,7 @@
   }
 }
 
-@keyframes scrollRight {
+@keyframes marquee-right {
   from {
     transform: translateX(-50%);
   }
@@ -102,12 +121,16 @@
   }
 }
 
-/* ================================
-   MOBILE
-   ================================ */
+/* ===============================
+   MOBILE SAFETY
+================================ */
 @media (max-width: 768px) {
+  .marquee-section {
+    padding: 80px 0;
+  }
+
   .marquee-card {
-    width: 70vw;
-    height: 28vh;
+    width: 200px;
+    height: 130px;
   }
 }

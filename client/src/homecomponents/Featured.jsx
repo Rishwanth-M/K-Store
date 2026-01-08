@@ -1,46 +1,89 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./Featured.css";
 import { useNavigate } from "react-router-dom";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Text, useColorModeValue } from "@chakra-ui/react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const tiles = [
   {
     eyebrow: "Kreedentials Pegasus Premium",
     title: "For the Ultimate Energised Ride",
-    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1765097127/IMG_9504_i3q2jx.jpg",
+    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1767875874/IMG_9504_rvrcdr.jpg",
   },
   {
     eyebrow: "Women's Training Gear",
     title: "Power Up Your Workouts",
-    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1765096947/Gemini_Generated_Image_hd7w7rhd7w7rhd7w_1_ocxnej.png",
+    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1767878998/IMG_9659_u7qfdy.jpg",
   },
 ];
 
 const Featured = () => {
   const navigate = useNavigate();
+  const sectionRef = useRef(null);
+  const tileRefs = useRef([]);
+
+  const titleColor = useColorModeValue("#111", "#f5f5f5");
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(sectionRef.current, {
+        opacity: 0,
+        y: 80,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+      });
+
+      gsap.from(tileRefs.current, {
+        opacity: 0,
+        y: 60,
+        scale: 0.96,
+        stagger: 0.15,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="featured-section">
-      {/* CENTERED HEADING */}
-      <h2 className="featured-heading">Featured</h2>
+    <section className="featured-section" ref={sectionRef}>
+      <Text
+        as="h2"
+        className="featured-heading"
+        color={titleColor}
+      >
+        Featured
+      </Text>
 
-      {/* GRID */}
       <div className="featured-grid">
-        {tiles.map((tile) => (
-          <div key={tile.title} className="featured-tile">
+        {tiles.map((tile, i) => (
+          <div
+            key={tile.title}
+            className="featured-tile"
+            ref={(el) => (tileRefs.current[i] = el)}
+          >
             <img
-              src={tile.img}
-              alt={tile.title}
-              className="featured-img"
-            />
+  src={tile.img}
+  alt={tile.title}
+  className="featured-img"
+/>
 
             <div className="featured-content">
-              <p className="featured-eyebrow">{tile.eyebrow}</p>
-              <h3 className="featured-title">{tile.title}</h3>
-
-              <button
-                className="featured-btn"
-                onClick={() => navigate("/allproducts")}
-              >
+              <p>{tile.eyebrow}</p>
+              <h3>{tile.title}</h3>
+              <button onClick={() => navigate("/allproducts")}>
                 Shop
               </button>
             </div>

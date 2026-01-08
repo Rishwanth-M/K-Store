@@ -1,86 +1,99 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./MovementDataSection.css";
 
-const images = [
-  "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200",
-  "https://images.unsplash.com/photo-1499346030926-9a72daac6c63?w=1200",
-  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200",
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200",
+gsap.registerPlugin(ScrollTrigger);
+
+const cards = [
+  {
+    title: "Engineered for Movement",
+    text: "Designed to move naturally with your body during training and play.",
+    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1767878998/IMG_9659_u7qfdy.jpg",
+  },
+  {
+    title: "Breathable Performance",
+    text: "Advanced fabrics that stay light, breathable, and comfortable.",
+    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1767875875/Gemini_Generated_Image_hd7w7rhd7w7rhd7w_1_jhppv7.png",
+  },
+  {
+    title: "Built for Endurance",
+    text: "Durable materials that withstand intense use and washing.",
+    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1767878991/Gemini_Generated_Image_xa3klexa3klexa3k_2_y4whof.png",
+  },
+  {
+    title: "Everyday Comfort",
+    text: "Perfect balance of flexibility, softness, and structure.",
+    img: "https://res.cloudinary.com/dafoanpxr/image/upload/v1767875874/IMG_9504_rvrcdr.jpg",
+  },
 ];
 
 export default function MovementDataSection() {
   const sectionRef = useRef(null);
-  const [locked, setLocked] = useState(false);
+  const cardsRef = useRef([]);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  // 🔒 Lock animation only while section is in view
   useEffect(() => {
-    const onScroll = () => {
-      const rect = sectionRef.current.getBoundingClientRect();
-      const inView = rect.top <= 0 && rect.bottom >= window.innerHeight;
-      setLocked(inView);
-    };
+    const ctx = gsap.context(() => {
+      // Hide all except first
+      gsap.set(cardsRef.current, {
+        opacity: 0,
+        y: 60,
+      });
+      gsap.set(cardsRef.current[0], {
+        opacity: 1,
+        y: 0,
+      });
 
-    window.addEventListener("scroll", onScroll);
-    onScroll();
+      // Timeline controlled by scroll
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: `+=${cards.length * 80}%`,
+          scrub: true,
+          pin: true,          // 🔒 THIS IS THE LOCK
+          anticipatePin: 1,
+        },
+      });
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+      cardsRef.current.forEach((card, i) => {
+        if (i === 0) return;
 
-  // Smooth scrolling (Lenis)
-  useEffect(() => {
-    const lenis = new Lenis({ smooth: true, lerp: 0.08 });
-    const raf = (t) => {
-      lenis.raf(t);
-      requestAnimationFrame(raf);
-    };
-    requestAnimationFrame(raf);
+        tl.to(
+          cardsRef.current[i - 1],
+          { opacity: 0, y: -60, duration: 0.5 },
+          "+=0.3"
+        ).to(
+          card,
+          { opacity: 1, y: 0, duration: 0.5 },
+          "<"
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="lock-section">
+    <section ref={sectionRef} className="movement-section">
+      <div className="movement-stage">
+        {cards.map((card, i) => (
+          <div
+            key={i}
+            className="movement-card"
+            ref={(el) => (cardsRef.current[i] = el)}
+          >
+            <div className="movement-image">
+              <img src={card.img} alt="" />
+            </div>
 
-      {/* 🔹 STICKY TITLE */}
-      <div className="cards-header">
-        <h2 className="cards-title">Cards</h2>
+            <div className="movement-content">
+              <h2>{card.title}</h2>
+              <p>{card.text}</p>
+            </div>
+          </div>
+        ))}
       </div>
-
-      {/* 🔹 FIXED CARD LAYER */}
-      <div className={`fixed-layer ${locked ? "is-fixed" : ""}`}>
-        {images.map((src, i) => {
-          const opacity = useTransform(
-            scrollYProgress,
-            [i / images.length, (i + 1) / images.length],
-            [1, 0]
-          );
-
-          const y = useTransform(
-            scrollYProgress,
-            [i / images.length, (i + 1) / images.length],
-            [0, -120]
-          );
-
-          return (
-            <motion.img
-              key={i}
-              src={src}
-              className="lock-card"
-              style={{
-                opacity,
-                y,
-                zIndex: images.length - i,
-              }}
-            />
-          );
-        })}
-      </div>
-
     </section>
   );
 }

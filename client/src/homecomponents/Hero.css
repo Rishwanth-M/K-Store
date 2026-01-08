@@ -37,10 +37,14 @@
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
+
+  /* 👇 PUSH IMAGE DOWN */
+  background-position: center 30%;
+
   filter: brightness(0.9);
 }
+
 
 /* Video background */
 .hero-video {

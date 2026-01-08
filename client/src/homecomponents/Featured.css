@@ -1,52 +1,107 @@
+/* ===============================
+   FEATURED SECTION (3D READY)
+================================ */
 .featured-section {
   width: 100%;
-  padding: 20px 0;        /* very little top & bottom space */
+  padding: 20px 0 80px;
   box-sizing: border-box;
+  perspective: 1400px;                 /* 🔥 enables 3D */
+  transform-style: preserve-3d;
 }
 
-/* HEADING — TOP & CENTER */
+.featured-section {
+  padding-bottom: 80px; /* 🔥 gives space for tall tiles */
+}
+
+.featured-section {
+  overflow: hidden; /* 🔥 contains 3D transforms */
+}
+
+
+/* ===============================
+   HEADING — TOP & CENTER
+================================ */
 .featured-heading {
   font-size: 32px;
   font-weight: 700;
-  text-align: center;     /* ✅ CENTER */
-  margin: 0 0 16px 0;     /* ✅ small gap before images */
+  text-align: center;
+  margin: 0 0 6px 0;
   color: #111;
+  letter-spacing: -0.02em;
 }
 
 .dark .featured-heading {
   color: #fff;
 }
 
-/* GRID */
+/* ===============================
+   GRID
+================================ */
 .featured-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
+  transform-style: preserve-3d;
 }
 
-/* TILE */
+
+/* ===============================
+   TILE (3D CARD)
+================================ */
 .featured-tile {
   position: relative;
   width: 100%;
-  height: 75vh;
+  height: 68vh;
   overflow: hidden;
+  cursor: pointer;
+
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s ease;
 }
 
+
+
+/* Premium hover lift (subtle, safe) */
+.featured-tile:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.25),
+    0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ===============================
+   IMAGE (DEPTH LAYER)
+================================ */
 .featured-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+
+  /* 🔥 BALANCED FOCUS — shows full body */
+  object-position: center 40%;
+
+  transition: transform 0.6s ease;
 }
 
-/* CONTENT OVER IMAGE */
+
+/* ===============================
+   CONTENT OVER IMAGE (FLOATING)
+================================ */
 .featured-content {
   position: absolute;
   left: 24px;
   bottom: 30px;
   width: 80%;
   color: #fff;
+
+  transform: translateZ(50px); /* 🔥 text floats above image */
+  pointer-events: none;
 }
 
+/* Typography */
 .featured-eyebrow {
   font-size: 14px;
   margin-bottom: 6px;
@@ -59,7 +114,9 @@
   margin-bottom: 14px;
 }
 
-/* BUTTON */
+/* ===============================
+   BUTTON
+================================ */
 .featured-btn {
   background: #fff;
   color: #000;
@@ -69,13 +126,21 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
+  pointer-events: auto;
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
 }
 
 .featured-btn:hover {
   background: #e7e7e7;
+  transform: translateY(-2px);
 }
 
-/* MOBILE */
+/* ===============================
+   MOBILE SAFETY
+================================ */
 @media (max-width: 820px) {
   .featured-grid {
     grid-template-columns: 1fr;
@@ -88,5 +153,23 @@
 
   .featured-tile {
     height: 60vh;
+    transform: none !important;
+    box-shadow: none;
   }
+
+  .featured-img {
+    transform: none;
+  }
+
+  .featured-section {
+    perspective: none;
+  }
+}
+
+/* 🔥 FORCE dark mode title visibility */
+.dark .featured-heading {
+  color: #f5f5f5 !important;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.7),
+    0 6px 16px rgba(0, 0, 0, 0.6);
 }

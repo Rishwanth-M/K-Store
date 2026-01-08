@@ -1,40 +1,54 @@
-/* SECTION */
+/* ===============================
+   SECTION (DEPTH ENABLED)
+================================ */
 .mini {
   min-height: 100vh;
   background: radial-gradient(circle at top, #1a1a00, #050505);
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1400px; /* enables depth */
 }
 
-/* LAYOUT */
+/* ===============================
+   LAYOUT
+================================ */
 .mini-inner {
   width: 90%;
   max-width: 1200px;
+  min-height: 80vh;              /* 🔥 defines vertical space */
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
-  opacity: 0;
-  transform: translateY(60px);
-  transition: all 0.9s ease;
+  transform-style: preserve-3d;
+  align-items: center;
 }
 
-.mini.reveal .mini-inner {
-  opacity: 1;
-  transform: translateY(0);
+/* ===============================
+   LEFT IMAGE (FULL IMAGE – NO CUT)
+================================ */
+.mini-left {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  align-items: center;
 }
 
-/* LEFT IMAGE */
 .mini-left img {
   width: 100%;
-  height: 420px;
-  object-fit: cover;
+  height: 100%;                  /* 🔥 fill column height */
+  object-fit: contain;           /* 🔥 NO CROPPING */
   border-radius: 20px;
+  display: block;
+  transform: translateZ(-20px);  /* subtle depth */
 }
 
-/* RIGHT CONTENT */
+/* ===============================
+   RIGHT CONTENT (FOREGROUND)
+================================ */
 .mini-right {
   color: #fff;
+  transform: translateZ(40px);   /* text floats forward */
 }
 
 .mini-right h2 {
@@ -63,7 +77,9 @@
   opacity: 0.85;
 }
 
-/* BOTTOM IMAGES */
+/* ===============================
+   BOTTOM IMAGES (FLOATING LAYERS)
+================================ */
 .mini-images {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -72,19 +88,38 @@
 
 .mini-images img {
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  height: auto;                  /* 🔥 prevent cut */
+  object-fit: contain;
   border-radius: 16px;
+  transform: translateZ(20px);
+  will-change: transform, opacity;
 }
 
-/* MOBILE */
+/* ===============================
+   MOBILE SAFETY
+================================ */
 @media (max-width: 900px) {
   .mini-inner {
     grid-template-columns: 1fr;
     gap: 40px;
+    min-height: auto;
+  }
+
+  .mini-left {
+    justify-content: center;
   }
 
   .mini-left img {
-    height: 300px;
+    height: auto;
+    max-height: 60vh;
+    transform: none;
+  }
+
+  .mini-right {
+    transform: none;
+  }
+
+  .mini {
+    perspective: none;
   }
 }

@@ -7,14 +7,14 @@ const slides = [
     title: "JUST DO IT.",
     subtitle: "They keep finding out.",
     image:
-      "https://images.pexels.com/photos/2834915/pexels-photo-2834915.jpeg?auto=compress&cs=tinysrgb&w=1600"
+      "https://res.cloudinary.com/dafoanpxr/image/upload/v1767878998/IMG_9659_u7qfdy.jpg"
   },
   {
     id: 2,
     title: "STAY READY.",
     subtitle: "Whatever comes next.",
     image:
-      "https://images.pexels.com/photos/4761358/pexels-photo-4761358.jpeg?auto=compress&cs=tinysrgb&w=1600"
+      "https://res.cloudinary.com/dafoanpxr/image/upload/v1767875874/IMG_9504_rvrcdr.jpg"
   },
   {
     id: 3,
@@ -141,13 +141,16 @@ const Hero = ({ isPausedExternally = false }) => {
               </h1>
 
               <div className="hero-cta-row">
-                <button className="hero-primary-btn">
-                  Gear Up
-                </button>
-                <button className="hero-play-btn">
-                  Watch
-                  <span className="material-symbols-outlined hero-play-icon">play_arrow</span>
-                </button>
+                <a
+  href="https://www.kreedentials.com/allProducts"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="hero-primary-btn"
+>
+  Gear Up
+</a>
+
+                
               </div>
             </div>
           </div>
