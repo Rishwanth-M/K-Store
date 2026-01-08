@@ -11,9 +11,11 @@ const orderSchema = new Schema(
     },
 
     /* ================= ORDER STATUS ================= */
+    // 🔒 EXISTING VALUES KEPT
+    // ➕ COD-friendly statuses added
     orderStatus: {
       type: String,
-      enum: ["CREATED", "PAID", "FAILED"],
+      enum: ["CREATED", "PAID", "FAILED", "CONFIRMED", "SHIPPED", "DELIVERED"],
       default: "CREATED",
       index: true,
     },
@@ -47,12 +49,15 @@ const orderSchema = new Schema(
 
     /* ================= PAYMENT DETAILS ================= */
     paymentDetails: {
+      // 🔒 PHONEPE KEPT AS DEFAULT
+      // ➕ COD ADDED AS OPTION
       provider: {
         type: String,
-        enum: ["PHONEPE"],
+        enum: ["PHONEPE", "COD"],
         default: "PHONEPE",
       },
 
+      // 🔒 PHONEPE FIELDS (UNCHANGED)
       merchantTransactionId: {
         type: String,
         index: true,
@@ -62,9 +67,11 @@ const orderSchema = new Schema(
         type: String,
       },
 
+      // 🔒 EXISTING STATUSES KEPT
+      // ➕ PENDING added for COD
       paymentStatus: {
         type: String,
-        enum: ["INITIATED", "SUCCESS", "FAILED"],
+        enum: ["INITIATED", "SUCCESS", "FAILED", "PENDING"],
         default: "INITIATED",
         index: true,
       },
@@ -78,7 +85,7 @@ const orderSchema = new Schema(
       },
     },
 
-    /* ================= SHIPPING ================= */
+    /* ================= SHIPPING ADDRESS ================= */
     shippingDetails: {
       firstName: String,
       lastName: String,
@@ -90,6 +97,30 @@ const orderSchema = new Schema(
       country: String,
       email: String,
       mobile: String,
+    },
+
+    /* ================= LOGISTICS (NEW - NON BREAKING) ================= */
+    // 🟢 This does NOT affect PhonePe in any way
+    logistics: {
+      courier: {
+        type: String,
+        default: "BLUEDART",
+      },
+
+      awbNumber: {
+        type: String,
+        index: true,
+      },
+
+      shipmentId: {
+        type: String,
+      },
+
+      status: {
+        type: String,
+        enum: ["CREATED", "PICKED", "IN_TRANSIT", "DELIVERED"],
+        default: "CREATED",
+      },
     },
   },
   {

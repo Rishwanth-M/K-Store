@@ -13,7 +13,7 @@ export const getCartTotal = (arr, discountPercent = 0) => {
 
     const { subTotal, quantity } = getTotalAndQuantity(arr);
 
-    const shipping = subTotal < 14000 && subTotal > 0 ? 750 : 0;
+    const shipping = 0;
     const discount = Math.floor(subTotal * discountPercent / 100);
     const total = subTotal + shipping - discount;
 

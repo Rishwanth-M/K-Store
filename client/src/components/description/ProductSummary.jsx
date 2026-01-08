@@ -8,14 +8,24 @@ import {
   SimpleGrid,
   Divider,
   useColorModeValue,
+  Link,
 } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+
+/* 🔥 LOW STOCK ANIMATION */
+const pulse = keyframes`
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+`;
 
 export const ProductSummary = ({
   product,
   onAddToCart,
   onAddToFavourite,
+  onOpenSizeGuide, // 🔥 from Description.jsx
 }) => {
   const {
     name,
@@ -29,11 +39,19 @@ export const ProductSummary = ({
 
   const [selectedSize, setSelectedSize] = useState(null);
 
-  /* ===================== */
-  /* FAVOURITES (SIZE AWARE) */
-  /* ===================== */
+  /* ===== SELECTED VARIANT ===== */
+  const selectedVariant = variants.find(
+    (v) => v.size === selectedSize
+  );
+
+  const isSelectedSizeOutOfStock =
+    selectedVariant && Number(selectedVariant.stock) <= 0;
+
+  const inStock = variants.some((v) => Number(v.stock) > 0);
+
+  /* ===== FAVOURITES ===== */
   const favouriteList =
-    useSelector((state) => state.favouriteReducer.favourite) || [];
+    useSelector((state) => state.favouriteReducer.favourites) || [];
 
   const isFavourite = favouriteList.some(
     (item) =>
@@ -41,76 +59,93 @@ export const ProductSummary = ({
       item.size === selectedSize
   );
 
-  const inStock = variants.some((v) => Number(v.stock) > 0);
-
-  /* ===================== */
-  /* COLOR MODE VALUES */
-  /* ===================== */
+  /* ===== COLORS ===== */
   const textColor = useColorModeValue("gray.900", "white");
   const mutedText = useColorModeValue("gray.600", "gray.400");
   const subtleText = useColorModeValue("gray.500", "gray.500");
 
   const primaryBg = useColorModeValue("black", "white");
   const primaryText = useColorModeValue("white", "black");
-
   const borderColor = useColorModeValue("black", "white");
 
   return (
     <Box color={textColor}>
-      {/* PRODUCT NAME */}
+      {/* ===== TITLE ===== */}
       <Text
         fontSize={["26px", "30px", "34px"]}
         fontWeight="700"
-        lineHeight="1.15"
+        lineHeight="1.2"
       >
         {name}
       </Text>
 
-      {/* SUBTITLE */}
-      <Text mt="6px" fontSize="15px" color={mutedText}>
-        {category} · {productType}
-      </Text>
+      {/* ===== SUBTITLE + BADGES ===== */}
+      <Flex mt="10px" gap="10px" align="center" flexWrap="wrap">
+        <Text fontSize="14px" color={mutedText}>
+          {category}
+        </Text>
 
-      {/* PRICE */}
-      <Text mt="20px" fontSize="28px" fontWeight="700">
-        ₹ {price}
-      </Text>
-      <Text fontSize="13px" color={subtleText}>
-        Inclusive of all taxes
-      </Text>
-
-      {/* BADGES */}
-      <Flex gap="8px" mt="18px" flexWrap="wrap">
-        {color && (
-          <Badge variant="outline" borderColor={borderColor}>
-            {color}
+        {productType?.toLowerCase() === "combo" && (
+          <Badge colorScheme="purple" fontSize="11px">
+            COMBO SET
           </Badge>
         )}
-        <Badge colorScheme={inStock ? "green" : "red"}>
+
+        <Badge colorScheme={inStock ? "green" : "red"} fontSize="11px">
           {inStock ? "In Stock" : "Out of Stock"}
         </Badge>
       </Flex>
 
-      {/* DESCRIPTION */}
+      {/* ===== PRICE ===== */}
+      <Box mt="22px">
+        <Text fontSize="30px" fontWeight="700">
+          ₹ {price}
+        </Text>
+        <Text fontSize="13px" color={subtleText}>
+          Inclusive of all taxes
+        </Text>
+      </Box>
+
+      {/* ===== COLOR ===== */}
+      {color && (
+        <Flex gap="8px" mt="18px" align="center">
+          <Badge variant="outline" borderColor={borderColor}>
+            {color}
+          </Badge>
+        </Flex>
+      )}
+
+      {/* ===== DESCRIPTION ===== */}
       {description && (
-        <Text mt="22px" fontSize="15px" lineHeight="1.7">
+        <Text mt="22px" fontSize="15px" lineHeight="1.8">
           {description}
         </Text>
       )}
 
-      <Divider my="28px" />
+      <Divider my="32px" />
 
-      {/* SIZE SELECT */}
+      {/* ===== SIZE SELECT + SIZE GUIDE ===== */}
       {variants.length > 0 && (
         <Box>
-          <Text fontWeight="600" mb="10px">
-            Select Size
-          </Text>
+          <Flex justify="space-between" align="center" mb="12px">
+            <Text fontWeight="600">Select Size</Text>
+            <Link
+              fontSize="13px"
+              color="blue.500"
+              onClick={onOpenSizeGuide}
+              cursor="pointer"
+            >
+              Size Guide
+            </Link>
+          </Flex>
 
           <SimpleGrid columns={4} spacing="12px">
             {variants.map((variant) => {
               const isDisabled = Number(variant.stock) <= 0;
               const isSelected = selectedSize === variant.size;
+              const isLowStock =
+                Number(variant.stock) > 0 &&
+                Number(variant.stock) <= 5;
 
               return (
                 <Button
@@ -121,8 +156,22 @@ export const ProductSummary = ({
                   borderColor={borderColor}
                   isDisabled={isDisabled}
                   onClick={() => setSelectedSize(variant.size)}
+                  position="relative"
                 >
                   {variant.size}
+
+                  {/* 🔥 ONLY X LEFT */}
+                  {isLowStock && (
+                    <Text
+                      fontSize="10px"
+                      position="absolute"
+                      bottom="-18px"
+                      color="red.500"
+                      animation={`${pulse} 1.2s infinite`}
+                    >
+                      Only {variant.stock} left
+                    </Text>
+                  )}
                 </Button>
               );
             })}
@@ -130,26 +179,34 @@ export const ProductSummary = ({
         </Box>
       )}
 
-      {/* CTA */}
-      <Stack spacing="14px" mt="36px">
+      {/* ===== CTA ===== */}
+      <Stack spacing="14px" mt="42px">
         <Button
           size="lg"
           bg={primaryBg}
           color={primaryText}
-          h="52px"
-          isDisabled={!selectedSize || !inStock}
+          h="54px"
+          fontSize="15px"
+          isDisabled={!selectedSize || isSelectedSizeOutOfStock}
           onClick={() => onAddToCart(selectedSize)}
+          _active={{ transform: "scale(0.98)" }}
         >
-          Add to Bag
+          {isSelectedSizeOutOfStock ? "Out of Stock" : "Add to Bag"}
         </Button>
 
         <Button
           size="lg"
           variant="outline"
-          h="52px"
+          h="54px"
           borderColor={borderColor}
-          isDisabled={!selectedSize || isFavourite}
+          fontSize="15px"
+          isDisabled={
+            !selectedSize ||
+            isSelectedSizeOutOfStock ||
+            isFavourite
+          }
           onClick={() => onAddToFavourite(selectedSize)}
+          _active={{ transform: "scale(0.98)" }}
         >
           {isFavourite ? "Added to Favourites" : "Favourite"}
         </Button>

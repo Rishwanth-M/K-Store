@@ -11,7 +11,6 @@ import { CheckoutForm } from "../../components/checkout/CheckoutForm";
 import {
   Box,
   Checkbox,
-  Flex,
   Text,
   Button,
   useToast,
@@ -21,7 +20,7 @@ import { setToast } from "../../utils/extraFunctions";
 import { shallowEqual, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 /* ================= INITIAL FORM ================= */
 const initState = {
@@ -39,10 +38,10 @@ const initState = {
 
 export const Checkout = () => {
   const toast = useToast();
+  const navigate = useNavigate();
 
   /* ================= AUTH ================= */
   const { token, user } = useSelector((state) => state.authReducer);
-
   if (!token) return <Navigate to="/auth" replace />;
 
   /* ================= CART ================= */
@@ -142,75 +141,50 @@ export const Checkout = () => {
     return true;
   };
 
-  /* ================= SUBMIT ================= */
-  /* ================= SUBMIT ================= */
-const handleFormSubmit = async (e) => {
-  e?.preventDefault?.();
-  if (!handleFormValidation()) return;
+  /* ================= SUBMIT (COD ONLY) ================= */
+  const handleFormSubmit = async (e) => {
+    e?.preventDefault?.();
+    if (!handleFormValidation()) return;
 
-  try {
-    await saveAddressIfNeeded();
+    try {
+      await saveAddressIfNeeded();
 
-    /* 🔥 DEBUG: LOG RAW CART */
-    console.log("RAW cartProducts from Redux:", cartProducts);
+      const normalizedCart = cartProducts.map((item, index) => {
+        const productId =
+          item.product ||
+          item.product?._id ||
+          item.productId;
 
-    const normalizedCart = cartProducts.map((item, index) => {
-  // ✅ ALWAYS PRIORITIZE PRODUCT ID
-  const productId =
-    item.product ||            // case 1: product is string (your DB)
-    item.product?._id ||       // case 2: populated product
-    item.productId;            // case 3: alternate naming
+        if (!productId) {
+          throw new Error("Invalid cart item");
+        }
 
-  if (!productId) {
-    console.error("❌ Invalid cart item at index", index, item);
-    throw new Error("Invalid cart item structure");
-  }
+        return {
+          _id: productId,
+          quantity: Number(item.quantity),
+          size: item.size,
+        };
+      });
 
-  return {
-    _id: productId,            // ✅ REAL PRODUCT ID
-    quantity: Number(item.quantity),
-    size: item.size,
+      /* 🟢 COD ORDER API */
+      const orderRes = await api.post("/order/cod", {
+        cartProducts: normalizedCart,
+        shippingDetails: form,
+      });
+
+      if (!orderRes.data?.orderId) {
+        throw new Error("Order failed");
+      }
+
+      /* ✅ SUCCESS */
+      setToast(toast, "Order placed successfully (Cash on Delivery)", "success");
+
+      navigate("/orders"); // or order-success page
+    } catch (err) {
+      console.error("❌ Checkout error:", err);
+      setToast(toast, err.message || "Order failed", "error");
+    }
   };
-});
-
-
-    console.log("✅ Normalized cart sent to backend:", normalizedCart);
-
-    /* 1️⃣ CREATE ORDER */
-    const orderRes = await api.post("/order", {
-      cartProducts: normalizedCart,
-      shippingDetails: form,
-    });
-
-    console.log("✅ Order API response:", orderRes.data);
-
-    const { orderId, payableAmount } = orderRes.data;
-
-    if (!orderId || typeof payableAmount !== "number") {
-      throw new Error("Order creation failed");
-    }
-
-    /* 2️⃣ INITIATE PAYMENT */
-    const paymentRes = await api.post("/api/payment/initiate", {
-      orderId,
-      amount: payableAmount,
-    });
-
-    console.log("✅ Payment initiation response:", paymentRes.data);
-
-    const redirectUrl = paymentRes.data?.redirectUrl;
-
-    if (!redirectUrl) {
-      throw new Error("PhonePe redirect URL missing");
-    }
-
-    /* 3️⃣ REDIRECT TO PHONEPE */
-    window.location.href = redirectUrl;
-  } catch (err) {
-    console.error("❌ Checkout error:", err);
-    setToast(toast, err.message || "Payment initiation failed", "error");
-  }
-};
 
   /* ================= UI ================= */
   return (

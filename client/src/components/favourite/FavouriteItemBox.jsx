@@ -33,23 +33,16 @@ export const FavouriteItemBox = ({ data, _id }) => {
     dispatch(deleteFavouriteRequest(_id, toast));
   };
 
-  const handleDisplayProduct = async () => {
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/products/${data.product}`
-    );
+  const handleDisplayProduct = () => {
+  const productId =
+    typeof data.product === "string"
+      ? data.product
+      : data.product?._id;
 
-    const result = await res.json();
+  if (!productId) return;
 
-    if (!result?.product) {
-      throw new Error("Product not found");
-    }
-
-    setItemSession("singleProduct", result.product);
-    navigate("/description");
-  } catch (err) {
-    setToast(toast, "Failed to load product", "error");
-  }
+  setItemSession("singleProduct", { _id: productId });
+  navigate("/description");
 };
 
 

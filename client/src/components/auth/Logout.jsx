@@ -80,7 +80,7 @@ export const Logout = () => {
             Orders
           </MenuItem>
 
-          <Coupon />
+         
 
           <MenuItem
             icon={<BsCart2 />}

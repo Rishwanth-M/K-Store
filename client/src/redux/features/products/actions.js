@@ -82,37 +82,18 @@ export const getRequest = (path) => async (dispatch) => {
   try {
     let url = "/products";
 
-    if (path) {
-      const normalizedPath = path.toLowerCase().trim();
-
-      /* Category filters */
-      if (["boys", "girls", "unisex"].includes(normalizedPath)) {
-        url = `/products?category=${normalizedPath}`;
-      }
-
-      /* Product type filters */
-      else if (normalizedPath === "combo") {
-        url = `/products?productType=combo`;
-      }
+    if (["boys", "girls", "unisex"].includes(path)) {
+      url = `/products?category=${path}`;
     }
 
     const res = await api.get(url);
 
-    /**
-     * Backend response shape:
-     * {
-     *   success: true,
-     *   count: number,
-     *   products: [...]
-     * }
-     */
     const products = Array.isArray(res?.data?.products)
       ? res.data.products
       : [];
 
     dispatch(getDataSuccess(products));
   } catch (err) {
-    console.error("❌ Product fetch failed:", err);
     dispatch(getDataError(err?.message));
   }
 };

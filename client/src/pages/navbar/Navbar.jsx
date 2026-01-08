@@ -110,7 +110,6 @@ export const Navbar = () => {
           <Category handlePath={handlePath} name="boys" text="Boys" link="/allProducts" />
           <Category handlePath={handlePath} name="girls" text="Girls" link="/allProducts" />
           <Category handlePath={handlePath} name="unisex" text="Unisex" link="/allProducts" />
-          <Category handlePath={handlePath} name="combo" text="Combo" link="/allProducts" />
         </Box>
 
         <Spacer />

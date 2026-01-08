@@ -10,11 +10,11 @@ import {
 } from "@chakra-ui/react";
 
 import { OrderAddress } from "../../components/orders/OrderAddress";
-import { Loading } from "../../components/loading/Loading";
 import { Error } from "../../components/loading/Error";
 import { Summary } from "../../components/orders/Summary";
 import { OrderBox } from "../../components/orders/OrderBox";
 import { OrderSection } from "../../components/orders/OrderSection";
+import { OrderSkeleton } from "../../components/orders/OrderSkeleton";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -29,11 +29,12 @@ export const Order = () => {
   const [isError, setIsError] = useState(false);
   const [data, setData] = useState([]);
 
-  /* 🔒 AUTH GUARD */
+  /* 🔒 AUTH GUARD (UNCHANGED) */
   if (!token) {
     return <Navigate to="/auth" replace />;
   }
 
+  /* ================= FETCH ORDERS ================= */
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -54,24 +55,50 @@ export const Order = () => {
     fetchOrders();
   }, []);
 
-  if (isLoading) return <Loading />;
+  /* ================= RETRY PAYMENT (NEW) ================= */
+  const handleRetryPayment = async (order) => {
+    try {
+      const res = await api.post("/api/payment/initiate", {
+        orderId: order._id,
+        amount: order.orderSummary.total,
+      });
+
+      const redirectUrl = res.data?.redirectUrl;
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      }
+    } catch (err) {
+      console.error("Retry payment failed:", err);
+    }
+  };
+
+  /* ================= STATES ================= */
+  if (isLoading) {
+    return (
+      <Box maxW="1200px" mx="auto" px="20px" py="40px">
+        <OrderSkeleton />
+      </Box>
+    );
+  }
+
   if (isError) return <Error />;
 
   if (!data.length) {
     return (
-      <Center h="50vh">
+      <Center h="60vh">
         <Box textAlign="center">
-          <Heading size="md" mb="10px">
+          <Heading size="md" mb="8px">
             No orders yet
           </Heading>
           <Text color="gray.600">
-            Your orders will appear here once you make a purchase.
+            Once you place an order, it will appear here.
           </Text>
         </Box>
       </Center>
     );
   }
 
+  /* ================= UI ================= */
   return (
     <Box bg="gray.50" minH="100vh" py="40px">
       {/* PAGE HEADER */}
@@ -83,11 +110,7 @@ export const Order = () => {
       </Box>
 
       {/* ORDERS CONTAINER */}
-      <Box
-        maxW="1200px"
-        mx="auto"
-        px="20px"
-      >
+      <Box maxW="1200px" mx="auto" px="20px">
         <Box
           bg="white"
           borderRadius="16px"
@@ -120,6 +143,7 @@ export const Order = () => {
                   date={date}
                   time={time}
                   paymentStatus={item.paymentDetails?.paymentStatus}
+                  onRetryPayment={() => handleRetryPayment(item)}
                 >
                   <Grid
                     templateColumns={{
@@ -131,11 +155,7 @@ export const Order = () => {
                   >
                     {/* ORDER ITEMS */}
                     <Box>
-                      <Text
-                        fontSize="lg"
-                        fontWeight={600}
-                        mb="12px"
-                      >
+                      <Text fontSize="lg" fontWeight={600} mb="12px">
                         Ordered Items
                       </Text>
 

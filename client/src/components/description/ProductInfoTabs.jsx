@@ -8,109 +8,153 @@ import {
   Text,
   UnorderedList,
   ListItem,
+  Flex,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
+
+/* 🔥 Smooth open animation */
+const smoothOpen = keyframes`
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
 export const ProductInfoTabs = ({ product }) => {
-  const {
-    details,
-    material,
-    sizeGuide,
-    delivery,
-    specs = [],
-  } = product;
+  const { details, material, sizeGuide, delivery, specs = [] } = product;
 
-  const textColor = useColorModeValue("gray.800", "white");
-  const bg = useColorModeValue("white", "gray.800");
-  const hoverBg = useColorModeValue("gray.100", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
+  /* ===== COLOR SYSTEM ===== */
+  const itemBg = useColorModeValue("white", "transparent");
+  const textColor = useColorModeValue("gray.800", "gray.100");
+  const mutedText = useColorModeValue("gray.600", "gray.400");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
 
-  const accordionButtonProps = {
+  const buttonProps = {
     py: "22px",
-    bg,
-    color: textColor,
-    _hover: { bg: hoverBg },
-    _expanded: { bg: hoverBg },
+    px: "4px",
+    bg: "transparent",
+    _hover: { bg: "transparent" },
+    _expanded: { bg: "transparent" },
   };
 
   const panelTextProps = {
     fontSize: "15px",
-    lineHeight: "1.8",
+    lineHeight: "1.9",
     color: textColor,
+    animation: `${smoothOpen} 0.25s ease`,
   };
 
   return (
-    <Box mt="60px">
+    <Box mt="64px">
       <Accordion allowToggle>
+        {/* PRODUCT DETAILS */}
         {details && (
-          <AccordionItem borderTop="1px solid" borderColor={borderColor}>
-            <AccordionButton {...accordionButtonProps}>
-              <Box flex="1" textAlign="left" fontWeight="600">
+          <AccordionItem
+            bg={itemBg}
+            borderBottom="1px solid"
+            borderColor={borderColor}
+          >
+            <AccordionButton {...buttonProps}>
+              <Box flex="1" textAlign="left" fontWeight="600" color={textColor}>
                 Product Details
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb="24px" bg={bg}>
+
+            <AccordionPanel pb="28px" bg="transparent">
               <Text {...panelTextProps}>{details}</Text>
             </AccordionPanel>
           </AccordionItem>
         )}
 
+        {/* MATERIAL & FIT */}
         {material && (
-          <AccordionItem borderTop="1px solid" borderColor={borderColor}>
-            <AccordionButton {...accordionButtonProps}>
-              <Box flex="1" textAlign="left" fontWeight="600">
+          <AccordionItem
+            bg={itemBg}
+            borderBottom="1px solid"
+            borderColor={borderColor}
+          >
+            <AccordionButton {...buttonProps}>
+              <Box flex="1" textAlign="left" fontWeight="600" color={textColor}>
                 Material & Fit
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb="24px" bg={bg}>
+
+            <AccordionPanel pb="28px" bg="transparent">
               <Text {...panelTextProps}>{material}</Text>
             </AccordionPanel>
           </AccordionItem>
         )}
 
+        {/* SIZE GUIDE */}
         {sizeGuide && (
-          <AccordionItem borderTop="1px solid" borderColor={borderColor}>
-            <AccordionButton {...accordionButtonProps}>
-              <Box flex="1" textAlign="left" fontWeight="600">
+          <AccordionItem
+            bg={itemBg}
+            borderBottom="1px solid"
+            borderColor={borderColor}
+          >
+            <AccordionButton {...buttonProps}>
+              <Box flex="1" textAlign="left" fontWeight="600" color={textColor}>
                 Size & Fit
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb="24px" bg={bg}>
+
+            <AccordionPanel pb="28px" bg="transparent">
               <Text {...panelTextProps}>{sizeGuide}</Text>
             </AccordionPanel>
           </AccordionItem>
         )}
 
+        {/* DELIVERY & RETURNS */}
         {delivery && (
-          <AccordionItem borderTop="1px solid" borderColor={borderColor}>
-            <AccordionButton {...accordionButtonProps}>
-              <Box flex="1" textAlign="left" fontWeight="600">
+          <AccordionItem
+            bg={itemBg}
+            borderBottom="1px solid"
+            borderColor={borderColor}
+          >
+            <AccordionButton {...buttonProps}>
+              <Box flex="1" textAlign="left" fontWeight="600" color={textColor}>
                 Delivery & Returns
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb="24px" bg={bg}>
-              <Text {...panelTextProps}>{delivery}</Text>
+
+            <AccordionPanel pb="28px" bg="transparent">
+              <Flex direction="column" gap="10px">
+                <Text fontSize="14px" color={mutedText}>
+                  🚚 Delivered in 4–6 working days
+                </Text>
+                <Text fontSize="14px" color={mutedText}>
+                  🔄 Easy 3-day return
+                </Text>
+                <Text fontSize="14px" color={mutedText}>
+                  📦 Secure packaging
+                </Text>
+
+                <Text mt="12px" {...panelTextProps}>
+                  {delivery}
+                </Text>
+              </Flex>
             </AccordionPanel>
           </AccordionItem>
         )}
 
+        {/* PRODUCT INFORMATION */}
         {specs.length > 0 && (
           <AccordionItem
-            borderTop="1px solid"
+            bg={itemBg}
             borderBottom="1px solid"
             borderColor={borderColor}
           >
-            <AccordionButton {...accordionButtonProps}>
-              <Box flex="1" textAlign="left" fontWeight="600">
+            <AccordionButton {...buttonProps}>
+              <Box flex="1" textAlign="left" fontWeight="600" color={textColor}>
                 Product Information
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb="24px" bg={bg}>
+
+            <AccordionPanel pb="28px" bg="transparent">
               <UnorderedList spacing={3} fontSize="15px" color={textColor}>
                 {specs.map((item, index) => (
                   <ListItem key={index}>{item}</ListItem>
