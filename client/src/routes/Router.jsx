@@ -14,6 +14,7 @@ import { Order } from "../pages/orders/Order";
 import { Products } from "../pages/products/Products";
 import { PaymentSuccess } from "../pages/payment/PaymentSuccess";
 import { PaymentFailed } from "../pages/payment/PaymentFailed";
+import { OrderSuccess } from "../pages/OrderSuccess";
 
 /* ================= POLICY PAGES ================= */
 import TermsConditions from "../pages/policies/TermsConditions";
@@ -46,6 +47,7 @@ export const Router = () => {
         <Route path="/description" element={<Description />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
+        <Route path="/order-success/:orderId" element={<OrderSuccess />} />
 
         {/* ================= AUTH (PUBLIC) ================= */}
         <Route

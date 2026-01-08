@@ -5,8 +5,12 @@ import {
   validatePinCode,
 } from "../../utils/formValidator";
 
-import { CheckoutOrderSummary } from "../../components/checkout/CheckoutOrderSummary";
 import { CheckoutForm } from "../../components/checkout/CheckoutForm";
+import { CheckoutLayout } from "../../components/checkout/CheckoutLayout";
+import { AddressSection } from "../../components/checkout/AddressSection";
+import { PaymentMethodSection } from "../../components/checkout/PaymentMethodSection";
+import { OrderSummaryCard } from "../../components/checkout/OrderSummaryCard";
+import { PlaceOrderButton } from "../../components/checkout/PlaceOrderButton";
 
 import {
   Box,
@@ -60,6 +64,7 @@ export const Checkout = () => {
   const [saveAddress, setSaveAddress] = useState(false);
   const [isUsingSavedAddress, setIsUsingSavedAddress] = useState(false);
   const [originalSavedAddress, setOriginalSavedAddress] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
   /* ================= AUTO-FILL EMAIL ================= */
   useEffect(() => {
@@ -141,23 +146,20 @@ export const Checkout = () => {
     return true;
   };
 
-  /* ================= SUBMIT (COD ONLY) ================= */
-  const handleFormSubmit = async (e) => {
-    e?.preventDefault?.();
+  /* ================= SUBMIT ================= */
+  const handleFormSubmit = async () => {
     if (!handleFormValidation()) return;
 
     try {
       await saveAddressIfNeeded();
 
-      const normalizedCart = cartProducts.map((item, index) => {
+      const normalizedCart = cartProducts.map((item) => {
         const productId =
           item.product ||
           item.product?._id ||
           item.productId;
 
-        if (!productId) {
-          throw new Error("Invalid cart item");
-        }
+        if (!productId) throw new Error("Invalid cart item");
 
         return {
           _id: productId,
@@ -166,7 +168,6 @@ export const Checkout = () => {
         };
       });
 
-      /* 🟢 COD ORDER API */
       const orderRes = await api.post("/order/cod", {
         cartProducts: normalizedCart,
         shippingDetails: form,
@@ -176,68 +177,89 @@ export const Checkout = () => {
         throw new Error("Order failed");
       }
 
-      /* ✅ SUCCESS */
       setToast(toast, "Order placed successfully (Cash on Delivery)", "success");
-
-      navigate("/orders"); // or order-success page
+      navigate(`/order-success/${orderRes.data.orderId}`);
     } catch (err) {
-      console.error("❌ Checkout error:", err);
+      console.error(err);
       setToast(toast, err.message || "Order failed", "error");
     }
   };
 
   /* ================= UI ================= */
   return (
-    <Box
-      p="20px"
-      my="30px"
-      mx="auto"
-      maxW="1200px"
-      display="grid"
-      gap="10%"
-      gridTemplateColumns={{ base: "100%", md: "55% 35%" }}
-    >
-      <Box>
-        <Text fontSize="20px" fontWeight={600} mb="3">
-          Saved Addresses
-        </Text>
+  <CheckoutLayout
+    left={
+      <>
+        {/* ADDRESS + FORM */}
+        <AddressSection>
+          {savedAddresses.length ? (
+            savedAddresses.map((addr, i) => (
+              <Box
+                key={i}
+                mb="4"
+                p="4"
+                border="1px solid"
+                borderColor="gray.200"
+                borderRadius="10px"
+                _hover={{ borderColor: "green.400" }}
+              >
+                <Text fontWeight="600">
+                  {addr.firstName} {addr.lastName}
+                </Text>
+                <Text fontSize="14px" color="gray.500">
+                  {addr.addressLine1}, {addr.locality}
+                </Text>
+                <Button
+                  size="sm"
+                  mt="2"
+                  onClick={() => handleUseAddress(addr)}
+                >
+                  Use this address
+                </Button>
+              </Box>
+            ))
+          ) : (
+            <Text fontSize="14px" color="gray.500">
+              No saved addresses found
+            </Text>
+          )}
 
-        {savedAddresses.length ? (
-          savedAddresses.map((addr, i) => (
-            <Box key={i} p="4" mb="3" border="1px solid #e2e8f0">
-              <Text fontWeight={600}>
-                {addr.firstName} {addr.lastName}
-              </Text>
-              <Text fontSize="14px">
-                {addr.addressLine1}, {addr.locality}
-              </Text>
-              <Button size="sm" mt="2" onClick={() => handleUseAddress(addr)}>
-                Use this address
-              </Button>
-            </Box>
-          ))
-        ) : (
-          <Text fontSize="14px" color="gray.500">
-            No saved addresses found
-          </Text>
-        )}
+          <CheckoutForm form={form} onChange={handleInputChange} />
 
-        <CheckoutForm form={form} onChange={handleInputChange} />
+          <Checkbox
+            mt="5"
+            isChecked={saveAddress}
+            isDisabled={isUsingSavedAddress}
+            onChange={(e) => setSaveAddress(e.target.checked)}
+          >
+            Save this address
+          </Checkbox>
+        </AddressSection>
+      </>
+    }
+    right={
+  <Box
+    position={{ md: "sticky" }}
+    top="100px"
+    display="flex"
+    flexDirection="column"
+    gap="24px"
+  >
+    <OrderSummaryCard orderSummary={orderSummary} />
 
-        <Checkbox
-          mt="5"
-          isChecked={saveAddress}
-          isDisabled={isUsingSavedAddress}
-          onChange={(e) => setSaveAddress(e.target.checked)}
-        >
-          Save this address
-        </Checkbox>
-      </Box>
+    <PaymentMethodSection
+      value={paymentMethod}
+      onChange={setPaymentMethod}
+    />
 
-      <CheckoutOrderSummary
-        onClick={handleFormSubmit}
-        orderSummary={orderSummary}
-      />
-    </Box>
-  );
+    <PlaceOrderButton
+      paymentMethod={paymentMethod}
+      onClick={handleFormSubmit}
+    />
+  </Box>
+}
+
+  />
+);
+
 };
