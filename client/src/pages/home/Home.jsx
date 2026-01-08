@@ -22,8 +22,8 @@ export const Home = () => {
         <Featured />
         <MiniHelmetsSection />
         <HomeCombo />
-        <MarqueeGrid />
         <MovementDataSection />
+        <MarqueeGrid />
       </main>
     </div>
   );

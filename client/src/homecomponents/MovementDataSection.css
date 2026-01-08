@@ -2,8 +2,10 @@
    SECTION (PINNED)
 ================================ */
 .movement-section {
-  height: 100vh;
+  position: relative;
+  min-height: 100vh; /* ✅ NOT height */
   background: linear-gradient(180deg, #f7f7f7, #ffffff);
+  overflow: hidden; /* prevent bleed during transitions */
 }
 
 .dark .movement-section {
@@ -16,9 +18,8 @@
 .movement-stage {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* stage is viewport-sized */
 }
-
 
 /* ===============================
    CARD
@@ -32,9 +33,8 @@
   gap: 80px;
   padding: 0 8vw;
   background: #ffffff;
+  will-change: transform, opacity;
 }
-
-
 
 .dark .movement-card {
   background: #161a24;
@@ -43,7 +43,6 @@
 /* ===============================
    IMAGE
 ================================ */
-/* Default image behavior */
 .movement-image img {
   width: 100%;
   height: 440px;
@@ -52,13 +51,10 @@
   border-radius: 20px;
 }
 
-/* 🔥 ONLY for "Built for Endurance" */
-/* ONLY for "Built for Endurance" */
+/* Optional image adjustment */
 .img-shift-down img {
-  object-position: center 25%; /* 🔥 brings face back */
+  object-position: center 25%;
 }
-
-
 
 /* ===============================
    CONTENT
@@ -81,7 +77,8 @@
 @media (max-width: 900px) {
   .movement-card {
     grid-template-columns: 1fr;
-    height: auto;
+    gap: 40px;
+    padding: 0 6vw;
   }
 
   .movement-image img {
