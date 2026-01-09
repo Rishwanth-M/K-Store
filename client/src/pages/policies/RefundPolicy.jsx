@@ -62,34 +62,47 @@ const RefundPolicy = () => {
       <Divider my="30px" />
 
       {/* Refunds */}
-      <Heading size="md" mb="15px">
-        Refunds and Replacements
-      </Heading>
+<Heading size="md" mb="15px">
+  Refunds and Replacements
+</Heading>
 
-      <List spacing={3} pl="20px" styleType="disc">
-        <ListItem>
-          In case of receipt of damaged or defective products, customers must
-          report the issue to our customer support team within{" "}
-          <b>5 (five) days</b> of receiving the product.
-        </ListItem>
+<List spacing={3} pl="20px" styleType="disc">
+  <ListItem>
+    In case of receipt of damaged or defective products, customers must
+    report the issue to our customer support team within{" "}
+    <b>5 (five) days</b> of receiving the product.
+  </ListItem>
 
-        <ListItem>
-          Refund or replacement requests will be entertained only after the
-          seller or merchant listed on the Platform has verified and confirmed
-          the issue at their end.
-        </ListItem>
+  <ListItem>
+    Refund or replacement requests will be entertained only after the
+    seller or merchant listed on the Platform has verified and confirmed
+    the issue at their end.
+  </ListItem>
 
-        <ListItem>
-          If the product received is materially different from what is shown on
-          the Website or does not match the description, the customer must notify
-          customer support within <b>5 (five) days</b> of receipt.
-        </ListItem>
+  <ListItem>
+    If the product received is materially different from what is shown on
+    the Website or does not match the description, the customer must
+    notify customer support within <b>5 (five) days</b> of receipt.
+  </ListItem>
 
-        <ListItem>
-          The customer support team will review the complaint and take an
-          appropriate decision based on verification.
-        </ListItem>
-      </List>
+  <ListItem>
+    Replacement products will be dispatched and delivered within{" "}
+    <b>3 (three) working days</b> from the date the replacement request is
+    approved.
+  </ListItem>
+
+  <ListItem>
+    Products will be eligible for return within <b>3 (three) days</b> from
+    the date of successful delivery, subject to verification and
+    applicable seller policies.
+  </ListItem>
+
+  <ListItem>
+    The customer support team will review the complaint and take an
+    appropriate decision based on verification.
+  </ListItem>
+</List>
+
 
       <Divider my="30px" />
 

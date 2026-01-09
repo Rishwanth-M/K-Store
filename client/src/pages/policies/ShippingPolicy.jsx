@@ -49,7 +49,7 @@ const ShippingPolicy = () => {
       </Heading>
 
       <Text mb="20px">
-        Orders are generally shipped within <b>3 (three) to 7 (seven) days</b>{" "}
+        Orders are generally shipped and delivered within <b>3 (three) to 7 (seven) days</b>{" "}
         from the date of order placement and/or successful payment, or as per
         the delivery date agreed at the time of order confirmation, subject to
         courier company or postal authority norms.
