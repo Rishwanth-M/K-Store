@@ -16,7 +16,7 @@ const createBlueDartShipment = async (order) => {
       Consignee: {
         ConsigneeName: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
         ConsigneeAddress1: order.shippingDetails.addressLine1,
-        ConsigneeCity: order.shippingDetails.locality,
+        ConsigneeAddress2: order.shippingDetails.locality,
         ConsigneeState: order.shippingDetails.state,
         ConsigneePincode: order.shippingDetails.pinCode,
         ConsigneeMobile: order.shippingDetails.mobile,

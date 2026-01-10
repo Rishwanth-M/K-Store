@@ -4,15 +4,16 @@ const generateBlueDartToken = async () => {
   const response = await axios.post(
     process.env.BLUEDART_AUTH_URL,
     {
-      clientId: process.env.BLUEDART_API_KEY,
-      clientSecret: process.env.BLUEDART_API_SECRET,
+      client_id: process.env.BLUEDART_API_KEY,
+      client_secret: process.env.BLUEDART_API_SECRET,
+      grant_type: "client_credentials"
     },
     {
       headers: { "Content-Type": "application/json" },
     }
   );
 
-  return response.data.access_token || response.data.accessToken;
+  return response.data.access_token;
 };
 
 module.exports = { generateBlueDartToken };
