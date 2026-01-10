@@ -153,7 +153,14 @@ console.log(
     });
 
     /* 🚚 STEP 2: SHIPMENT VIA SERVICE */
-    await initiateShipmentForOrder(order._id);
+    /* 🚚 STEP 2: SHIPMENT VIA SERVICE */
+try {
+  await initiateShipmentForOrder(order._id);
+} catch (err) {
+  console.error("🚨 Shipment failed, order already created:", err.message);
+  // IMPORTANT: do NOT throw error
+}
+
 
     return res.status(201).json({
       success: true,
