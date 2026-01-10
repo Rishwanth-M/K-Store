@@ -1,15 +1,8 @@
 const axios = require("axios");
 const { generateBlueDartToken } = require("./bluedart.auth.service");
 
-const DEFAULT_WEIGHT = 0.5; // kg per item
-
 const createBlueDartShipment = async (order) => {
   const token = await generateBlueDartToken();
-
-  const totalWeight = order.cartProducts.reduce(
-    (sum, item) => sum + item.quantity * DEFAULT_WEIGHT,
-    0
-  );
 
   const payload = {
     Request: {
@@ -17,74 +10,102 @@ const createBlueDartShipment = async (order) => {
         ConsigneeName: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
         ConsigneeAddress1: order.shippingDetails.addressLine1,
         ConsigneeAddress2: order.shippingDetails.addressLine2 || "",
+        ConsigneeAddress3: "",
         ConsigneeAddressType: "R",
-        ConsigneeCity: order.shippingDetails.locality,
-        ConsigneeState: order.shippingDetails.state,
-        ConsigneePincode: order.shippingDetails.pinCode,
-        ConsigneeMobile: order.shippingDetails.mobile,
-        ConsigneeTelephone: "",
+        ConsigneeAttention: "",
         ConsigneeEmailID: order.shippingDetails.email || "",
+        ConsigneeGSTNumber: "",
+        ConsigneeLatitude: "",
+        ConsigneeLongitude: "",
+        ConsigneeMaskedContactNumber: "",
+        ConsigneeMobile: order.shippingDetails.mobile,
+        ConsigneePincode: order.shippingDetails.pinCode,
+        ConsigneeTelephone: ""
+      },
+
+      Returnadds: {
+        ManifestNumber: "",
+        ReturnAddress1: process.env.BLUEDART_PICKUP_ADDRESS,
+        ReturnAddress2: "",
+        ReturnAddress3: "",
+        ReturnContact: process.env.BLUEDART_PICKUP_NAME,
+        ReturnEmailID: "",
+        ReturnLatitude: "",
+        ReturnLongitude: "",
+        ReturnMaskedContactNumber: "",
+        ReturnMobile: process.env.BLUEDART_PICKUP_PHONE,
+        ReturnPincode: process.env.BLUEDART_PICKUP_PIN,
+        ReturnTelephone: ""
       },
 
       Services: {
-        ProductCode: "D",              // REQUIRED in sandbox
-        SubProductCode: "C",           // COD
-        ActualWeight: totalWeight.toFixed(2),
-        PieceCount: order.orderSummary.quantity,
-        CollectableAmount: order.orderSummary.total,
-        DeclaredValue: order.orderSummary.total,
+        AWBNo: "",
+        ActualWeight: "0.50",
+        Commodity: {},
+        CreditReferenceNo: `ORDER-${order._id}`,
+        Dimensions: [],
+        ECCN: "",
+        PDFOutputNotRequired: true,
+        PackType: "",
         PickupDate: `/Date(${Date.now()})/`,
         PickupTime: "1600",
+        PieceCount: "1",
+        ProductCode: "D",
+        ProductType: 0,
         RegisterPickup: false,
-        PDFOutputNotRequired: true,
+        SpecialInstruction: "",
+        SubProductCode: "",
+        OTPBasedDelivery: 2,
+        OTPCode: "123445",
+        itemdtl: [],
+        noOfDCGiven: 0
       },
 
       Shipper: {
-        CustomerCode: process.env.BLUEDART_CLIENT_CODE,
-        CustomerName: process.env.BLUEDART_PICKUP_NAME,
         CustomerAddress1: process.env.BLUEDART_PICKUP_ADDRESS,
-        CustomerCity: process.env.BLUEDART_PICKUP_CITY,
-        CustomerState: process.env.BLUEDART_PICKUP_STATE,
-        CustomerPincode: process.env.BLUEDART_PICKUP_PIN,
+        CustomerAddress2: "",
+        CustomerAddress3: "",
+        CustomerCode: process.env.BLUEDART_CLIENT_CODE,
+        CustomerEmailID: "",
+        CustomerGSTNumber: "",
+        CustomerLatitude: "",
+        CustomerLongitude: "",
+        CustomerMaskedContactNumber: "",
         CustomerMobile: process.env.BLUEDART_PICKUP_PHONE,
-        OriginArea: process.env.BLUEDART_AREA,
+        CustomerName: process.env.BLUEDART_PICKUP_NAME,
+        CustomerPincode: process.env.BLUEDART_PICKUP_PIN,
+        CustomerTelephone: "",
         IsToPayCustomer: false,
-      },
+        OriginArea: process.env.BLUEDART_AREA,
+        Sender: "NDACENTER",     // ⚠️ STATIC AS PER MANUAL
+        VendorCode: ""
+      }
     },
 
     Profile: {
       Api_type: "S",
-      LicenceKey: process.env.BLUEDART_LICENSE_KEY,
-      LoginID: process.env.BLUEDART_USER_ID,
-    },
+      LicenceKey: process.env.BLUEDART_API_KEY, // Consumer Key
+      LoginID: process.env.BLUEDART_USER_ID
+    }
   };
 
-  try {
-    const response = await axios.post(
-      process.env.BLUEDART_WAYBILL_URL,
-      payload,
-      {
-        headers: {
-          JWTToken: token, // ✅ REQUIRED
-          "Content-Type": "application/json",
-        },
-        timeout: 20000,
-      }
-    );
+  const response = await axios.post(
+    process.env.BLUEDART_WAYBILL_URL,   // MUST be /waybill/GenerateWayBill
+    payload,
+    {
+      headers: {
+        JWTToken: token,
+        "Content-Type": "application/json",
+      },
+      timeout: 20000,
+    }
+  );
 
-    return {
-      success: true,
-      awb: response.data?.AWBNo,
-      raw: response.data,
-    };
-  } catch (err) {
-    console.error("❌ BLUEDART STATUS:", err.response?.status);
-    console.error(
-      "❌ BLUEDART DATA:",
-      JSON.stringify(err.response?.data, null, 2)
-    );
-    throw err;
-  }
+  return {
+    success: true,
+    awb: response.data?.AWBNo,
+    raw: response.data,
+  };
 };
 
 module.exports = { createBlueDartShipment };
