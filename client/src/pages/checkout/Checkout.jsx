@@ -155,9 +155,10 @@ export const Checkout = () => {
 
       const normalizedCart = cartProducts.map((item) => {
         const productId =
-          item.product ||
-          item.product?._id ||
-          item.productId;
+  typeof item.product === "string"
+    ? item.product
+    : item.product?._id || item.productId;
+
 
         if (!productId) throw new Error("Invalid cart item");
 
@@ -167,6 +168,10 @@ export const Checkout = () => {
           size: item.size,
         };
       });
+
+      console.log("🛒 RAW cartProducts from redux:", cartProducts);
+console.log("🛒 NORMALIZED cartProducts sent to backend:", normalizedCart);
+
 
       const orderRes = await api.post("/order/cod", {
         cartProducts: normalizedCart,

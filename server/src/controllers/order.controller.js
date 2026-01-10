@@ -15,8 +15,13 @@ const createOrder = async (req, res, next) => {
     }
 
     const productIds = cartProducts.map((p) => p._id);
+console.log("🆔 PRODUCT IDS FROM REQUEST:", productIds);
 
     const productsFromDB = await Product.find({ _id: { $in: productIds } }).lean();
+console.log(
+  "🗄️ PRODUCTS FOUND IN DB:",
+  productsFromDB.map((p) => p._id)
+);
 
     if (!productsFromDB.length) {
       return res.status(400).json({ success: false, message: "Invalid cart products" });
@@ -81,6 +86,7 @@ const createOrder = async (req, res, next) => {
    ===================================================== */
 const createCODOrder = async (req, res, next) => {
   try {
+    console.log("📦 REQ BODY:", JSON.stringify(req.body, null, 2));
     const userId = req.user._id;
     const { cartProducts = [], shippingDetails = {} } = req.body;
 
@@ -89,7 +95,13 @@ const createCODOrder = async (req, res, next) => {
     }
 
     const productIds = cartProducts.map((p) => p._id);
+    console.log("🆔 PRODUCT IDS FROM REQUEST:", productIds);
+
     const productsFromDB = await Product.find({ _id: { $in: productIds } }).lean();
+console.log(
+  "🗄️ PRODUCTS FOUND IN DB:",
+  productsFromDB.map((p) => p._id)
+);
 
     if (!productsFromDB.length) {
       return res.status(400).json({ success: false, message: "Invalid cart products" });
