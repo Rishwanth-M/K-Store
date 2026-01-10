@@ -67,7 +67,7 @@ const createBlueDartShipment = async (order) => {
       payload,
       {
         headers: {
-          JWTToken: token, // ✅ EXACT header name
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         timeout: 15000,
