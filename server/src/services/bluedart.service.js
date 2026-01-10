@@ -17,7 +17,7 @@ const createBlueDartShipment = async (order) => {
         ConsigneeName: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
         ConsigneeAddress1: order.shippingDetails.addressLine1,
         ConsigneeAddress2: order.shippingDetails.addressLine2 || "",
-        ConsigneeAddressType: "R", // ✅ REQUIRED
+        ConsigneeAddressType: "R",
         ConsigneeCity: order.shippingDetails.locality,
         ConsigneeState: order.shippingDetails.state,
         ConsigneePincode: order.shippingDetails.pinCode,
@@ -27,16 +27,15 @@ const createBlueDartShipment = async (order) => {
       },
 
       Services: {
-        ProductCode: "D",                 // ✅ REQUIRED (Sandbox)
-        SubProductCode: "C",              // COD
+        ProductCode: "D",              // REQUIRED in sandbox
+        SubProductCode: "C",           // COD
         ActualWeight: totalWeight.toFixed(2),
         PieceCount: order.orderSummary.quantity,
         CollectableAmount: order.orderSummary.total,
         DeclaredValue: order.orderSummary.total,
-        PickupDate: `/Date(${Date.now()})/`, // ✅ REQUIRED
-        PickupTime: "1600",                // ✅ REQUIRED
+        PickupDate: `/Date(${Date.now()})/`,
+        PickupTime: "1600",
         RegisterPickup: false,
-        SpecialInstruction: "",
         PDFOutputNotRequired: true,
       },
 
@@ -44,7 +43,6 @@ const createBlueDartShipment = async (order) => {
         CustomerCode: process.env.BLUEDART_CLIENT_CODE,
         CustomerName: process.env.BLUEDART_PICKUP_NAME,
         CustomerAddress1: process.env.BLUEDART_PICKUP_ADDRESS,
-        CustomerAddress2: "",
         CustomerCity: process.env.BLUEDART_PICKUP_CITY,
         CustomerState: process.env.BLUEDART_PICKUP_STATE,
         CustomerPincode: process.env.BLUEDART_PICKUP_PIN,
@@ -67,10 +65,10 @@ const createBlueDartShipment = async (order) => {
       payload,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          JWTToken: token, // ✅ REQUIRED
           "Content-Type": "application/json",
         },
-        timeout: 15000,
+        timeout: 20000,
       }
     );
 
@@ -80,9 +78,10 @@ const createBlueDartShipment = async (order) => {
       raw: response.data,
     };
   } catch (err) {
+    console.error("❌ BLUEDART STATUS:", err.response?.status);
     console.error(
-      "❌ BLUEDART ERROR:",
-      err.response?.data || err.message
+      "❌ BLUEDART DATA:",
+      JSON.stringify(err.response?.data, null, 2)
     );
     throw err;
   }

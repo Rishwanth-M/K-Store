@@ -6,14 +6,14 @@ const generateBlueDartToken = async () => {
     {
       client_id: process.env.BLUEDART_API_KEY,
       client_secret: process.env.BLUEDART_API_SECRET,
-      grant_type: "client_credentials"
+      grant_type: "client_credentials",
     },
     {
       headers: { "Content-Type": "application/json" },
     }
   );
 
-  return response.data.access_token;
+  return response.data.access_token; // JWT
 };
 
 module.exports = { generateBlueDartToken };
