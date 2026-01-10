@@ -16,7 +16,7 @@ const initiateShipmentForOrder = async (orderId) => {
     order.logistics = {
       courier: "BLUEDART",
       awbNumber: result.awb,
-      shipmentId: result.shipmentId,
+      shipmentId: result.awb,
       status: "CREATED",
     };
     order.orderStatus = "SHIPPED";

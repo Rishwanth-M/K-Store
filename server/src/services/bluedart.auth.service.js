@@ -12,7 +12,7 @@ const generateBlueDartToken = async () => {
     }
   );
 
-  return response.data.access_token; // JWT
+  return response.data.access_token || response.data.accessToken;
 };
 
 module.exports = { generateBlueDartToken };

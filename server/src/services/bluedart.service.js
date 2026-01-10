@@ -12,33 +12,43 @@ const createBlueDartShipment = async (order) => {
   );
 
   const payload = {
-    clientCode: process.env.BLUEDART_CLIENT_CODE,
-    shipmentType: "COD",
-    productCode: "A",
-    subProductCode: "C",
+    Request: {
+      Consignee: {
+        ConsigneeName: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
+        ConsigneeAddress1: order.shippingDetails.addressLine1,
+        ConsigneeCity: order.shippingDetails.locality,
+        ConsigneeState: order.shippingDetails.state,
+        ConsigneePincode: order.shippingDetails.pinCode,
+        ConsigneeMobile: order.shippingDetails.mobile,
+      },
 
-    consignee: {
-      name: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
-      address: order.shippingDetails.addressLine1,
-      city: order.shippingDetails.locality,
-      state: order.shippingDetails.state,
-      pincode: order.shippingDetails.pinCode,
-      mobile: order.shippingDetails.mobile,
+      Services: {
+        ProductCode: "A",
+        SubProductCode: "C",
+        PaymentType: "COD",
+        CollectableAmount: order.orderSummary.total,
+        DeclaredValue: order.orderSummary.total,
+        ActualWeight: totalWeight.toFixed(2),
+        PieceCount: order.orderSummary.quantity,
+      },
+
+      Shipper: {
+        CustomerCode: process.env.BLUEDART_CLIENT_CODE,
+        CustomerName: process.env.BLUEDART_PICKUP_NAME,
+        CustomerAddress1: process.env.BLUEDART_PICKUP_ADDRESS,
+        CustomerCity: process.env.BLUEDART_PICKUP_CITY,
+        CustomerState: process.env.BLUEDART_PICKUP_STATE,
+        CustomerPincode: process.env.BLUEDART_PICKUP_PIN,
+        CustomerMobile: process.env.BLUEDART_PICKUP_PHONE,
+        OriginArea: process.env.BLUEDART_AREA,
+      },
     },
 
-    shipper: {
-      name: process.env.BLUEDART_PICKUP_NAME,
-      address: process.env.BLUEDART_PICKUP_ADDRESS,
-      city: process.env.BLUEDART_PICKUP_CITY,
-      state: process.env.BLUEDART_PICKUP_STATE,
-      pincode: process.env.BLUEDART_PICKUP_PIN,
-      mobile: process.env.BLUEDART_PICKUP_PHONE,
+    Profile: {
+      Api_type: "S",
+      LicenceKey: process.env.BLUEDART_LICENSE_KEY,
+      LoginID: process.env.BLUEDART_USER_ID,
     },
-
-    declaredValue: order.orderSummary.total,
-    collectableAmount: order.orderSummary.total,
-    actualWeight: totalWeight.toFixed(2),
-    pieceCount: order.orderSummary.quantity,
   };
 
   const response = await axios.post(
@@ -46,15 +56,16 @@ const createBlueDartShipment = async (order) => {
     payload,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        JWTToken: token,
         "Content-Type": "application/json",
       },
+      timeout: 15000,
     }
   );
 
   return {
     success: true,
-    awb: response.data.awbNumber,
+    awb: response.data?.AWBNo,
     raw: response.data,
   };
 };
