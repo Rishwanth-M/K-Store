@@ -1,116 +1,62 @@
-// services/bluedart.service.js
-
 const axios = require("axios");
-const xml2js = require("xml2js");
+const { generateBlueDartToken } = require("./bluedart.auth.service");
 
-const BLUEDART_URL =
-  "https://netconnect.bluedart.com/API/ShippingAPI/V1/GenerateWayBill";
-
-const buildShipmentXML = (order) => {
-  const shipper = {
-    Name: process.env.BLUEDART_PICKUP_CONTACT,
-    Address1: process.env.BLUEDART_PICKUP_ADDRESS1 || "PICKUP",
-    Address2: process.env.BLUEDART_PICKUP_ADDRESS2 || "",
-    City: process.env.BLUEDART_PICKUP_CITY,
-    State: process.env.BLUEDART_PICKUP_STATE,
-    Pincode: process.env.BLUEDART_PICKUP_PIN,
-    Mobile: process.env.BLUEDART_PICKUP_PHONE,
-  };
-
-  const consignee = {
-    Name: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
-    Address1: order.shippingDetails.addressLine1,
-    Address2: order.shippingDetails.addressLine2 || "",
-    City: order.shippingDetails.locality,
-    State: order.shippingDetails.state,
-    Pincode: order.shippingDetails.pinCode,
-    Mobile: order.shippingDetails.mobile,
-  };
-
-  return `
-<GenerateWayBillRequest>
-  <Request>
-    <LoginID>${process.env.BLUEDART_USERNAME}</LoginID>
-    <LicenseKey>${process.env.BLUEDART_LICENSE_KEY}</LicenseKey>
-    <APIVersion>${process.env.BLUEDART_API_VERSION}</APIVersion>
-  </Request>
-
-  <WayBillData>
-    <Consignee>
-      <ConsigneeName>${consignee.Name}</ConsigneeName>
-      <ConsigneeAddress1>${consignee.Address1}</ConsigneeAddress1>
-      <ConsigneeAddress2>${consignee.Address2}</ConsigneeAddress2>
-      <ConsigneeCity>${consignee.City}</ConsigneeCity>
-      <ConsigneeState>${consignee.State}</ConsigneeState>
-      <ConsigneePincode>${consignee.Pincode}</ConsigneePincode>
-      <ConsigneeMobile>${consignee.Mobile}</ConsigneeMobile>
-    </Consignee>
-
-    <Shipper>
-      <ShipperName>${shipper.Name}</ShipperName>
-      <ShipperAddress1>${shipper.Address1}</ShipperAddress1>
-      <ShipperAddress2>${shipper.Address2}</ShipperAddress2>
-      <ShipperCity>${shipper.City}</ShipperCity>
-      <ShipperState>${shipper.State}</ShipperState>
-      <ShipperPincode>${shipper.Pincode}</ShipperPincode>
-      <ShipperMobile>${shipper.Mobile}</ShipperMobile>
-    </Shipper>
-
-    <ShipmentDetails>
-      <ProductCode>D</ProductCode>
-      <CollectableAmount>${order.orderSummary.total}</CollectableAmount>
-      <DeclaredValue>${order.orderSummary.total}</DeclaredValue>
-      <PaymentType>COD</PaymentType>
-      <PieceCount>${order.orderSummary.quantity}</PieceCount>
-      <Weight>1</Weight>
-    </ShipmentDetails>
-  </WayBillData>
-</GenerateWayBillRequest>
-`;
-};
+const DEFAULT_WEIGHT = 0.5;
 
 const createBlueDartShipment = async (order) => {
-  try {
-    const xml = buildShipmentXML(order);
+  const token = await generateBlueDartToken();
 
-    const response = await axios.post(BLUEDART_URL, xml, {
+  const totalWeight = order.cartProducts.reduce(
+    (sum, item) => sum + item.quantity * DEFAULT_WEIGHT,
+    0
+  );
+
+  const payload = {
+    clientCode: process.env.BLUEDART_CLIENT_CODE,
+    shipmentType: "COD",
+    productCode: "A",
+    subProductCode: "C",
+
+    consignee: {
+      name: `${order.shippingDetails.firstName} ${order.shippingDetails.lastName}`,
+      address: order.shippingDetails.addressLine1,
+      city: order.shippingDetails.locality,
+      state: order.shippingDetails.state,
+      pincode: order.shippingDetails.pinCode,
+      mobile: order.shippingDetails.mobile,
+    },
+
+    shipper: {
+      name: process.env.BLUEDART_PICKUP_NAME,
+      address: process.env.BLUEDART_PICKUP_ADDRESS,
+      city: process.env.BLUEDART_PICKUP_CITY,
+      state: process.env.BLUEDART_PICKUP_STATE,
+      pincode: process.env.BLUEDART_PICKUP_PIN,
+      mobile: process.env.BLUEDART_PICKUP_PHONE,
+    },
+
+    declaredValue: order.orderSummary.total,
+    collectableAmount: order.orderSummary.total,
+    actualWeight: totalWeight.toFixed(2),
+    pieceCount: order.orderSummary.quantity,
+  };
+
+  const response = await axios.post(
+    process.env.BLUEDART_WAYBILL_URL,
+    payload,
+    {
       headers: {
-        "Content-Type": "application/xml",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      timeout: 15000,
-    });
-
-    const parsed = await xml2js.parseStringPromise(response.data, {
-      explicitArray: false,
-    });
-
-    const awb =
-      parsed?.GenerateWayBillResponse?.WayBillNumber ||
-      parsed?.GenerateWayBillResponse?.AWBNo;
-
-    if (!awb) {
-      return {
-        success: false,
-        error: "AWB not generated",
-        raw: parsed,
-      };
     }
+  );
 
-    return {
-      success: true,
-      awb,
-      shipmentId: awb,
-    };
-  } catch (err) {
-    console.error("❌ Blue Dart Shipment Error:", err.message);
-
-    return {
-      success: false,
-      error: err.message,
-    };
-  }
+  return {
+    success: true,
+    awb: response.data.awbNumber,
+    raw: response.data,
+  };
 };
 
-module.exports = {
-  createBlueDartShipment,
-};
+module.exports = { createBlueDartShipment };
