@@ -39,27 +39,27 @@ const createBlueDartShipment = async (order) => {
     },
 
     Services: {
-      AWBNo: "",
-      ActualWeight: "0.50",
-      Commodity: {},
-      CreditReferenceNo: `ORDER-${order._id}`,
-      Dimensions: [],
-      ECCN: "",
-      PDFOutputNotRequired: true,
-      PackType: "",
-      PickupDate: `/Date(${Date.now()})/`,
-      PickupTime: "1600",
-      PieceCount: String(order.orderSummary.quantity),
-      ProductCode: "D",        // ✅ REQUIRED (Sandbox)
-      ProductType: 0,
-      RegisterPickup: false,
-      SpecialInstruction: "",
-      SubProductCode: "",      // leave empty in sandbox
-      OTPBasedDelivery: 2,
-      OTPCode: "123445",
-      itemdtl: [],
-      noOfDCGiven: 0
-    },
+  AWBNo: "",
+  ActualWeight: "0.50",
+  Commodity: {},
+  CreditReferenceNo: `ORDER-${order._id}`,
+  Dimensions: [],
+  ECCN: "",
+  PDFOutputNotRequired: true,
+  PackType: "",
+  PickupDate: `/Date(${Date.now()})/`,
+  PickupTime: "1600",
+  PieceCount: String(order.orderSummary.quantity),
+  ProductCode: "A",      // ✅ FIXED
+  SubProductCode: "C",   // ✅ FIXED
+  ProductType: 0,
+  RegisterPickup: false,
+  SpecialInstruction: "",
+  OTPBasedDelivery: 0,   // ✅ FIXED
+  OTPCode: "",
+  itemdtl: [],
+  noOfDCGiven: 0
+},
 
     Shipper: {
       CustomerAddress1: process.env.BLUEDART_PICKUP_ADDRESS,
