@@ -39,24 +39,22 @@ const createBlueDartShipment = async (order) => {
     },
 
     Services: {
-  AWBNo: "",
   ActualWeight: "0.50",
   Commodity: {},
   CreditReferenceNo: `ORDER-${order._id}`,
   Dimensions: [],
-  ECCN: "",
   PDFOutputNotRequired: true,
   PackType: "",
   PickupDate: `/Date(${Date.now()})/`,
   PickupTime: "1600",
   PieceCount: String(order.orderSummary.quantity),
-  ProductCode: "A",      // ✅ FIXED
-  SubProductCode: "C",   // ✅ FIXED
-  ProductType: 0,
+
+  // 🔐 FROM BLUEDART MAIL (MANDATORY)
+  ProductCode: "A",     // Air
+  SubProductCode: "C",  // COD
+
   RegisterPickup: false,
   SpecialInstruction: "",
-  OTPBasedDelivery: 0,   // ✅ FIXED
-  OTPCode: "",
   itemdtl: [],
   noOfDCGiven: 0
 },
