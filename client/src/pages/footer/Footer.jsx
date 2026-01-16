@@ -19,7 +19,7 @@ export const Footer = () => {
         p="10px"
         templateColumns={["100%", "48% 2% 50%", "48% 2% 50%", "25% 25% 50%"]}
       >
-        {/* LEFT SECTION */}
+        {/* LEFT SECTION 
         <Center>
           <Flex
             fontSize={["11px", "13px", "14px"]}
@@ -34,6 +34,7 @@ export const Footer = () => {
             <Text>SEND US FEEDBACK</Text>
           </Flex>
         </Center>
+        */}
 
         {/* POLICIES SECTION */}
         <Center>
@@ -101,14 +102,6 @@ export const Footer = () => {
           <IconLink
             icon={MdOutlinePersonPin}
             link="https://www.kreedentials.com"
-          />
-          <IconLink
-            icon={FaGithub}
-            link="https://github.com/"
-          />
-          <IconLink
-            icon={FaLinkedin}
-            link="https://www.linkedin.com/"
           />
         </Flex>
       </Grid>

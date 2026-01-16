@@ -107,9 +107,6 @@ export const Navbar = () => {
         {/* DESKTOP CATEGORIES */}
         <Box display={{ base: "none", md: "flex" }}>
           <Category handlePath={handlePath} name="all" text="All Products" link="/allProducts" />
-          <Category handlePath={handlePath} name="boys" text="Boys" link="/allProducts" />
-          <Category handlePath={handlePath} name="girls" text="Girls" link="/allProducts" />
-          <Category handlePath={handlePath} name="unisex" text="Unisex" link="/allProducts" />
         </Box>
 
         <Spacer />
